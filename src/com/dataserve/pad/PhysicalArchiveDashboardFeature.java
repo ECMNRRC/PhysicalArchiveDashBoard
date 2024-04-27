@@ -58,7 +58,7 @@ public class PhysicalArchiveDashboardFeature extends PluginFeature {
 	 * @return A CSS style class name for the image.
 	 */
 	public String getIconUrl() {
-		return "ecmSimpleSearchLaunchIcon";
+		return "dashboards";
 	}
 
 	/**
