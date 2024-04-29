@@ -23,6 +23,10 @@ public class AuditDataBean extends AbstractBean {
 	private String OperationNameEn;
 	private Integer FileCount;
 	private Integer OperationCount;
+	private Integer WeekNumber;
+	private Integer Year;
+	private	Integer ClassCount;
+	private String	ClasDate;
 
 
 public String getDocumentId() {
@@ -125,6 +129,30 @@ public Integer getOperationCount() {
 }
 public void setOperationCount(Integer operationCount) {
 	OperationCount = operationCount;
+}
+public Integer getWeekNumber() {
+	return WeekNumber;
+}
+public void setWeekNumber(Integer weekNumber) {
+	WeekNumber = weekNumber;
+}
+public Integer getYear() {
+	return Year;
+}
+public void setYear(Integer year) {
+	Year = year;
+}
+public Integer getClassCount() {
+	return ClassCount;
+}
+public void setClassCount(Integer classCount) {
+	ClassCount = classCount;
+}
+public String getClasDate() {
+	return ClasDate;
+}
+public void setClasDate(String clasDate) {
+	ClasDate = clasDate;
 }
 
 }

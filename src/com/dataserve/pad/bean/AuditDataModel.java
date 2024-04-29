@@ -100,6 +100,34 @@ public class AuditDataModel {
     		throw new ClassificationException("Error getting Linked Document with Main Doc ", e);
     	}
     }
+    
+    public static Set<AuditDataModel> getDocByDate() throws ClassificationException {
+    	try {
+    		AuditDataDAO dao = new AuditDataDAO(); // Consider renaming this DAO if it specifically handles AuditData now.           
+    		Set<AuditDataBean> beans = dao.fetchDocByData();
+    		Set<AuditDataModel> lmSet = new LinkedHashSet<AuditDataModel>();
+    		for (AuditDataBean b : beans) {
+    			lmSet.add(new AuditDataModel(b));
+    		}
+    		return lmSet;
+    	} catch (DatabaseException e) {
+    		throw new ClassificationException("Error getting Linked Document with Main Doc ", e);
+    	}
+    }
+    
+    public static Set<AuditDataModel> getDocByFilteredDate(String dateTo, String DateFrom) throws ClassificationException {
+    	try {
+    		AuditDataDAO dao = new AuditDataDAO(); // Consider renaming this DAO if it specifically handles AuditData now.           
+    		Set<AuditDataBean> beans = dao.fetchDocByFilteredDate(dateTo, DateFrom);
+    		Set<AuditDataModel> lmSet = new LinkedHashSet<AuditDataModel>();
+    		for (AuditDataBean b : beans) {
+    			lmSet.add(new AuditDataModel(b));
+    		}
+    		return lmSet;
+    	} catch (DatabaseException e) {
+    		throw new ClassificationException("Error getting Linked Document with Main Doc ", e);
+    	}
+    }
 
     public JSONObject getAsJson() throws ClassificationException {
         JSONObject obj = new JSONObject();
@@ -143,6 +171,18 @@ public class AuditDataModel {
         obj.put("operationNameAr", getOperationNameAr());
         obj.put("operationNameEn", getOperationNameEn());
         obj.put("operationCount", getOperationCount());
+    	return obj;
+    }
+    
+    public JSONObject getDocByDateJson() throws ClassificationException {
+    	JSONObject obj = new JSONObject();
+        obj.put("depNameAr", getDepNameAr());
+        obj.put("depNameEn", getDepNameEn());
+        obj.put("classNameAr", getClassNameAr());
+        obj.put("classNameEn", getClasNameEn());
+        obj.put("weekNum", getWeekNumber());
+        obj.put("year", getYear());
+        obj.put("classCount", getClassCount());
     	return obj;
     }
     
@@ -260,6 +300,33 @@ public class AuditDataModel {
     	bean.setOperationCount(operationCount);
     }
 
+    public Integer getWeekNumber() {
+    	return bean.getWeekNumber();
+    }
+    public void setWeekNumber(Integer weekNumber) {
+    	bean.setWeekNumber(weekNumber);
+    }
+    
+    public Integer getYear() {
+    	return bean.getYear();
+    }
+    public void setYear(Integer year) {
+    	bean.setYear(year);
+    }
+    
+    public Integer getClassCount() {
+    	return bean.getClassCount();
+    }
+    public void setClassCount(Integer classCount) {
+    	bean.setClassCount(classCount);
+    }
+    
+    public String getClasDate() {
+    	return bean.getClasDate();
+    }
+    public void setClasDate(String clasDate) {
+    	bean.setClasDate(clasDate);
+    }
 
 
 

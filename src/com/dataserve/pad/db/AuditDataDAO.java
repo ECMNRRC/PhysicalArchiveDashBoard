@@ -250,6 +250,146 @@ public class AuditDataDAO extends AbstractDAO {
         return beans;
 }
     
+    public Set<AuditDataBean> fetchDocByData() throws DatabaseException {
+        Set<AuditDataBean> beans = new LinkedHashSet<>();
+
+        try {
+        	stmt = con.prepareStatement(
+        		    "SELECT " +
+        		    "dbo.DEPARTMENTS.DEPT_AR_NAME, " +
+        		    "dbo.DEPARTMENTS.DEPT_EN_NAME, " +
+        		    "dbo.CLASSIFICTIONS.CLASS_AR_NAME, " +
+        		    "dbo.CLASSIFICTIONS.CLASS_EN_NAME, " +
+        		    "DATEPART(week, dbo.DMS_AUDIT.DATE) AS WeekNumber, " +
+        		    "YEAR(dbo.DMS_AUDIT.DATE) AS Year, " +
+        		    "COUNT(*) AS ClassCount " +
+        		    "FROM dbo.DMS_AUDIT " +
+        		    "LEFT JOIN dbo.DMS_FILES ON dbo.DMS_AUDIT.FILE_ID = dbo.DMS_FILES.FILE_ID " +
+        		    "LEFT JOIN dbo.DEPARTMENTS ON dbo.DMS_FILES.DEPT_ID = dbo.DEPARTMENTS.DEPT_ID " +
+        		    "LEFT JOIN dbo.CLASSIFICTIONS ON dbo.DMS_AUDIT.DOCUMENT_CLASS = dbo.CLASSIFICTIONS.SYMPOLIC_NAME " +
+        		    "WHERE dbo.DMS_AUDIT.OPERATION_ID = 7 " +
+        		    "AND dbo.DEPARTMENTS.DEPT_AR_NAME IS NOT NULL " +
+        		    "AND dbo.DEPARTMENTS.DEPT_EN_NAME IS NOT NULL " +
+        		    "AND dbo.CLASSIFICTIONS.CLASS_AR_NAME IS NOT NULL " +
+        		    "AND dbo.CLASSIFICTIONS.CLASS_EN_NAME IS NOT NULL " +
+        		    "GROUP BY " +
+        		    "dbo.DEPARTMENTS.DEPT_AR_NAME, " +
+        		    "dbo.DEPARTMENTS.DEPT_EN_NAME, " +
+        		    "dbo.CLASSIFICTIONS.CLASS_AR_NAME, " +
+        		    "dbo.CLASSIFICTIONS.CLASS_EN_NAME, " +
+        		    "DATEPART(week, dbo.DMS_AUDIT.DATE), " +
+        		    "YEAR(dbo.DMS_AUDIT.DATE) " +
+        		    "ORDER BY " +
+        		    "YEAR(dbo.DMS_AUDIT.DATE), " +
+        		    "DATEPART(week, dbo.DMS_AUDIT.DATE)"
+        		);
+
+            rs = stmt.executeQuery();
+            while (rs.next()) {
+                String deptArName = rs.getNString("DEPT_AR_NAME");
+                String deptEnName = rs.getNString("DEPT_EN_NAME");
+                String classArName = rs.getNString("CLASS_AR_NAME");
+                String classEnName = rs.getNString("CLASS_EN_NAME");
+                int weekNumber = rs.getInt("WeekNumber");
+                int year = rs.getInt("Year");
+                int classCount = rs.getInt("ClassCount");
+
+                AuditDataBean bean = new AuditDataBean();
+                bean.setDepNameAr(deptArName);
+                bean.setDepNameEn(deptEnName);
+                bean.setClassNameAr(classArName);
+                bean.setClassNameEn(classEnName);
+                bean.setWeekNumber(weekNumber);
+                bean.setYear(year);
+                bean.setClassCount(classCount);
+                beans.add(bean);
+            }
+        } catch (SQLException e) {
+            throw new DatabaseException("Error fetching document data", e);
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (stmt != null) stmt.close();
+            } catch (SQLException e) {
+                // Log this error or handle it as you see fit
+            }
+        }
+        return beans;
+    }
+    
+    
+    public Set<AuditDataBean> fetchDocByFilteredDate(String dateTo, String dateFrom) throws DatabaseException {
+        Set<AuditDataBean> beans = new LinkedHashSet<>();
+        
+        try {
+            stmt = con.prepareStatement(
+                    "SELECT " +
+                            "dbo.DEPARTMENTS.DEPT_AR_NAME, " +
+                            "dbo.DEPARTMENTS.DEPT_EN_NAME, " +
+                            "dbo.CLASSIFICTIONS.CLASS_AR_NAME, " +
+                            "dbo.CLASSIFICTIONS.CLASS_EN_NAME, " +
+                            "DATEPART(week, dbo.DMS_AUDIT.DATE) AS WeekNumber, " +
+                            "YEAR(dbo.DMS_AUDIT.DATE) AS Year, " +
+                            "COUNT(*) AS ClassCount " +
+                            "FROM dbo.DMS_AUDIT " +
+                            "LEFT JOIN dbo.DMS_FILES ON dbo.DMS_AUDIT.FILE_ID = dbo.DMS_FILES.FILE_ID " +
+                            "LEFT JOIN dbo.DEPARTMENTS ON dbo.DMS_FILES.DEPT_ID = dbo.DEPARTMENTS.DEPT_ID " +
+                            "LEFT JOIN dbo.CLASSIFICTIONS ON dbo.DMS_AUDIT.DOCUMENT_CLASS = dbo.CLASSIFICTIONS.SYMPOLIC_NAME " +
+                            "WHERE dbo.DMS_AUDIT.OPERATION_ID = 7 " +
+                            "AND dbo.DEPARTMENTS.DEPT_AR_NAME IS NOT NULL " +
+                            "AND dbo.DEPARTMENTS.DEPT_EN_NAME IS NOT NULL " +
+                            "AND dbo.CLASSIFICTIONS.CLASS_AR_NAME IS NOT NULL " +
+                            "AND dbo.CLASSIFICTIONS.CLASS_EN_NAME IS NOT NULL " +
+                            "AND dbo.DMS_AUDIT.DATE BETWEEN ? AND ? " +
+                            "GROUP BY " +
+                            "dbo.DEPARTMENTS.DEPT_AR_NAME, " +
+                            "dbo.DEPARTMENTS.DEPT_EN_NAME, " +
+                            "dbo.CLASSIFICTIONS.CLASS_AR_NAME, " +
+                            "dbo.CLASSIFICTIONS.CLASS_EN_NAME, " +
+                            "DATEPART(week, dbo.DMS_AUDIT.DATE), " +
+                            "YEAR(dbo.DMS_AUDIT.DATE) " +
+                            "ORDER BY " +
+                            "YEAR(dbo.DMS_AUDIT.DATE), " +
+                            "DATEPART(week, dbo.DMS_AUDIT.DATE)"
+                    );
+
+            // Set the parameters for the date range
+            stmt.setString(1, dateFrom);
+            stmt.setString(2, dateTo);
+            
+            rs = stmt.executeQuery();
+            while (rs.next()) {
+                String deptArName = rs.getNString("DEPT_AR_NAME");
+                String deptEnName = rs.getNString("DEPT_EN_NAME");
+                String classArName = rs.getNString("CLASS_AR_NAME");
+                String classEnName = rs.getNString("CLASS_EN_NAME");
+                int weekNumber = rs.getInt("WeekNumber");
+                int year = rs.getInt("Year");
+                int classCount = rs.getInt("ClassCount");
+                
+                AuditDataBean bean = new AuditDataBean();
+                bean.setDepNameAr(deptArName);
+                bean.setDepNameEn(deptEnName);
+                bean.setClassNameAr(classArName);
+                bean.setClassNameEn(classEnName);
+                bean.setWeekNumber(weekNumber);
+                bean.setYear(year);
+                bean.setClassCount(classCount);
+                beans.add(bean);
+            }
+        } catch (SQLException e) {
+            throw new DatabaseException("Error fetching document data", e);
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (stmt != null) stmt.close();
+            } catch (SQLException e) {
+                // Log this error or handle it as you see fit
+            }
+        }
+        return beans;
+    }
+    
 }
 
        

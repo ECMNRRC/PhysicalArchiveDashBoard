@@ -40,6 +40,7 @@ function(
 
         templateString: template,
         _lcl: lcl,
+        _chartInstance:null,
 
         // Set to true if widget template contains DOJO widgets.
         widgetsInTemplate: false,
@@ -47,6 +48,7 @@ function(
         postCreate: function() {
             this.logEntry("postCreate");
             this.inherited(arguments);
+            this.getDocbyDate()
             this.getOperationForUser()
             
             this.firstChartRendered = false;
@@ -664,7 +666,199 @@ function(
 
 			  		    var chart = new ApexCharts(this.fifthChartContainer, options);
 			  		    chart.render();
-			  		}
+			  		},
+			  		
+			  		
+			  		filterDataByDate: function(){
+
+			              this.renderCharts();
+			  		},
+			  		
+			  		
+				  	getDocbyDate: function(){
+				  		debugger
+						var toaster = new Toaster();
+			  			params = {
+			  					method: "GetDocByDate",
+								};
+				  			
+				 		var response = ecm.model.Request.invokeSynchronousPluginService("PhysicalArchiveDashboardPlugin", "PhysicalArchiveDashBoardService",params);
+				 		var resultSet = new ResultSet(response);
+				       
+						var results = [];
+						if(!resultSet.result.startsWith("ERROR")){
+							results = json.parse(resultSet.result, true);
+						} else {
+							if (resultSet.result.includes("(ACCESS DENIED)")) {
+								toaster.redToaster(lcl.ACCESS_DENIED);						
+							} else {
+								toaster.redToaster(lcl.FAILED_TO_FETCH_DATA);
+							}
+							console.log("Failed to load data!");
+							console.log(resultSet);
+						}
+							
+						this.groups = JSON.parse(JSON.stringify(results));
+						return results;
+				  		},
+				  		
+				  		getDocByFilteredDate: function(dateTo, dateFrom){
+				  			debugger
+				  			var toaster = new Toaster();
+				  			params = {
+				  					method: "GetDocByFilteredDate",
+				  					dateTo:dateTo,
+				  					dateFrom:dateFrom
+				  			};
+				  			
+				  			var response = ecm.model.Request.invokeSynchronousPluginService("PhysicalArchiveDashboardPlugin", "PhysicalArchiveDashBoardService",params);
+				  			var resultSet = new ResultSet(response);
+				  			
+				  			var results = [];
+				  			if(!resultSet.result.startsWith("ERROR")){
+				  				results = json.parse(resultSet.result, true);
+				  			} else {
+				  				if (resultSet.result.includes("(ACCESS DENIED)")) {
+				  					toaster.redToaster(lcl.ACCESS_DENIED);						
+				  				} else {
+				  					toaster.redToaster(lcl.FAILED_TO_FETCH_DATA);
+				  				}
+				  				console.log("Failed to load data!");
+				  				console.log(resultSet);
+				  			}
+				  			
+				  			this.groups = JSON.parse(JSON.stringify(results));
+				  			return results;
+				  		},
+				  		
+				  		processDataForStackedBarChart: function(dataResponse) {
+				  		    let dataByWeekAndClass = {};
+
+				  		    // Organize data by week and class
+				  		    dataResponse.forEach(function(item) {
+				  		        const weekYearKey = `Week ${item.weekNum}, ${item.year}`;
+				  		        const className = ecm.model.desktop.valueFormatter.locale === 'en' ? item.classNameEn : item.classNameAr;
+				  		        
+				  		        if (!dataByWeekAndClass[weekYearKey]) {
+				  		            dataByWeekAndClass[weekYearKey] = {};
+				  		        }
+				  		        
+				  		        if (!dataByWeekAndClass[weekYearKey][className]) {
+				  		            dataByWeekAndClass[weekYearKey][className] = 0;
+				  		        }
+				  		        
+				  		        dataByWeekAndClass[weekYearKey][className] += item.classCount;
+				  		    });
+
+				  		    let categories = Object.keys(dataByWeekAndClass).sort();
+				  		    let seriesData = {};
+
+				  		    // Convert the organized data into series format for ApexCharts
+				  		    for (let weekYearKey in dataByWeekAndClass) {
+				  		        for (let className in dataByWeekAndClass[weekYearKey]) {
+				  		            if (!seriesData[className]) {
+				  		                seriesData[className] = {
+				  		                    name: className,
+				  		                    data: Array(categories.length).fill(0) // Initialize with zeros
+				  		                };
+				  		            }
+				  		            const index = categories.indexOf(weekYearKey);
+				  		            seriesData[className].data[index] = dataByWeekAndClass[weekYearKey][className];
+				  		        }
+				  		    }
+
+				  		    let series = Object.keys(seriesData).map(key => seriesData[key]);
+
+				  		    return { categories, series };
+				  		},
+				  		
+				  		renderCharts: function() {
+				  			
+				  		    if (this._chartInstance) {
+				  		        this._chartInstance.destroy();
+				  		    }
+				  		    
+				  			var dataResponse;
+				  			var dateTo = this.dateTo.value
+				  			var dateFrom = this.dateFrom.value
+				  			if(!dateTo& !dateFrom){
+					  		    var dataResponse = this.getDocbyDate();
+
+				  			}
+				  			else{
+					  		    var dataResponse = this.getDocByFilteredDate(dateTo, dateFrom);
+
+				  			}
+
+				  		    // Process the data to fit the ApexCharts series format
+				  		    var processedChartData = this.processDataForStackedBarChart(dataResponse);
+
+				  		    // Define the chart options
+				  		    var chartOptions = {
+				  		        series: processedChartData.series,
+				  		        chart: {
+				  		            type: 'bar',
+				  		            height: 500,
+				  		            stacked: true,
+				  		            toolbar: {
+				  		                show: true
+				  		            },
+				  		            zoom: {
+				  		                enabled: true
+				  		            }
+				  		        },
+				  		        responsive: [{
+				  		            breakpoint: 480,
+				  		            options: {
+				  		                legend: {
+				  		                    position: 'bottom',
+				  		                    offsetX: -10,
+				  		                    offsetY: 0
+				  		                }
+				  		            }
+				  		        }],
+				  		        plotOptions: {
+				  		            bar: {
+				  		                horizontal: false,
+				  		            },
+				  		        },
+				  		        xaxis: {
+				  		            categories: processedChartData.categories,
+				  		            title: {
+				  		                text: 'Weeks'
+				  		            }
+				  		        },
+				  		        yaxis: {
+				  		            title: {
+				  		                text: 'Number of Documents'
+				  		            }
+				  		        },
+				  		        legend: {
+				  		            position: 'right',
+				  		            offsetY: 50
+				  		        },
+				  		        fill: {
+				  		            opacity: 1
+				  		        },
+				  		        tooltip: {
+				  		            y: {
+				  		                formatter: function(val) {
+				  		                    return val + " documents";
+				  		                }
+				  		            }
+				  		        },
+				  		        title: {
+				  		            text: 'Weekly Document Count by Class',
+				  		            align: 'center'
+				  		        }
+				  		    };
+
+				  		    this._chartInstance = new ApexCharts(this.sixthChartContainer, chartOptions);
+				  		    this._chartInstance.render();
+				  		},
+
+			  		
+			  		
 
 
 
