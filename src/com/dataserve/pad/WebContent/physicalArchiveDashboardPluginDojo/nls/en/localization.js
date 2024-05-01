@@ -60,7 +60,8 @@ define({
 	FIFTH_CHART_TITLE:"",
 	FROM_DATE: "From date",
 	TO_DATE: "To date",
-	 VIEW_RESULTS: "View Results",
+	VIEW_RESULTS: "View Results",
+	FIFTH_CHART_TITLE: "Employee Actions on System"
 
 	
 

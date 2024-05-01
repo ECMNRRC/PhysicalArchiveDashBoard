@@ -65,7 +65,7 @@ function(
             
             if (!this.isLoaded) {
                 setTimeout(lang.hitch(this, function() {
-                    this.renderFirstChart();
+//                    this.renderFirstChart();
                     this.renderSecondChart();
                     this.renderUserClassificationChart();
                     this.renderOperationsChart();
@@ -647,7 +647,7 @@ function(
 			  		            }
 			  		        },
 			  		        title: {
-			  		            text: this._lcl.FOURTH_CHART_TITLE,
+			  		            text: this._lcl.FIFTH_CHART_TITLE,
 			  		            align: 'center',
 			  		        },
 			  		        xaxis: {

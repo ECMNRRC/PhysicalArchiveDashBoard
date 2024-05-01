@@ -62,6 +62,7 @@ define({
 		 FROM_DATE: "من تاريخ",	
 		 TO_DATE: "إلى تاريخ",	
 		 VIEW_RESULTS: "عرض النتائج",
+		 FIFTH_CHART_TITLE: "العمليات على النظام من قبل موظفي الادارات"
 
 		
 	},
