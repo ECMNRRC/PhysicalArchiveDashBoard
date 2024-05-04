@@ -59,6 +59,10 @@ define({
 		SEC_CHART_TITLE:"العمليات على النظام من قبل موظفي الادارات",
 		THIRD_CHART_TITLE:"مجمل العمليات المجراة على النظام",
 		FOURTH_CHART_TITLE:"مشؤشر العمليات المجراة على ادارة حسب التصنيف",
+		DEPARTMENTS:"الادارات",
+		EMP:"الموظفين",
+		OPERATION:"العمليه",
+		CLASSIFICATION:"التصنيف",
 
 
 		

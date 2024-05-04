@@ -390,6 +390,72 @@ public class AuditDataDAO extends AbstractDAO {
         return beans;
     }
     
+    public Set<AuditDataBean> fetchFilterData() throws DatabaseException {
+        Set<AuditDataBean> beans = new LinkedHashSet<>();
+        
+        try {
+            stmt = con.prepareStatement(
+                    "SELECT DISTINCT " +
+                            "dbo.DEPARTMENTS.DEPT_AR_NAME, " +
+                            "dbo.DEPARTMENTS.DEPT_EN_NAME, " +
+                            "dbo.CLASSIFICTIONS.CLASS_AR_NAME, " +
+                            "dbo.CLASSIFICTIONS.CLASS_EN_NAME, " +
+                            "dbo.USERS.UserArname, " +
+                            "dbo.USERS.UserEnName, " +
+                            "dbo.DMS_OPERATION.NAME_AR, " +
+                            "dbo.DMS_OPERATION.NAME_EN " +
+                    "FROM dbo.DMS_AUDIT " +
+                    "LEFT JOIN dbo.DMS_FILES ON dbo.DMS_AUDIT.FILE_ID = dbo.DMS_FILES.FILE_ID " +
+                    "LEFT JOIN dbo.DEPARTMENTS ON dbo.DMS_FILES.DEPT_ID = dbo.DEPARTMENTS.DEPT_ID " +
+                    "LEFT JOIN dbo.CLASSIFICTIONS ON dbo.DMS_AUDIT.DOCUMENT_CLASS = dbo.CLASSIFICTIONS.SYMPOLIC_NAME " +
+                    "LEFT JOIN dbo.USERS ON dbo.DMS_AUDIT.USER_ID = dbo.USERS.UsernameLDAP " +
+                    "LEFT JOIN dbo.DMS_OPERATION ON dbo.DMS_AUDIT.OPERATION_ID = dbo.DMS_OPERATION.OPERATION_ID " +
+                    "WHERE dbo.DEPARTMENTS.DEPT_AR_NAME IS NOT NULL AND " +
+                          "dbo.DEPARTMENTS.DEPT_EN_NAME IS NOT NULL AND " +
+                          "dbo.CLASSIFICTIONS.CLASS_AR_NAME IS NOT NULL AND " +
+                          "dbo.CLASSIFICTIONS.CLASS_EN_NAME IS NOT NULL AND " +
+                          "dbo.USERS.UserArname IS NOT NULL AND " +
+                          "dbo.USERS.UserEnName IS NOT NULL AND " +
+                          "dbo.DMS_OPERATION.NAME_AR IS NOT NULL AND " +
+                          "dbo.DMS_OPERATION.NAME_EN IS NOT NULL"
+            );
+
+            rs = stmt.executeQuery();
+            while (rs.next()) {
+                String deptArName = rs.getString("DEPT_AR_NAME");
+                String deptEnName = rs.getString("DEPT_EN_NAME");
+                String classArName = rs.getString("CLASS_AR_NAME");
+                String classEnName = rs.getString("CLASS_EN_NAME");
+                String userArName = rs.getString("UserArname");
+                String userEnName = rs.getString("UserEnName");
+                String operationNameAr = rs.getString("NAME_AR");
+                String operationNameEn = rs.getString("NAME_EN");
+                
+                AuditDataBean bean = new AuditDataBean();
+                bean.setDepNameAr(deptArName);
+                bean.setDepNameEn(deptEnName);
+                bean.setClassNameAr(classArName);
+                bean.setClassNameEn(classEnName);
+                bean.setUserArName(userArName);
+                bean.setUserEnName(userEnName);
+                bean.setOperationNameAr(operationNameAr);
+                bean.setOperationNameEn(operationNameEn);
+                beans.add(bean);
+            }
+        } catch (SQLException e) {
+            throw new DatabaseException("Error fetching filtered data", e);
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (stmt != null) stmt.close();
+            } catch (SQLException e) {
+                // Log this error or handle it as you see fit
+            }
+        }
+        return beans;
+    }
+
+    
 }
 
        

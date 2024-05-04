@@ -12,6 +12,10 @@ define([
     "ecm/widget/layout/_LaunchBarPane",
     "dojo/text!./templates/PhysicalArchiveDashboardFeature.html",
     "physicalArchiveDashboardPluginDojo/Toaster",
+    "dijit/form/Select",
+
+ 
+
 ],
 function(
     declare,
@@ -26,7 +30,9 @@ function(
     lcl,
     _LaunchBarPane,
     template,
-    Toaster    
+    Toaster,
+    Select
+    
 ) {
     /**
      * @name physicalArchiveDashboardPluginDojo.PhysicalArchiveDashboardFeature
@@ -46,10 +52,11 @@ function(
         widgetsInTemplate: false,
 
         postCreate: function() {
+        	
             this.logEntry("postCreate");
             this.inherited(arguments);
-            this.getDocbyDate()
-            this.getOperationForUser()
+            this.getFilterData()
+            this.addDepSelect()
             
             this.firstChartRendered = false;
             this.secondChartRendered = false;
@@ -856,7 +863,166 @@ function(
 				  		    this._chartInstance = new ApexCharts(this.sixthChartContainer, chartOptions);
 				  		    this._chartInstance.render();
 				  		},
+				  		
+				  		
+				  		getFilterData : function() {
+				  			debugger
+							params = {
+								method : "GetFilterData",
+							};
 
+					  			
+					 		var response = ecm.model.Request.invokeSynchronousPluginService("PhysicalArchiveDashboardPlugin", "PhysicalArchiveDashBoardService",params);
+					 		var resultSet = new ResultSet(response);
+					       
+							var results = [];
+							if(!resultSet.result.startsWith("ERROR")){
+								results = json.parse(resultSet.result, true);
+							} else {
+								if (resultSet.result.includes("(ACCESS DENIED)")) {
+									toaster.redToaster(lcl.ACCESS_DENIED);						
+								} else {
+									toaster.redToaster(lcl.FAILED_TO_FETCH_DATA);
+								}
+								console.log("Failed to load data!");
+								console.log(resultSet);
+							}
+								
+							this.groups = JSON.parse(JSON.stringify(results));
+							return results;
+
+						},
+						
+						addDepSelect: function(){
+						    var departments = this.getFilterData();
+						    this.filterContainer.style.display = 'flex';
+						    this.filterContainer.style.flexDirection = 'row'; // Ensures horizontal layout
+						    this.filterContainer.style.alignItems = 'center';
+						    this.filterContainer.style.flexWrap = 'nowrap'; // Prevents wrapping to the next line
+						    this.filterContainer.style.width = '100%';
+						    this.filterContainer.style.justifyContent = 'space-between'; // Distributes space evenly
+
+						    var createFilterItem = function(labelText, selectId, optionFiller) {
+						        var container = domConstruct.create("div", {
+						            style: 'display: flex; flex-direction: row; align-items: center; margin-right: 5px; flex: 1 1 auto;' // Adjusted flex properties
+						        }, this.filterContainer.domNode);
+
+						        domConstruct.create("label", {
+						            innerHTML: labelText,
+						            for: selectId,
+						            style: 'margin-right: 5px; width: 100px;' // Adjust width as needed
+						        }, container);
+
+						        var select = new Select({
+						            id: selectId,
+						            options: optionFiller(departments),
+						            style: 'width: 300px;' // Adjust width as needed
+						        });
+						        select.placeAt(container);
+						        this.filterContainer.domNode.appendChild(container);
+						    }.bind(this);
+
+						    createFilterItem('Departments', 'departmentSelect', this.deptsSelectFiller);
+						    createFilterItem('Employee', 'empSelect', this.empSelectFiller);
+						    createFilterItem('Classification', 'classSelect', this.classSelectFiller);
+						    createFilterItem('Operation', 'operationSelect', this.operationSelectFiller);
+						},
+
+
+
+
+
+
+
+
+						deptsSelectFiller: function(departments) {
+							  var result = [];
+							  var autoIncrementId = 0;
+							  var addedDepartments = new Set(); // A Set to track added department names
+							  
+							  result.push({label: lcl.DEPRTMENTS, value: ""});
+							  
+							  for (var department of departments){
+							    var label = ecm.model.desktop.valueFormatter.locale === 'en' ? department.depNameEn : department.depNameAr;
+							    
+							    // Check if the department has already been added to avoid duplicates
+							    if (!addedDepartments.has(label)) {
+							      autoIncrementId++;
+							      result.push({label: label, value: autoIncrementId});
+							      addedDepartments.add(label); // Add the label to the Set
+							    }
+							  }
+							  
+							  return result;
+							},
+							
+
+							
+							empSelectFiller: function(departments) {
+								  var result = [];
+								  var autoIncrementId = 0;
+								  var addedEmp = new Set(); // A Set to track added department names
+								  
+								  result.push({label: lcl.DEPRTMENTS, value: ""});
+								  
+								  for (var department of departments){
+								    var label = ecm.model.desktop.valueFormatter.locale === 'en' ? department.userNameEn : department.userNameAr;
+								    
+								    // Check if the department has already been added to avoid duplicates
+								    if (!addedEmp.has(label)) {
+								      autoIncrementId++;
+								      result.push({label: label, value: autoIncrementId});
+								      addedEmp.add(label); // Add the label to the Set
+								    }
+								  }
+								  
+								  return result;
+								},							
+
+								classSelectFiller: function(departments) {
+									  var result = [];
+									  var autoIncrementId = 0;
+									  var addedClass = new Set(); // A Set to track added department names
+									  
+									  result.push({label: lcl.DEPRTMENTS, value: ""});
+									  
+									  for (var department of departments){
+									    var label = ecm.model.desktop.valueFormatter.locale === 'en' ? department.classNameEn : department.classNameAr;
+									    
+									    // Check if the department has already been added to avoid duplicates
+									    if (!addedClass.has(label)) {
+									      autoIncrementId++;
+									      result.push({label: label, value: autoIncrementId});
+									      addedClass.add(label); // Add the label to the Set
+									    }
+									  }
+									  
+									  return result;
+									},						
+
+
+									operationSelectFiller: function(departments) {
+										  var result = [];
+										  var autoIncrementId = 0;
+										  var addedOperation = new Set(); // A Set to track added department names
+										  
+										  result.push({label: lcl.DEPRTMENTS, value: ""});
+										  
+										  for (var department of departments){
+										    var label = ecm.model.desktop.valueFormatter.locale === 'en' ? department.operationNameEn : department.operationNameAr;
+										    
+										    // Check if the department has already been added to avoid duplicates
+										    if (!addedOperation.has(label)) {
+										      autoIncrementId++;
+										      result.push({label: label, value: autoIncrementId});
+										      addedOperation.add(label); // Add the label to the Set
+										    }
+										  }
+										  
+										  return result;
+										},					
+
+						
 			  		
 			  		
 

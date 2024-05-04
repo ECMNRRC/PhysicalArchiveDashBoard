@@ -61,7 +61,11 @@ define({
 	FROM_DATE: "From date",
 	TO_DATE: "To date",
 	VIEW_RESULTS: "View Results",
-	FIFTH_CHART_TITLE: "Employee Actions on System"
+	FIFTH_CHART_TITLE: "Employee Actions on System",
+	DEPARTMENTS:"Departments",
+	EMP:"Employee",
+	OPERATION:"Operation",
+	CLASSIFICATION:"Classification",
 
 	
 

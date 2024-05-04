@@ -128,6 +128,20 @@ public class AuditDataModel {
     		throw new ClassificationException("Error getting Linked Document with Main Doc ", e);
     	}
     }
+    
+    public static Set<AuditDataModel> getFilterData() throws ClassificationException {
+    	try {
+    		AuditDataDAO dao = new AuditDataDAO(); // Consider renaming this DAO if it specifically handles AuditData now.           
+    		Set<AuditDataBean> beans = dao.fetchFilterData();
+    		Set<AuditDataModel> lmSet = new LinkedHashSet<AuditDataModel>();
+    		for (AuditDataBean b : beans) {
+    			lmSet.add(new AuditDataModel(b));
+    		}
+    		return lmSet;
+    	} catch (DatabaseException e) {
+    		throw new ClassificationException("Error getting Linked Document with Main Doc ", e);
+    	}
+    }
 
     public JSONObject getAsJson() throws ClassificationException {
         JSONObject obj = new JSONObject();
@@ -183,6 +197,19 @@ public class AuditDataModel {
         obj.put("weekNum", getWeekNumber());
         obj.put("year", getYear());
         obj.put("classCount", getClassCount());
+    	return obj;
+    }
+    
+    public JSONObject getFilterDataJson() throws ClassificationException {
+    	JSONObject obj = new JSONObject();
+    	obj.put("depNameAr", getDepNameAr());
+    	obj.put("depNameEn", getDepNameEn());
+    	obj.put("classNameAr", getClassNameAr());
+    	obj.put("classNameEn", getClasNameEn());
+        obj.put("userNameAr", getUserArName());
+        obj.put("userNameEn", getUserEnName());
+        obj.put("operationNameAr", getOperationNameAr());
+        obj.put("operationNameEn", getOperationNameEn());
     	return obj;
     }
     

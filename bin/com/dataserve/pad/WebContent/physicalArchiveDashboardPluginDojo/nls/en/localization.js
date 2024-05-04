@@ -57,7 +57,11 @@ define({
 	SEC_CHART_TITLE:"Employee Actions on System",
 	THIRD_CHART_TITLE:"A set of operations performed on the system",
 	FOURTH_CHART_TITLE:"Indicator of processes on the system by classification",
-	FIFTH_CHART_TITLE:""
+	FIFTH_CHART_TITLE:"",
+	DEPARTMENTS:"Departments",
+	EMP:"Employee",
+	OPERATION:"Operation",
+	CLASSIFICATION:"Classification",
 
 	
 
