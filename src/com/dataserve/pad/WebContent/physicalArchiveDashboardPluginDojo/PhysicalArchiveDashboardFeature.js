@@ -74,7 +74,7 @@ function(
                 setTimeout(lang.hitch(this, function() {
 //                    this.renderFirstChart();
                     this.renderSecondChart();
-                    this.renderUserClassificationChart();
+                    this.renderUserClassificationChart(this.getDocFilterByClass(null));
                     this.renderOperationsChart();
                     this.renderOperationsForUserChart();
                 }), 0);
@@ -267,11 +267,12 @@ function(
           } 
 		},
 
-	  	getDocFilterByClass: function(){
+	  	getDocFilterByClass: function(dataObj){
 	  		debugger
 			var toaster = new Toaster();
   			params = {
   					method: "GetDocFilterByClass",
+  					dataObj:JSON.stringify(dataObj)
 					};
 	  			
 	 		var response = ecm.model.Request.invokeSynchronousPluginService("PhysicalArchiveDashboardPlugin", "PhysicalArchiveDashBoardService",params);
@@ -403,9 +404,9 @@ function(
 		  		    };
 		  		},
 
-		  		renderUserClassificationChart: function() {
+		  		renderUserClassificationChart: function(dataRes) {
 		  			if (!this.userClassificationChartRendered) {
-		  		    const dataResponse = this.getDocFilterByClass();
+		  		    const dataResponse = dataRes;
 		  		    let processedData = this.processDataForUserClassificationChart(dataResponse);
 
 		  		    const options = {
@@ -902,6 +903,9 @@ function(
 						    this.filterContainer.style.width = '100%';
 						    this.filterContainer.style.justifyContent = 'space-between'; // Distributes space evenly
 
+						    // Create an object to store references to Select widgets
+						    this.selectWidgets = {};
+
 						    var createFilterItem = function(labelText, selectId, optionFiller) {
 						        var container = domConstruct.create("div", {
 						            style: 'display: flex; flex-direction: row; align-items: center; margin-right: 5px; flex: 1 1 auto;' // Adjusted flex properties
@@ -916,17 +920,76 @@ function(
 						        var select = new Select({
 						            id: selectId,
 						            options: optionFiller(departments),
-						            style: 'width: 300px;' // Adjust width as needed
+						            style: 'width: 300px;', // Adjust width as needed
+						            item: departments[0], // Set the initial selected item
+
 						        });
 						        select.placeAt(container);
+						        
+						        // Store reference to the Select widget
+						        this.selectWidgets[selectId] = select;
+
 						        this.filterContainer.domNode.appendChild(container);
 						    }.bind(this);
 
-						    createFilterItem('Departments', 'departmentSelect', this.deptsSelectFiller);
-						    createFilterItem('Employee', 'empSelect', this.empSelectFiller);
-						    createFilterItem('Classification', 'classSelect', this.classSelectFiller);
-						    createFilterItem('Operation', 'operationSelect', this.operationSelectFiller);
+						    createFilterItem(lcl.DEPARTMENTS, 'departmentSelect', this.deptsSelectFiller);
+						    createFilterItem(lcl.EMP, 'empSelect', this.empSelectFiller);
+						    createFilterItem(lcl.CLASSIFICATION, 'classSelect', this.classSelectFiller);
+						    createFilterItem(lcl.OPERATION, 'operationSelect', this.operationSelectFiller);
 						},
+
+						
+						
+						// Method to get value and selected option of a select element
+						getSelectValueAndOption: function(selectId) {
+						    var selectWidget = this.selectWidgets[selectId];
+						    if (selectWidget) {
+						        var options = selectWidget.get('options');
+						        var selectedOption = options.find(option => option.selected === true);
+						        if (selectedOption) {
+						            return { value: selectedOption.value, label: selectedOption.label };
+						        } else {
+						            console.error('No selected option found for select widget with id ' + selectId);
+						            return null;
+						        }
+						    } else {
+						        console.error('Select widget with id ' + selectId + ' not found.');
+						        return null;
+						    }
+						},
+
+
+						filterDataBtn: function(){
+							var dep = this.getSelectValueAndOption("departmentSelect")
+							var emp = this.getSelectValueAndOption("empSelect")
+							var clas = this.getSelectValueAndOption("classSelect")
+							var op = this.getSelectValueAndOption("operationSelect")
+							console.log(dep.value+ " "+ dep.label)
+							console.log(emp.value+ " "+ emp.label)
+							console.log(clas.value+ " "+ clas.label)
+							console.log(op.value+ " "+ op.label)
+							
+							var dataObj = {department:dep.label,
+											employee:emp.label,
+											classification:clas.label,
+											operation:op.label
+								}
+							
+							var dataObj = {
+							    department: dep.label,
+							    employee: emp.label,
+							    classification: clas.label,
+							    operation: op.label
+							};
+
+							if (dataObj.department || dataObj.employee || dataObj.classification) {
+			                    this.renderUserClassificationChart(this.getDocFilterByClass(dataObj));
+
+							}
+
+
+						},
+
 
 
 

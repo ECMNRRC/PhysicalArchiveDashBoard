@@ -11,6 +11,7 @@ import com.dataserve.pad.permissions.ActionType;
 import com.dataserve.pad.permissions.Module;
 import com.dataserve.pad.db.command.CommandBase;
 import com.ibm.json.java.JSONArray;
+import com.ibm.json.java.JSONObject;
 
 public class GetDocFilterByClass extends CommandBase{
 	
@@ -20,19 +21,34 @@ public class GetDocFilterByClass extends CommandBase{
 
 	
 	public String execute() throws Exception {
-		
-		System.out.println("inside GetAudit Class");
-		try{
-			Set<AuditDataModel> docs = AuditDataModel.getDocFilterByClass();
-			System.out.println("getLink groups: "+ docs);
-			JSONArray arr = new JSONArray();
-			for (AuditDataModel lm : docs) {
-				arr.add(lm.getAsJson());
-			}
-			return arr.toString();
-		} catch (Exception e) {
-			throw new Exception("Error getting Linked Document", e);
-		}
+	    JSONObject dataObj = new JSONObject();
+	    String dataObjParam = request.getParameter("dataObj");
+	    if (dataObjParam != null && !dataObjParam.isEmpty()) {
+	        // Attempt to parse the input string as JSON
+	        try {
+	            dataObj =  JSONObject.parse(request.getParameter("dataObj"));
+	        } catch (Exception e) {
+	            // Handle parsing error
+	            System.err.println("Error parsing dataObjParam: " + e.getMessage());
+	        }
+	    }
+
+	    System.out.println("************Before Obj *********");
+	    System.out.println("here is the dataObj: " + dataObj);
+	    System.out.println("************After Obj *********");
+
+	    System.out.println("inside GetAudit Class");
+	    try {
+	        Set<AuditDataModel> docs = AuditDataModel.getDocFilterByClass(dataObj);
+	        System.out.println("getLink groups: " + docs);
+	        JSONArray arr = new JSONArray();
+	        for (AuditDataModel lm : docs) {
+	            arr.add(lm.getAsJson());
+	        }
+	        return arr.toString();
+	    } catch (Exception e) {
+	        throw new Exception("Error getting Linked Document", e);
+	    }
 	}
 	
 	

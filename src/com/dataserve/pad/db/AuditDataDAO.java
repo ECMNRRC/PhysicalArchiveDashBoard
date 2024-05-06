@@ -45,7 +45,7 @@ public class AuditDataDAO extends AbstractDAO {
         return beans; // Moved to ensure it always returns the collection, even if empty
     }
     
-    public Set<AuditDataBean> fetchDocFilterByClassData() throws DatabaseException {
+    public Set<AuditDataBean> fetchDocFilterByClassData(JSONObject dataObj) throws DatabaseException {
     	Set<AuditDataBean> beans = new LinkedHashSet<>();
     	try {
     		stmt = con.prepareStatement(

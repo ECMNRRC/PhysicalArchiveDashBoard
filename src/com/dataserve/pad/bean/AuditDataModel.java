@@ -31,10 +31,10 @@ public class AuditDataModel {
         this.bean = bean;
     }
 
-    public static Set<AuditDataModel> getDocFilterByClass() throws ClassificationException {
+    public static Set<AuditDataModel> getDocFilterByClass(JSONObject dataObj) throws ClassificationException {
         try {
             AuditDataDAO dao = new AuditDataDAO(); // Consider renaming this DAO if it specifically handles AuditData now.           
-            Set<AuditDataBean> beans = dao.fetchDocFilterByClassData();
+            Set<AuditDataBean> beans = dao.fetchDocFilterByClassData(dataObj);
             Set<AuditDataModel> lmSet = new LinkedHashSet<AuditDataModel>();
             for (AuditDataBean b : beans) {
                 lmSet.add(new AuditDataModel(b));
