@@ -45,10 +45,10 @@ public class AuditDataModel {
         }
     }
     
-	public static Set<AuditDataModel> getOperationToDep() throws ClassificationException {
+	public static Set<AuditDataModel> getOperationToDep(JSONObject dataObj) throws ClassificationException {
         try {
             AuditDataDAO dao = new AuditDataDAO(); // Consider renaming this DAO if it specifically handles AuditData now.           
-            Set<AuditDataBean> beans = dao.fetchOperationToDepData();
+            Set<AuditDataBean> beans = dao.fetchOperationToDepData(dataObj);
             Set<AuditDataModel> lmSet = new LinkedHashSet<AuditDataModel>();
             for (AuditDataBean b : beans) {
                 lmSet.add(new AuditDataModel(b));
@@ -73,10 +73,10 @@ public class AuditDataModel {
         }
     } 
     
-    public static Set<AuditDataModel> getOperationForClass() throws ClassificationException {
+    public static Set<AuditDataModel> getOperationForClass(JSONObject dataObj) throws ClassificationException {
     	try {
     		AuditDataDAO dao = new AuditDataDAO();           
-    		Set<AuditDataBean> beans = dao.fetchOperationForClass();
+    		Set<AuditDataBean> beans = dao.fetchOperationForClass(dataObj);
     		Set<AuditDataModel> lmSet = new LinkedHashSet<AuditDataModel>();
     		for (AuditDataBean b : beans) {
     			lmSet.add(new AuditDataModel(b));
@@ -87,10 +87,10 @@ public class AuditDataModel {
     	}
     }
     
-    public static Set<AuditDataModel> getOperationForUser() throws ClassificationException {
+    public static Set<AuditDataModel> getOperationForUser(JSONObject dataObj) throws ClassificationException {
     	try {
     		AuditDataDAO dao = new AuditDataDAO(); // Consider renaming this DAO if it specifically handles AuditData now.           
-    		Set<AuditDataBean> beans = dao.fetchOperationForUser();
+    		Set<AuditDataBean> beans = dao.fetchOperationForUser(dataObj);
     		Set<AuditDataModel> lmSet = new LinkedHashSet<AuditDataModel>();
     		for (AuditDataBean b : beans) {
     			lmSet.add(new AuditDataModel(b));
@@ -200,18 +200,36 @@ public class AuditDataModel {
     	return obj;
     }
     
+//    public JSONObject getFilterDataJson() throws ClassificationException {
+//    	JSONObject obj = new JSONObject();
+//    	obj.put("depNameAr", getDepNameAr());
+//    	obj.put("depNameEn", getDepNameEn());
+//    	obj.put("classNameAr", getClassNameAr());
+//    	obj.put("classNameEn", getClasNameEn());
+//        obj.put("userNameAr", getUserArName());
+//        obj.put("userNameEn", getUserEnName());
+//        obj.put("operationNameAr", getOperationNameAr());
+//        obj.put("operationNameEn", getOperationNameEn());
+//    	return obj;
+//    }
+    
     public JSONObject getFilterDataJson() throws ClassificationException {
-    	JSONObject obj = new JSONObject();
-    	obj.put("depNameAr", getDepNameAr());
-    	obj.put("depNameEn", getDepNameEn());
-    	obj.put("classNameAr", getClassNameAr());
-    	obj.put("classNameEn", getClasNameEn());
-        obj.put("userNameAr", getUserArName());
-        obj.put("userNameEn", getUserEnName());
+        JSONObject obj = new JSONObject();
+        obj.put("depNameAr", getDepNameAr());
+        obj.put("depNameEn", getDepNameEn());
+        obj.put("depId", getDepId());
+        obj.put("classNameAr", getClassNameAr());
+        obj.put("classNameEn", getClasNameEn());
+        obj.put("symbolicName", getSymbolicName());
+        obj.put("userArName", getUserArName());
+        obj.put("userEnName", getUserEnName());
+        obj.put("usernameLDAP", getUsernameLDAP());
         obj.put("operationNameAr", getOperationNameAr());
         obj.put("operationNameEn", getOperationNameEn());
-    	return obj;
+        obj.put("operationId", getOperationId());
+        return obj;
     }
+
     
     
     public void save() throws ClassificationException {
@@ -354,6 +372,29 @@ public class AuditDataModel {
     public void setClasDate(String clasDate) {
     	bean.setClasDate(clasDate);
     }
+    
+    public String getDepId() {
+    	return bean.getDepId();
+    }
+    public void setDepId(String depId) {
+    	bean.setDepId(depId);
+    }
+    
+    public String getUsernameLDAP() {
+    	return bean.getUsernameLDAP();
+    }
+    public void setUsernameLDAP(String usernameLDAP) {
+    	bean.setUsernameLDAP(usernameLDAP);
+    }
+    
+    public String getSymbolicName() {
+    	return bean.getSymbolicName();
+    }
+    public void setSymbolicName(String symbolicName) {
+    	bean.setSymbolicName(symbolicName);
+    }
+    
+
 
 
 

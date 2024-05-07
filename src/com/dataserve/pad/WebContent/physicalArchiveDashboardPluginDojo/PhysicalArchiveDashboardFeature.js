@@ -47,6 +47,7 @@ function(
         templateString: template,
         _lcl: lcl,
         _chartInstance:null,
+        filterClassCharInst:null,
 
         // Set to true if widget template contains DOJO widgets.
         widgetsInTemplate: false,
@@ -73,10 +74,10 @@ function(
             if (!this.isLoaded) {
                 setTimeout(lang.hitch(this, function() {
 //                    this.renderFirstChart();
-                    this.renderSecondChart();
+                    this.renderSecondChart(this.getOperationToDep(null));
                     this.renderUserClassificationChart(this.getDocFilterByClass(null));
-                    this.renderOperationsChart();
-                    this.renderOperationsForUserChart();
+                    this.renderOperationsChart(this.getOperationForCLass(null));
+                    this.renderOperationsForUserChart(this.getOperationForUser(null));
                 }), 0);
                 
                 this.isLoaded = true;
@@ -88,107 +89,14 @@ function(
 
 		
 
-		renderFirstChart: function() {
-			if (!this.firstChartRendered) {
-		    const dataResponse = this.getDocFilterByClass(); 
-
-		    let departmentCounts = {};
-		    let userCounts = {};
-		    let classificationCounts = {};
-		    let departmentLabels = [];
-		    let userLabels = [];
-		    let classificationLabels = [];
-
-		    dataResponse.forEach(item => {
-		    	var depName = ecm.model.desktop.valueFormatter.locale === 'en' ? item.depNameEn:item.depNameAr
-		    	var userName = ecm.model.desktop.valueFormatter.locale === 'en' ? item.userNameEn:item.userNameAr
-		    	var className = ecm.model.desktop.valueFormatter.locale === 'en' ? item.classNameEn:item.classNameAr
-		        if (!departmentCounts[depName]) {
-		            departmentCounts[depName] = 0;
-		            departmentLabels.push(depName);
-		        }
-		        departmentCounts[depName] += item.fileCount;
-
-		        const userKey = `${userName} (${depName})`;
-		        if (!userCounts[userKey]) {
-		            userCounts[userKey] = 0;
-		            userLabels.push(item.userNameEn);
-		        }
-		        userCounts[userKey] += item.fileCount;
-
-		        const classKey = `${className} (${userKey})`;
-		        if (!classificationCounts[classKey]) {
-		            classificationCounts[classKey] = 0;
-		            classificationLabels.push(className); 
-		        }
-		        classificationCounts[classKey] += item.fileCount;
-		    });
-
-		    let departmentSeries = Object.values(departmentCounts);
-		    let userSeries = Object.values(userCounts);
-		    let classificationSeries = Object.values(classificationCounts);
-		    let combinedLabels = departmentLabels.concat(userLabels, classificationLabels);
-		    let combinedSeries = departmentSeries.concat(userSeries, classificationSeries);
-
-		    const options = {
-		        series: combinedSeries,
-		        labels: combinedLabels,
-		        chart: {
-		            type: 'donut',
-		            height: 350
-		        },
-		        legend: {
-		            show: true,
-		            position: 'right',
-		            formatter: function(val, opts) {
-		                const seriesIndex = opts.seriesIndex;
-		                let label = combinedLabels[seriesIndex];
-		                return label;
-		            }
-		        },
-		        plotOptions: {
-		            pie: {
-		                donut: {
-		                    labels: {
-		                        show: true,
-		                        total: {
-		                            showAlways: true,
-		                            show: true,
-		                            label: 'Total Documents',
-		                            formatter: function(w) {
-		                                return w.globals.seriesTotals.reduce((a, b) => a + b, 0).toString();
-		                            }
-		                        }
-		                    }
-		                }
-		            }
-		        },
-		        tooltip: {
-		            y: {
-		                formatter: function(value, { seriesIndex, dataPointIndex, w }) {
-		                    let label = combinedLabels[dataPointIndex];
-		                    return `${label}: ${value}`;
-		                }
-		            }
-		        }
-		    };
-
-		    var chart = new ApexCharts(this.firstChartContainer, options);
-		    chart.render();
-		    this.firstChartRendered = true;
-            }
-		},
-		
 		
 
-		renderSecondChart: function() {
-			if(!this.secondChartRendered) {
-		    const dataResponse = this.getOperationToDep(); 
-		    
+		renderSecondChart: function(dataRes) {
+		    const dataResponse = dataRes;
 		    let operationsByDepartment = {};
 		    dataResponse.forEach(item => {
-  		    	const depName = ecm.model.desktop.valueFormatter.locale === 'en' ? item.depNameEn:item.depNameAr
-  		    	const operationName = ecm.model.desktop.valueFormatter.locale === 'en' ? item.operationNameEn:item.operationNameAr
+		        const depName = ecm.model.desktop.valueFormatter.locale === 'en' ? item.depNameEn : item.depNameAr;
+		        const operationName = ecm.model.desktop.valueFormatter.locale === 'en' ? item.operationNameEn : item.operationNameAr;
 
 		        if (!operationsByDepartment[depName]) {
 		            operationsByDepartment[depName] = {};
@@ -201,7 +109,7 @@ function(
 
 		    let series = [];
 		    let departments = Object.keys(operationsByDepartment);
-		    let operations = {}; 
+		    let operations = {};
 		    departments.forEach(dep => {
 		        Object.keys(operationsByDepartment[dep]).forEach(op => {
 		            if (!operations[op]) {
@@ -214,7 +122,7 @@ function(
 		        });
 		    });
 
-		    let colors = ['#008FFB', '#00E396', '#FEB019', '#FF4560', '#775DD0']; 
+		    let colors = ['#008FFB', '#00E396', '#FEB019', '#FF4560', '#775DD0'];
 		    let colorIndex = 0;
 		    for (let op in operations) {
 		        operations[op].color = colors[colorIndex % colors.length];
@@ -248,10 +156,10 @@ function(
 		                text: "Count"
 		            }
 		        },
-  		        title: {
-  		            text: this._lcl.THIRD_CHART_TITLE,
-  		            align: 'center',
-  		        },
+		        title: {
+		            text: this._lcl.THIRD_CHART_TITLE,
+		            align: 'center',
+		        },
 		        tooltip: {
 		            y: {
 		                formatter: function(value) {
@@ -261,11 +169,20 @@ function(
 		        }
 		    };
 
-		    var chart = new ApexCharts(this.secondChartContainer, options);
-		    chart.render();
+		    // Check if the chart already exists
+		    if (this.secondChartRendered) {
+		        // If the chart exists, destroy it
+		        if (this.chart) {
+		            this.chart.destroy();
+		        }
+		    }
+
+		    // Render the new chart
+		    this.chart = new ApexCharts(this.secondChartContainer, options);
+		    this.chart.render();
 		    this.secondChartRendered = true;
-          } 
 		},
+
 
 	  	getDocFilterByClass: function(dataObj){
 	  		debugger
@@ -295,11 +212,13 @@ function(
 			return results;
 	  		},
 	  		
-		  	getOperationToDep: function(){
+		  	getOperationToDep: function(dataObj){
 		  		debugger
 				var toaster = new Toaster();
 	  			params = {
 	  					method: "GetOperationToDep",
+	  					dataObj:JSON.stringify(dataObj)
+
 						};
 		  			
 		 		var response = ecm.model.Request.invokeSynchronousPluginService("PhysicalArchiveDashboardPlugin", "PhysicalArchiveDashBoardService",params);
@@ -325,11 +244,13 @@ function(
 		  		
 		  		
 		  		
-			getOperationForCLass: function(){
+			getOperationForCLass: function(dataObj){
 			  		debugger
 					var toaster = new Toaster();
 		  			params = {
 		  					method: "GetOperationForClass",
+		  					dataObj: JSON.stringify(dataObj)
+
 							};
 			  			
 			 		var response = ecm.model.Request.invokeSynchronousPluginService("PhysicalArchiveDashboardPlugin", "PhysicalArchiveDashBoardService",params);
@@ -404,8 +325,81 @@ function(
 		  		    };
 		  		},
 
+//		  		renderUserClassificationChart: function(dataRes) {
+//		  			if (!this.userClassificationChartRendered) {
+//		  		    const dataResponse = dataRes;
+//		  		    let processedData = this.processDataForUserClassificationChart(dataResponse);
+//
+//		  		    const options = {
+//		  		        series: processedData.series,
+//		  		        chart: {
+//		  		            type: 'bar',
+//		  		            height: 600, 
+//		  		            stacked: true
+//		  		        },
+//		  		        plotOptions: {
+//		  		            bar: {
+//		  		                horizontal: false,
+//		  		                columnWidth: '70%',
+//		  		                dataLabels: {
+//		  		                    position: 'top',
+//		  		                }
+//		  		            }
+//		  		        },
+//		  		        dataLabels: {
+//		  		            enabled: true
+//		  		        },
+//		  		        xaxis: {
+//		  		            categories: processedData.categories,
+//		  		            labels: {
+//		  		                rotate: -45,
+//		  		                trim: false,
+//		  		                minHeight: 120,
+//		  		                style: {
+//		  		                    cssClass: 'apexcharts-xaxis-label',
+//		  		                },
+//		  		            },
+//		  		            axisTicks: {
+//		  		                show: true
+//		  		            }
+//		  		        },
+//		  		        yaxis: {
+//		  		            title: {
+//		  		                text: 'Document Count'
+//		  		            }
+//		  		        },
+//		  		        tooltip: {
+//		  		            shared: true,
+//		  		            intersect: false,
+//		  		            y: {
+//		  		                formatter: function(val) {
+//		  		                    return val + " documents";
+//		  		                }
+//		  		            }
+//		  		        },
+//		  		        title: {
+//		  		            text: this._lcl.FIRST_CHART_TITLE,
+//		  		            align: 'center',
+//		  		        },
+//		  		        legend: {
+//		  		            position: 'right',
+//		  		            offsetY: 10
+//		  		        },
+//		  		        grid: {
+//		  		            padding: {
+//		  		                bottom: 30  
+//		  		            }
+//		  		        }
+//		  		    };
+//		  		    
+//		  		    var chart = new ApexCharts(this.thirdChartContainer, options);
+//		  		    chart.render();
+//		  		  this.userClassificationChartRendered = true;
+//		          }
+//		  		},
+		  		
+		  		
 		  		renderUserClassificationChart: function(dataRes) {
-		  			if (!this.userClassificationChartRendered) {
 		  		    const dataResponse = dataRes;
 		  		    let processedData = this.processDataForUserClassificationChart(dataResponse);
 
@@ -471,17 +465,25 @@ function(
 		  		        }
 		  		    };
 		  		    
-		  		    var chart = new ApexCharts(this.thirdChartContainer, options);
-		  		    chart.render();
-		  		  this.userClassificationChartRendered = true;
-		          }
+		  		    // Check if chart is already rendered
+		  		    if (this.userClassificationChartRendered) {
+		  		        // Destroy the existing chart
+		  		        this.userClassificationChart.destroy();
+		  		    }
+		  		    
+		  		    // Render the new chart
+		  		    this.userClassificationChart = new ApexCharts(this.thirdChartContainer, options);
+		  		    this.userClassificationChart.render();
+		  		    
+		  		    // Update the flag indicating that the chart is rendered
+		  		    this.userClassificationChartRendered = true;
 		  		},
+
 		  		
 		  		
-		  		
-		  		renderOperationsChart: function() {
+		  		renderOperationsChart: function(dataRes) {
 		  			if (!this.operationsChartRendered) {
-		  		    const dataResponse = this.getOperationForCLass();
+		  		    const dataResponse = dataRes;
 
 		  		    let operationsByDeptClass = {};
 		  		    let departmentSet = new Set();
@@ -558,7 +560,12 @@ function(
 		  		            }
 		  		        }
 		  		    };
-
+				    if (this.operationsChartRendered) {
+				        // If the chart exists, destroy it
+				        if (this.chart) {
+				            this.chart.destroy();
+				        }
+				    }
 		  		    var chart = new ApexCharts(this.fourthChartContainer, options);
 		  		    chart.render();
 		  		  this.operationsChartRendered = true;
@@ -566,11 +573,12 @@ function(
 		  		},
 		  		
 		  		
-			  	getOperationForUser: function(){
+			  	getOperationForUser: function(dataObj){
 			  		debugger
 					var toaster = new Toaster();
 		  			params = {
 		  					method: "GetOperationForUser",
+		  					dataObj:JSON.stringify(dataObj)
 							};
 			  			
 			 		var response = ecm.model.Request.invokeSynchronousPluginService("PhysicalArchiveDashboardPlugin", "PhysicalArchiveDashBoardService",params);
@@ -595,8 +603,8 @@ function(
 			  		
 			  		
 
-			  		renderOperationsForUserChart: function() {
-			  		    const dataResponse = this.getOperationForUser();
+			  		renderOperationsForUserChart: function(dataRes) {
+			  		    const dataResponse = dataRes;
 
 			  		    let operationsByDept = {};
 
@@ -672,8 +680,13 @@ function(
 			  		        },
 			  		    };
 
-			  		    var chart = new ApexCharts(this.fifthChartContainer, options);
-			  		    chart.render();
+			  		    if (this.fifthChart) {
+			  		        this.fifthChart.destroy();
+			  		    }
+
+			  		    // Render the new chart
+			  		    this.fifthChart = new ApexCharts(this.fifthChartContainer, options);
+			  		    this.fifthChart.render();
 			  		},
 			  		
 			  		
@@ -969,21 +982,22 @@ function(
 							console.log(clas.value+ " "+ clas.label)
 							console.log(op.value+ " "+ op.label)
 							
-							var dataObj = {department:dep.label,
-											employee:emp.label,
-											classification:clas.label,
-											operation:op.label
-								}
-							
-							var dataObj = {
-							    department: dep.label,
-							    employee: emp.label,
-							    classification: clas.label,
-							    operation: op.label
-							};
+							var dataObj = {departmentId:dep.value,
+											employeeId:emp.value,
+											classificationId:clas.value,
+											operationId:op.value
+								};
 
-							if (dataObj.department || dataObj.employee || dataObj.classification) {
+
+						    if (dataObj.departmentId || dataObj.employeeId || dataObj.classificationId) {
 			                    this.renderUserClassificationChart(this.getDocFilterByClass(dataObj));
+			                    this.renderSecondChart(this.getOperationToDep(dataObj));
+			                    this.renderOperationsChart(this.getOperationForCLass(dataObj));
+			                    this.renderOperationsForUserChart(this.getOperationForUser(dataObj));
+
+
+			                    
+
 
 							}
 
@@ -1011,7 +1025,7 @@ function(
 							    // Check if the department has already been added to avoid duplicates
 							    if (!addedDepartments.has(label)) {
 							      autoIncrementId++;
-							      result.push({label: label, value: autoIncrementId});
+							      result.push({label: label, value: department.depId});
 							      addedDepartments.add(label); // Add the label to the Set
 							    }
 							  }
@@ -1021,20 +1035,20 @@ function(
 							
 
 							
-							empSelectFiller: function(departments) {
+							empSelectFiller: function(employees) {
 								  var result = [];
 								  var autoIncrementId = 0;
 								  var addedEmp = new Set(); // A Set to track added department names
 								  
 								  result.push({label: lcl.DEPRTMENTS, value: ""});
 								  
-								  for (var department of departments){
-								    var label = ecm.model.desktop.valueFormatter.locale === 'en' ? department.userNameEn : department.userNameAr;
+								  for (var emp of employees){
+								    var label = ecm.model.desktop.valueFormatter.locale === 'en' ? emp.userEnName : emp.userArName;
 								    
 								    // Check if the department has already been added to avoid duplicates
 								    if (!addedEmp.has(label)) {
 								      autoIncrementId++;
-								      result.push({label: label, value: autoIncrementId});
+								      result.push({label: label, value: emp.usernameLDAP});
 								      addedEmp.add(label); // Add the label to the Set
 								    }
 								  }
@@ -1042,20 +1056,20 @@ function(
 								  return result;
 								},							
 
-								classSelectFiller: function(departments) {
+								classSelectFiller: function(classes) {
 									  var result = [];
 									  var autoIncrementId = 0;
 									  var addedClass = new Set(); // A Set to track added department names
 									  
 									  result.push({label: lcl.DEPRTMENTS, value: ""});
 									  
-									  for (var department of departments){
-									    var label = ecm.model.desktop.valueFormatter.locale === 'en' ? department.classNameEn : department.classNameAr;
+									  for (var cls of classes){
+									    var label = ecm.model.desktop.valueFormatter.locale === 'en' ? cls.classNameEn : cls.classNameAr;
 									    
 									    // Check if the department has already been added to avoid duplicates
 									    if (!addedClass.has(label)) {
 									      autoIncrementId++;
-									      result.push({label: label, value: autoIncrementId});
+									      result.push({label: label, value: cls.symbolicName});
 									      addedClass.add(label); // Add the label to the Set
 									    }
 									  }
@@ -1064,20 +1078,20 @@ function(
 									},						
 
 
-									operationSelectFiller: function(departments) {
+									operationSelectFiller: function(opts) {
 										  var result = [];
 										  var autoIncrementId = 0;
 										  var addedOperation = new Set(); // A Set to track added department names
 										  
 										  result.push({label: lcl.DEPRTMENTS, value: ""});
 										  
-										  for (var department of departments){
-										    var label = ecm.model.desktop.valueFormatter.locale === 'en' ? department.operationNameEn : department.operationNameAr;
+										  for (var opt of opts){
+										    var label = ecm.model.desktop.valueFormatter.locale === 'en' ? opt.operationNameEn : opt.operationNameAr;
 										    
 										    // Check if the department has already been added to avoid duplicates
 										    if (!addedOperation.has(label)) {
 										      autoIncrementId++;
-										      result.push({label: label, value: autoIncrementId});
+										      result.push({label: label, value: opt.operationId});
 										      addedOperation.add(label); // Add the label to the Set
 										    }
 										  }

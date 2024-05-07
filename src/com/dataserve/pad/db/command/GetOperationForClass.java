@@ -11,6 +11,7 @@ import com.dataserve.pad.permissions.ActionType;
 import com.dataserve.pad.permissions.Module;
 import com.dataserve.pad.db.command.CommandBase;
 import com.ibm.json.java.JSONArray;
+import com.ibm.json.java.JSONObject;
 
 public class GetOperationForClass extends CommandBase{
 	
@@ -20,9 +21,19 @@ public class GetOperationForClass extends CommandBase{
 
 	
 	public String execute() throws Exception {
-		
+	    JSONObject dataObj = new JSONObject();
+	    String dataObjParam = request.getParameter("dataObj");
+	    if (dataObjParam != null && !dataObjParam.isEmpty()) {
+	        // Attempt to parse the input string as JSON
+	        try {
+	            dataObj =  JSONObject.parse(request.getParameter("dataObj"));
+	        } catch (Exception e) {
+	            // Handle parsing error
+	            System.err.println("Error parsing dataObjParam: " + e.getMessage());
+	        }
+	    }
 		try{
-			Set<AuditDataModel> docs = AuditDataModel.getOperationForClass();
+			Set<AuditDataModel> docs = AuditDataModel.getOperationForClass(dataObj);
 			System.out.println("getLink groups: "+ docs);
 			JSONArray arr = new JSONArray();
 			for (AuditDataModel lm : docs) {

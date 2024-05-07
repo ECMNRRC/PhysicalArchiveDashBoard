@@ -27,7 +27,13 @@ public class AuditDataBean extends AbstractBean {
 	private Integer Year;
 	private	Integer ClassCount;
 	private String	ClasDate;
+    private String depId;
+    private String usernameLDAP;
+    private String symbolicName;
 
+	
+	
+	
 
 public String getDocumentId() {
 	return DocumentId;
@@ -153,6 +159,24 @@ public String getClasDate() {
 }
 public void setClasDate(String clasDate) {
 	ClasDate = clasDate;
+}
+public String getDepId() {
+	return depId;
+}
+public void setDepId(String depId) {
+	this.depId = depId;
+}
+public String getUsernameLDAP() {
+	return usernameLDAP;
+}
+public void setUsernameLDAP(String usernameLDAP) {
+	this.usernameLDAP = usernameLDAP;
+}
+public String getSymbolicName() {
+	return symbolicName;
+}
+public void setSymbolicName(String symbolicName) {
+	this.symbolicName = symbolicName;
 }
 
 }
