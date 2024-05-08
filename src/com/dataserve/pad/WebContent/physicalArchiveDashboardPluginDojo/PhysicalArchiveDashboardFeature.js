@@ -482,7 +482,11 @@ function(
 		  		
 		  		
 		  		renderOperationsChart: function(dataRes) {
-		  			if (!this.operationsChartRendered) {
+		  		    // Destroy existing chart instance if it exists
+		  		    if (this.operationsChart) {
+		  		        this.operationsChart.destroy();
+		  		    }
+
 		  		    const dataResponse = dataRes;
 
 		  		    let operationsByDeptClass = {};
@@ -490,8 +494,8 @@ function(
 		  		    let classificationSet = new Set();
 
 		  		    dataResponse.forEach(item => {
-				    	var department = ecm.model.desktop.valueFormatter.locale === 'en' ? item.depNameEn:item.depNameAr
-						var classification = ecm.model.desktop.valueFormatter.locale === 'en' ? item.classNameEn:item.classNameAr
+		  		        var department = ecm.model.desktop.valueFormatter.locale === 'en' ? item.depNameEn : item.depNameAr;
+		  		        var classification = ecm.model.desktop.valueFormatter.locale === 'en' ? item.classNameEn : item.classNameAr;
 
 		  		        departmentSet.add(department);
 		  		        classificationSet.add(classification);
@@ -501,7 +505,7 @@ function(
 		  		        if (!operationsByDeptClass[deptClassKey]) {
 		  		            operationsByDeptClass[deptClassKey] = 0;
 		  		        }
-		  		        operationsByDeptClass[deptClassKey] += 1; 
+		  		        operationsByDeptClass[deptClassKey] += 1;
 		  		    });
 
 		  		    let series = Array.from(classificationSet).map(classification => {
@@ -526,7 +530,7 @@ function(
 		  		        plotOptions: {
 		  		            bar: {
 		  		                horizontal: false,
-		  		                columnWidth: '45%', // Narrower bars
+		  		                columnWidth: '45%',
 		  		                barHeight: '75%'
 		  		            }
 		  		        },
@@ -560,17 +564,12 @@ function(
 		  		            }
 		  		        }
 		  		    };
-				    if (this.operationsChartRendered) {
-				        // If the chart exists, destroy it
-				        if (this.chart) {
-				            this.chart.destroy();
-				        }
-				    }
-		  		    var chart = new ApexCharts(this.fourthChartContainer, options);
-		  		    chart.render();
-		  		  this.operationsChartRendered = true;
-		            }
+
+		  		    // Create a new chart instance and save it
+		  		    this.operationsChart = new ApexCharts(this.fourthChartContainer, options);
+		  		    this.operationsChart.render();
 		  		},
+
 		  		
 		  		
 			  	getOperationForUser: function(dataObj){

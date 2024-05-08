@@ -179,7 +179,7 @@ public class AuditDataDAO extends AbstractDAO {
 						            String usernameLDAP = (String) dataObj.get("employeeId");
 						            String symbolicName = (String) dataObj.get("classificationId");
 			
-						            if (deptId != null) {
+						            if (deptId != null && !deptId.isEmpty()) {
 						                queryBuilder.append("AND dbo.DEPARTMENTS.DEPT_ID = ").append(deptId).append(" ");
 						            }
 						            if (usernameLDAP != null && !usernameLDAP.isEmpty()) {
@@ -267,7 +267,7 @@ public class AuditDataDAO extends AbstractDAO {
                 String deptId = (String) dataObj.get("departmentId");
                 String operationId = (String) dataObj.get("operationId");
 
-                if (deptId != null && !deptId.isEmpty()) {
+	            if (deptId != null && !deptId.isEmpty()) {
                     queryBuilder.append("AND dbo.DEPARTMENTS.DEPT_ID = ").append(deptId).append(" ");
                 }
 
@@ -332,7 +332,7 @@ public class AuditDataDAO extends AbstractDAO {
                 String classificationId = (String) dataObjs.get("classificationId");
                 String operationId = (String) dataObjs.get("operationId");
 
-                if (departmentId != null) {
+	            if (departmentId != null && !departmentId.isEmpty()) {
                     queryBuilder.append("AND dbo.DMS_FILES.DEPT_ID = '").append(departmentId).append("' ");
                 }
                 if (classificationId != null && !classificationId.isEmpty()) {
@@ -402,7 +402,7 @@ public class AuditDataDAO extends AbstractDAO {
 	            String usernameLDAP = (String) dataObj.get("employeeId");
 
 
-                if (departmentId != null) {
+                if (departmentId != null && !departmentId.isEmpty()) {
                     queryBuilder.append("AND dbo.DMS_FILES.DEPT_ID = '").append(departmentId).append("' ");
                 }
 
