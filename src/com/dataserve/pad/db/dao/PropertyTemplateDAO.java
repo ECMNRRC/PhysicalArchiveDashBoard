@@ -373,7 +373,7 @@ public class PropertyTemplateDAO extends AbstractDAO {
 				bean.setSymbolicName(rs.getString("SYMPOLIC_NAME"));
 				bean.setParentID(rs.getInt("PARENT_ID"));
 				bean.setClassCode(rs.getString("CLASS_CODE"));
-				bean.setIs_fn_added(rs.getBoolean("IS_FN_ADDED"));
+				bean.setisFnAdded(rs.getBoolean("IS_FN_ADDED"));
 				bean.setChildrenIds(getChildrenIds(bean.getId()));
 			}
 			return bean;
@@ -432,7 +432,7 @@ public class PropertyTemplateDAO extends AbstractDAO {
 				bean.setSymbolicName(rs.getString("SYMPOLIC_NAME"));
 				bean.setParentID(rs.getInt("PARENT_ID"));
 				bean.setClassCode(rs.getString("CLASS_CODE"));
-				bean.setIs_fn_added(rs.getBoolean("IS_FN_ADDED"));
+				bean.setisFnAdded(rs.getBoolean("IS_FN_ADDED"));
 
 
 

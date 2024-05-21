@@ -56,6 +56,8 @@ function(
         	
             this.logEntry("postCreate");
             this.inherited(arguments);
+            this.GetOperation()
+            this.GetDepartments()
             this.getFilterData()
             this.addDepSelect()
             
@@ -74,10 +76,10 @@ function(
             if (!this.isLoaded) {
                 setTimeout(lang.hitch(this, function() {
 //                    this.renderFirstChart();
-                    this.renderSecondChart(this.getOperationToDep(null));
-                    this.renderUserClassificationChart(this.getDocFilterByClass(null));
-                    this.renderOperationsChart(this.getOperationForCLass(null));
-                    this.renderOperationsForUserChart(this.getOperationForUser(null));
+//                    this.renderSecondChart(this.getOperationToDep(null));
+//                    this.renderUserClassificationChart(this.getDocFilterByClass(null));
+//                    this.renderOperationsChart(this.getOperationForCLass(null));
+//                    this.renderOperationsForUserChart(this.getOperationForUser(null));
                 }), 0);
                 
                 this.isLoaded = true;
@@ -906,53 +908,53 @@ function(
 
 						},
 						
-						addDepSelect: function(){
+						addDepSelect: function() {
 						    var departments = this.getFilterData();
+						    var deps = this.GetDepartments();
+						    var classes = this.getClassesData();
+						    var opt = this.GetOperation();
 						    this.filterContainer.style.display = 'flex';
-						    this.filterContainer.style.flexDirection = 'row'; // Ensures horizontal layout
+						    this.filterContainer.style.flexDirection = 'row';
 						    this.filterContainer.style.alignItems = 'center';
-						    this.filterContainer.style.flexWrap = 'nowrap'; // Prevents wrapping to the next line
+						    this.filterContainer.style.flexWrap = 'nowrap';
 						    this.filterContainer.style.width = '100%';
-						    this.filterContainer.style.justifyContent = 'space-between'; // Distributes space evenly
+						    this.filterContainer.style.justifyContent = 'space-between';
 
-						    // Create an object to store references to Select widgets
 						    this.selectWidgets = {};
 
-						    var createFilterItem = function(labelText, selectId, optionFiller) {
+						    var createFilterItem = function(labelText, selectId, optionFiller, selectData) {
 						        var container = domConstruct.create("div", {
-						            style: 'display: flex; flex-direction: row; align-items: center; margin-right: 5px; flex: 1 1 auto;' // Adjusted flex properties
+						            style: 'display: flex; flex-direction: row; align-items: center; margin-right: 5px; flex: 1 1 auto;'
 						        }, this.filterContainer.domNode);
 
 						        domConstruct.create("label", {
 						            innerHTML: labelText,
 						            for: selectId,
-						            style: 'margin-right: 5px; width: 100px;' // Adjust width as needed
+						            style: 'margin-right: 5px; width: 100px;'
 						        }, container);
 
 						        var select = new Select({
 						            id: selectId,
-						            options: optionFiller(departments),
-						            style: 'width: 300px;', // Adjust width as needed
-						            item: departments[0], // Set the initial selected item
-
+						            options: optionFiller(selectData),
+						            style: 'width: 300px;',
+						            value: "" // Ensure the empty option is selected by default
 						        });
 						        select.placeAt(container);
-						        
-						        // Store reference to the Select widget
+
 						        this.selectWidgets[selectId] = select;
 
 						        this.filterContainer.domNode.appendChild(container);
 						    }.bind(this);
 
-						    createFilterItem(lcl.DEPARTMENTS, 'departmentSelect', this.deptsSelectFiller);
-						    createFilterItem(lcl.EMP, 'empSelect', this.empSelectFiller);
-						    createFilterItem(lcl.CLASSIFICATION, 'classSelect', this.classSelectFiller);
-						    createFilterItem(lcl.OPERATION, 'operationSelect', this.operationSelectFiller);
+						    createFilterItem(lcl.DEPARTMENTS, 'departmentSelect', this.deptsSelectFiller, deps);
+						    createFilterItem(lcl.EMP, 'empSelect', this.empSelectFiller, departments);
+						    createFilterItem(lcl.CLASSIFICATION, 'classSelect', this.classSelectFiller, classes);
+						    createFilterItem(lcl.OPERATION, 'operationSelect', this.operationSelectFiller, opt);
 						},
 
+
 						
-						
-						// Method to get value and selected option of a select element
+
 						getSelectValueAndOption: function(selectId) {
 						    var selectWidget = this.selectWidgets[selectId];
 						    if (selectWidget) {
@@ -976,12 +978,12 @@ function(
 							var emp = this.getSelectValueAndOption("empSelect")
 							var clas = this.getSelectValueAndOption("classSelect")
 							var op = this.getSelectValueAndOption("operationSelect")
+							
 							console.log(dep.value+ " "+ dep.label)
 							console.log(emp.value+ " "+ emp.label)
 							console.log(clas.value+ " "+ clas.label)
 							console.log(op.value+ " "+ op.label)
-							
-							var dataObj = {departmentId:dep.value,
+							var dataObj = {departmentId:dep.value.toString(),
 											employeeId:emp.value,
 											classificationId:clas.value,
 											operationId:op.value
@@ -999,108 +1001,181 @@ function(
 
 
 							}
+							console.log( "data Obj "+ dataObj)
+							console.log( "data Obj ", dataObj)
+
 
 
 						},
 
 
-
-
-
-
-
-
+				
 
 						deptsSelectFiller: function(departments) {
-							  var result = [];
-							  var autoIncrementId = 0;
-							  var addedDepartments = new Set(); // A Set to track added department names
-							  
-							  result.push({label: lcl.DEPRTMENTS, value: ""});
-							  
-							  for (var department of departments){
-							    var label = ecm.model.desktop.valueFormatter.locale === 'en' ? department.depNameEn : department.depNameAr;
-							    
-							    // Check if the department has already been added to avoid duplicates
-							    if (!addedDepartments.has(label)) {
-							      autoIncrementId++;
-							      result.push({label: label, value: department.depId});
-							      addedDepartments.add(label); // Add the label to the Set
-							    }
-							  }
-							  
-							  return result;
-							},
-							
+						    var result = [{label: " ", value: " "}]; // Add empty choice first
+						    var addedDepartments = new Set();
 
-							
-							empSelectFiller: function(employees) {
-								  var result = [];
-								  var autoIncrementId = 0;
-								  var addedEmp = new Set(); // A Set to track added department names
-								  
-								  result.push({label: lcl.DEPRTMENTS, value: ""});
-								  
-								  for (var emp of employees){
-								    var label = ecm.model.desktop.valueFormatter.locale === 'en' ? emp.userEnName : emp.userArName;
-								    
-								    // Check if the department has already been added to avoid duplicates
-								    if (!addedEmp.has(label)) {
-								      autoIncrementId++;
-								      result.push({label: label, value: emp.usernameLDAP});
-								      addedEmp.add(label); // Add the label to the Set
-								    }
-								  }
-								  
-								  return result;
-								},							
+						    for (var department of departments) {
+						        var label = ecm.model.desktop.valueFormatter.locale === 'en' ? department.nameEn : department.nameAr;
+						        if (!addedDepartments.has(label)) {
+						            result.push({label: label, value: department.id});
+						            addedDepartments.add(label);
+						        }
+						    }
 
-								classSelectFiller: function(classes) {
-									  var result = [];
-									  var autoIncrementId = 0;
-									  var addedClass = new Set(); // A Set to track added department names
-									  
-									  result.push({label: lcl.DEPRTMENTS, value: ""});
-									  
-									  for (var cls of classes){
-									    var label = ecm.model.desktop.valueFormatter.locale === 'en' ? cls.classNameEn : cls.classNameAr;
-									    
-									    // Check if the department has already been added to avoid duplicates
-									    if (!addedClass.has(label)) {
-									      autoIncrementId++;
-									      result.push({label: label, value: cls.symbolicName});
-									      addedClass.add(label); // Add the label to the Set
-									    }
-									  }
-									  
-									  return result;
-									},						
+						    console.log("Department Options: ", result); // Debug print
 
+						    return result;
+						},
 
-									operationSelectFiller: function(opts) {
-										  var result = [];
-										  var autoIncrementId = 0;
-										  var addedOperation = new Set(); // A Set to track added department names
-										  
-										  result.push({label: lcl.DEPRTMENTS, value: ""});
-										  
-										  for (var opt of opts){
-										    var label = ecm.model.desktop.valueFormatter.locale === 'en' ? opt.operationNameEn : opt.operationNameAr;
-										    
-										    // Check if the department has already been added to avoid duplicates
-										    if (!addedOperation.has(label)) {
-										      autoIncrementId++;
-										      result.push({label: label, value: opt.operationId});
-										      addedOperation.add(label); // Add the label to the Set
-										    }
-										  }
-										  
-										  return result;
-										},					
+						empSelectFiller: function(employees) {
+						    var result = [{label: " ", value: " "}]; // Add empty choice first
+						    var addedEmp = new Set();
+
+						    for (var emp of employees) {
+						        var label = ecm.model.desktop.valueFormatter.locale === 'en' ? emp.userEnName : emp.userArName;
+						        if (!addedEmp.has(label)) {
+						            result.push({label: label, value: emp.usernameLDAP});
+						            addedEmp.add(label);
+						        }
+						    }
+
+						    console.log("Employee Options: ", result); // Debug print
+
+						    return result;
+						},
+
+						classSelectFiller: function(classes) {
+						    var result = [{label: " ", value: " "}]; // Add empty choice first
+						    var addedClass = new Set();
+
+						    for (var cls of classes) {
+						        var label = ecm.model.desktop.valueFormatter.locale === 'en' ? cls.nameEn : cls.nameAr;
+						        if (!addedClass.has(label)) {
+						            result.push({label: label, value: cls.sympolicName});
+						            addedClass.add(label);
+						        }
+						    }
+
+						    console.log("Class Options: ", result); // Debug print
+
+						    return result;
+						},
+
+						operationSelectFiller: function(opts) {
+						    var result = [{label: " ", value: " "}]; // Add empty choice first
+						    var addedOperation = new Set();
+
+						    for (var opt of opts) {
+						        var label = ecm.model.desktop.valueFormatter.locale === 'en' ? opt.opNameEn : opt.opNameAr;
+						        if (!addedOperation.has(label)) {
+						            result.push({label: label, value: opt.opId});
+						            addedOperation.add(label);
+						        }
+						    }
+
+						    console.log("Operation Options: ", result); // Debug print
+
+						    return result;
+						},
 
 						
-			  		
-			  		
+						getClassesData : function() {
+							debugger
+							params = {
+								method: "GetSelectClassificationsByUser",
+								userId: ecm.model.desktop.userId
+							};
+	
+							var response = ecm.model.Request.invokeSynchronousPluginService("administrationplugin", "AdministrationService", params);
+							
+							var resultSet = new ResultSet(response);
+	
+							var results = [];
+							if (!resultSet.result.startsWith("ERROR")) {
+								results = this.fullStructure = json.parse(resultSet.result, true);
+							} else {
+								if (resultSet.result.includes("(ACCESS DENIED)")) {
+									this.toaster.redToaster(lcl.ACCESS_DENIED);
+								} else {
+									this.toaster.redToaster(lcl.FAILED_TO_FETCH_DATA);
+								}
+								console.log("Failed to load data!");
+								console.log(resultSet);
+							}
+							
+							this.classes = JSON.parse(JSON.stringify(results));
+							return results;
+						},
+						
+						GetDepartments : function() {
+							debugger
+							params = {
+								method : "GetUserDepartments",
+								userId : ecm.model.desktop.userId
+							};
+	
+							var response = ecm.model.Request.invokeSynchronousPluginService("administrationplugin", "AdministrationService", params);
+	//									 		var response = ecm.model.Request.invokeSynchronousPluginService("PhysicalArchiveDashboardPlugin", "PhysicalArchiveDashBoardService",params);
+	
+							var resultSet = new ResultSet(response);
+	
+							var results = [];
+							if (!resultSet.result.startsWith("ERROR")) {
+								results = this.fullStructure = json.parse(resultSet.result, true);
+								if (results.length === 0) {
+									this.toaster.redToaster(lcl.USER_DEPARTMENT_UNDEFINED);
+						            this.hide();
+									this.destroyRecursive();
+								}
+	
+							} else {
+								if (resultSet.result.includes("(ACCESS DENIED)")) {
+									this.toaster.redToaster(lcl.ACCESS_DENIED);
+									console.log(resultSet.result);
+								} else {
+									this.toaster.redToaster(lcl.FAILED_TO_FETCH_DATA);
+								}
+					   			this.destroyRecursive();
+					            this.hide();
+							}
+							return results;
+	
+						},
+						
+						GetOperation : function() {
+							debugger
+							params = {
+								method : "GetAllOperation",
+							};
+	
+					 		var response = ecm.model.Request.invokeSynchronousPluginService("PhysicalArchiveDashboardPlugin", "PhysicalArchiveDashBoardService",params);
+	
+							var resultSet = new ResultSet(response);
+	
+							var results = [];
+							if (!resultSet.result.startsWith("ERROR")) {
+								results = this.fullStructure = json.parse(resultSet.result, true);
+								if (results.length === 0) {
+									this.toaster.redToaster(lcl.USER_DEPARTMENT_UNDEFINED);
+						            this.hide();
+									this.destroyRecursive();
+								}
+	
+							} else {
+								if (resultSet.result.includes("(ACCESS DENIED)")) {
+									this.toaster.redToaster(lcl.ACCESS_DENIED);
+									console.log(resultSet.result);
+								} else {
+									this.toaster.redToaster(lcl.FAILED_TO_FETCH_DATA);
+								}
+					   			this.destroyRecursive();
+					            this.hide();
+							}
+							return results;
+	
+						},
+
 
 
 

@@ -1,40 +1,34 @@
 package com.dataserve.pad.db.command;
 
+import java.sql.Timestamp;
 import java.util.Set;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
-import com.dataserve.pad.bean.PermissionBean;
-import com.dataserve.pad.manager.PermissionManager;
+import com.dataserve.pad.bean.AuditBean;
 import com.dataserve.pad.permissions.ActionType;
+import com.dataserve.pad.permissions.PermissionModel;
 import com.dataserve.pad.permissions.Module;
+import com.dataserve.pad.business.users.UserException;
+import com.dataserve.pad.business.users.UserModel;
 import com.dataserve.pad.util.ConfigManager;
 import com.ibm.ecm.extension.PluginServiceCallbacks;
 
 public abstract class CommandBase implements Command {
 	protected HttpServletRequest request;
 	protected PluginServiceCallbacks callBacks;
-	protected HttpServletResponse response;
 	protected String currentUserId;
-	protected String calendarType;
+	
 	
 	public CommandBase(HttpServletRequest request) {
 		this.request = request;
 		this.callBacks = (PluginServiceCallbacks)request.getAttribute("callBacks");
 		this.currentUserId = (String)request.getAttribute("curretUserId");
-		getCalendarType();
 	}
 	
+	@Override
+	public abstract String execute() throws Exception;
 	
-	public CommandBase(PluginServiceCallbacks callbacks, HttpServletRequest request, HttpServletResponse response) {
-		this.request = request;
-		this.callBacks = callbacks;
-		this.response= response;
-		this.currentUserId = (String)request.getAttribute("curretUserId");
-		getCalendarType();
-	}
 	protected abstract Module getModule(); 
 	protected abstract ActionType getActionType();
 	
@@ -51,21 +45,25 @@ public abstract class CommandBase implements Command {
 			return true;
 		}
 		
+		UserModel currentUser;
 		try {
-			PermissionManager permissionManager = new PermissionManager();
-			Set<PermissionBean> permisssions = permissionManager.getUserPermissions(currentUserId);
-			for (PermissionBean pm : permisssions) {
-				if (pm.getModuleId() == getModule().getId() && pm.getTypeId()== getActionType().getId()) {
+			currentUser = UserModel.getUserByLDAPName(currentUserId);
+			Set<PermissionModel> permissions = currentUser.getUserPermissions();
+			for (PermissionModel pm : permissions) {
+				if (pm.getModule().equals(getModule()) && pm.getActionType().equals(getActionType())) {
 					return true;
 				}
 			}
-
 			return false;
-		} catch (Exception e) {
-			throw new Exception("Error checking access for command '" + request.getParameter("method") + "'", e);
+		}catch (Exception e) {
+			String message = "Error checking access for command '" + request.getParameter("method") + "'";
+			if (e.getMessage().equals("User not found in database")) {
+				message += " because user is not added to the system";
+			}
+			throw new Exception(message, e);
 		}
 	}
-	
+
 	public String getAccessDescription() {
 		StringBuilder sb = new StringBuilder(200);
 		sb.append("Access type " + getActionType().getId() + "- " + getActionType().name() + ", ");
@@ -73,33 +71,31 @@ public abstract class CommandBase implements Command {
 		return sb.toString();
 	}
 	
-	
-	@Override
-	public abstract String execute() throws Exception;
-	
-	public void getCalendarType() {
-//      // Get the current HTTP request
-//      HttpServletRequest httpRequest = callbacks.getHttpRequest(request);
+	public boolean isAuditable() {
+		ActionType[] auditableActions = {
+				ActionType.CREATE,
+				ActionType.DELETE,
+				ActionType.EDIT,
+				ActionType.IMPORT,
+				ActionType.PRINT_BARCODE,
+				ActionType.REPRINT_BARCODE
+		};
 		
-      // Retrieve an array of all cookies sent by the client
-      Cookie[] cookies = request.getCookies();
+		for (ActionType ac : auditableActions) {
+			if (ac.equals(getActionType())) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
 
-      // Specify the name of the calendar type cookie (replace with the actual cookie name)
-      String calendarTypeCookieName = "icn_calendar_type";
-	
-      // Initialize a variable to store the calendar type value
-//      String calendarType = null;
-
-      // Check if cookies are present
-      if (cookies != null) {
-          // Loop through the cookies to find the calendar type cookie
-          for (Cookie cookie : cookies) {
-              if (calendarTypeCookieName.equals(cookie.getName())) {
-                  // Found the calendar type cookie
-                  calendarType = cookie.getValue();
-                  break; // Exit the loop once found
-              }
-          }
-      }
+	public AuditBean getAuditBean() throws UserException {
+		AuditBean bean = new AuditBean();
+		bean.setActionTypeId(getActionType().getId());
+		bean.setModuleId(getModule().getId());
+		bean.setTransactionDate(new Timestamp(System.currentTimeMillis()));
+		bean.setUserId(UserModel.getUserByLDAPName(currentUserId).getUserId());
+		return bean;
 	}
 }

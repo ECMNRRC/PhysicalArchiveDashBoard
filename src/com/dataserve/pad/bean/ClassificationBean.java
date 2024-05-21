@@ -16,7 +16,7 @@ public class ClassificationBean extends AbstractBean {
 	private Set<Integer> childrenIds;
 	private Set<Integer> DeptsIds;
 	private Set<Integer> FoldersIds;
-	private boolean is_fn_added;
+	private List<ClassDeptWorkflow> classDeptWorkflows;
 	public String getClassCode() {
 		return ClassCode;
 	}
@@ -73,7 +73,12 @@ public class ClassificationBean extends AbstractBean {
 	public void setClassificationId(int classificationId) {
 		this.classificationId = classificationId;
 	}
-	
+	public List<ClassDeptWorkflow> getClassDeptWorkflows() {
+		return classDeptWorkflows;
+	}
+	public void setClassDeptWorkflows(List<ClassDeptWorkflow> classDeptWorkflows) {
+		this.classDeptWorkflows = classDeptWorkflows;
+	}
 	public JSONObject getAsJson(Locale locale) {
 		JSONObject obj = new JSONObject();
 		obj.put("classificationId", this.getClassificationId());
@@ -81,12 +86,5 @@ public class ClassificationBean extends AbstractBean {
 		obj.put("classArName", this.getNameAr());
 		
 		return obj;
-	}
-	
-	public boolean getIs_fn_added() {
-		return is_fn_added;
-	}
-	public void setIs_fn_added(boolean is_fn_added) {
-		this.is_fn_added = is_fn_added;
 	}
 }

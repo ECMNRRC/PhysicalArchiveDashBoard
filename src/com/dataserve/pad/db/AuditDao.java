@@ -7,6 +7,7 @@ import java.sql.Statement;
 import java.sql.Types;
 import java.util.Map;
 
+import com.dataserve.pad.bean.AuditBean;
 import com.dataserve.pad.bean.DMSAuditBean;
 import com.dataserve.pad.db.DatabaseException;
 
@@ -14,6 +15,24 @@ public class AuditDao extends AbstractDAO {
 
 	public AuditDao() throws DatabaseException {
 		super();
+	}
+	
+	public void addAuditLog(AuditBean bean) throws DatabaseException {
+		try {
+			stmt = con.prepareStatement("INSERT INTO AUDIT (USER_ID, TRANSACTION_DATE, MODULE_ID, ACTION_TYPE_ID, METHOD, PARAMS) VALUES (?, ?, ?, ?, ?, ?)");
+			stmt.setInt(1, bean.getUserId());
+			stmt.setTimestamp(2, bean.getTransactionDate());
+			stmt.setInt(3, bean.getModuleId());
+			stmt.setInt(4, bean.getActionTypeId());
+			stmt.setString(5, bean.getMethod());
+			stmt.setNString(6, bean.getParams());
+			stmt.executeUpdate();
+		} catch (SQLException e) {
+			throw new DatabaseException("Error inserting into table AUDIT", e);
+		} finally {
+			releaseResources();
+			safeClose();
+		}
 	}
 	
 	public Long addDMSAudit(DMSAuditBean bean) throws DatabaseException {

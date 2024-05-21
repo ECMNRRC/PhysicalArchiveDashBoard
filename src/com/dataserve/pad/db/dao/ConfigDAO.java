@@ -1,29 +1,26 @@
 package com.dataserve.pad.db.dao;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+
 import java.sql.SQLException;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 import com.dataserve.pad.bean.ConfigBean;
-import com.dataserve.pad.db.ConnectionManager;
+import com.dataserve.pad.db.AbstractDAO;
 import com.dataserve.pad.db.DatabaseException;
 
-public class ConfigDAO {
-	ConnectionManager dbConnection = null;
 
-	public ConfigDAO(ConnectionManager dbConnection) {
+public class ConfigDAO  extends AbstractDAO{
+
+	public ConfigDAO() throws DatabaseException {
 		super();
-		this.dbConnection = dbConnection;
+		// TODO Auto-generated constructor stub
 	}
 	
 	public Set<ConfigBean> fetchAllConfigs() throws DatabaseException{
 		Set<ConfigBean> configs = new LinkedHashSet<ConfigBean>();
-		PreparedStatement stmt = null;
-		ResultSet rs = null;
 		try {
-			stmt = dbConnection.getCon().prepareStatement("SELECT NAME, ISNULL(VALUE, '') VALUE, COMMENT FROM CONFIG ORDER BY NAME");
+			stmt = con.prepareStatement("SELECT NAME, ISNULL(VALUE, '') VALUE, COMMENT FROM CONFIG ORDER BY NAME");
 			rs = stmt.executeQuery();
 			while (rs.next()) {	
 				ConfigBean bean = new ConfigBean();
@@ -35,19 +32,76 @@ public class ConfigDAO {
 		}catch (SQLException e) {
 			throw new DatabaseException("Error fetching record from table CONFIG", e);
 		} finally {
-			try {
-				if (rs != null) {
-					rs.close();
-				}
-
-				if (stmt != null) {
-					stmt.close();
-				}
-				
-			} catch (SQLException unexpected) {
-				throw new DatabaseException("Error fetching record from table CONFIG", unexpected);
-			}
+			safeClose();
+			releaseResources();
 		}
 		return configs;
 	}
+	
+	public ConfigBean fetchConfig(String name) throws DatabaseException{
+		try {
+			stmt = con.prepareStatement("SELECT NAME,VALUE,COMMENT FROM CONFIG WHERE NAME = ?");
+			stmt.setString(1, name);
+			rs = stmt.executeQuery();
+			ConfigBean bean = null;
+			if (rs.next()) {		
+				bean = new ConfigBean();
+				bean.setName(rs.getString("NAME"));
+				bean.setValue(rs.getString("VALUE"));
+				bean.setComment(rs.getString("COMMENT"));
+				return bean;
+			} else {
+				return bean;
+			}
+		} catch (SQLException e) {
+			throw new DatabaseException("Error fetching Config with name '" + name + "' from table CONFIG", e);
+		} finally {
+			safeClose();
+			releaseResources();
+		}
+	}
+	
+	public int addConfig (ConfigBean bean)  throws DatabaseException{
+		 try {
+	        	String name = bean.getName().trim();
+	        	if (name != null && !name.trim().equals("")) {
+					stmt = con.prepareStatement("SELECT NAME FROM CONFIG WHERE NAME = ?");
+		        	stmt.setString(1, bean.getName());
+		        	rs = stmt.executeQuery();
+		        	if (rs.next()) {
+		        		this.updateConfig(bean);
+		        	}else {
+		        		stmt = con.prepareStatement("INSERT INTO CONFIG(NAME, VALUE,COMMENT) VALUES (?, ?,?)");
+			        	stmt.setNString(1, bean.getName().trim());
+			        	stmt.setString(2, bean.getValue().trim());
+			        	stmt.setString(3, bean.getComment().trim());
+			            stmt.executeUpdate();
+			        	if (rs.next()) {
+			        		return rs.getInt(1);
+			        	}
+		        	}
+				}
+	            return 0;
+	        } catch (SQLException e) {
+	            throw new DatabaseException("Error adding new record to table CONFIG", e);
+	        } finally {
+	            safeClose();
+	            releaseResources();
+	        }
+	}
+	
+	private int updateConfig (ConfigBean bean) throws DatabaseException{
+	try {
+		stmt = con.prepareStatement("UPDATE CONFIG SET VALUE = ? WHERE NAME = ?");
+    	stmt.setString(1, bean.getValue().trim());
+    	stmt.setString(2, bean.getName().trim());
+        return stmt.executeUpdate();
+    } catch (SQLException e) {
+        throw new DatabaseException("Error updating table CONFIG", e);
+    } finally {
+        safeClose();
+        releaseResources();
+    }
+	}
+	
 }

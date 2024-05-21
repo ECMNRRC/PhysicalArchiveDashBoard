@@ -2,7 +2,7 @@ package com.dataserve.pad.bean;
 
 import java.util.Set;
 
-public class PermissionBean {
+public class PermissionBean extends AbstractBean {
 	private int id;
 	private String nameAr;
 	private String nameEn;

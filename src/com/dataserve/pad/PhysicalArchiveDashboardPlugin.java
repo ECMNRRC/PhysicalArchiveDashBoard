@@ -252,7 +252,8 @@ public class PhysicalArchiveDashboardPlugin extends Plugin {
 	public PluginService[] getServices() {
 		System.out.println("enter a Service");
 		return new com.ibm.ecm.extension.PluginService[]{
-				new com.dataserve.pad.services.PhysicalArchiveDashBoardService()
+				new com.dataserve.pad.services.PhysicalArchiveDashBoardService(),
+				new com.dataserve.pad.services.AdministrationService()
 
 		};	}
 
