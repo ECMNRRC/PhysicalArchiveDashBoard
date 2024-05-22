@@ -1080,101 +1080,122 @@ function(
 						},
 
 						
-						getClassesData : function() {
-							debugger
-							params = {
-								method: "GetSelectClassificationsByUser",
-								userId: ecm.model.desktop.userId
-							};
-	
-							var response = ecm.model.Request.invokeSynchronousPluginService("administrationplugin", "AdministrationService", params);
-							
-							var resultSet = new ResultSet(response);
-	
-							var results = [];
-							if (!resultSet.result.startsWith("ERROR")) {
-								results = this.fullStructure = json.parse(resultSet.result, true);
-							} else {
-								if (resultSet.result.includes("(ACCESS DENIED)")) {
-									this.toaster.redToaster(lcl.ACCESS_DENIED);
-								} else {
-									this.toaster.redToaster(lcl.FAILED_TO_FETCH_DATA);
-								}
-								console.log("Failed to load data!");
-								console.log(resultSet);
-							}
-							
-							this.classes = JSON.parse(JSON.stringify(results));
-							return results;
+						getClassesData: function() {
+						    try {
+						        debugger;
+						        var params = {
+						            method: "GetClassificationsByUser",
+						            userId: ecm.model.desktop.userId
+						        };
+
+						        var response = ecm.model.Request.invokeSynchronousPluginService("PhysicalArchiveDashboardPlugin", "PhysicalArchiveDashBoardService", params);
+
+						        var resultSet = new ResultSet(response);
+
+						        var results = [];
+						        if (!resultSet.result.startsWith("ERROR")) {
+						            results = this.fullStructure = json.parse(resultSet.result, true);
+						        } else {
+						            if (resultSet.result.includes("(ACCESS DENIED)")) {
+						                this.toaster.redToaster(lcl.ACCESS_DENIED);
+						            } else {
+						                this.toaster.redToaster(lcl.FAILED_TO_FETCH_DATA);
+						            }
+						            console.log("Failed to load data!");
+						            console.log(resultSet);
+						        }
+
+						        this.classes = JSON.parse(JSON.stringify(results));
+						        return results;
+						    } catch (error) {
+						        console.error("An error occurred while fetching classes data:", error);
+						        this.toaster.redToaster(lcl.FAILED_TO_FETCH_DATA);
+						        return [];
+						    }
 						},
+
 						
-						GetDepartments : function() {
-							debugger
-							params = {
-								method : "GetUserDepartments",
-								userId : ecm.model.desktop.userId
-							};
-	
-							var response = ecm.model.Request.invokeSynchronousPluginService("administrationplugin", "AdministrationService", params);
-	//									 		var response = ecm.model.Request.invokeSynchronousPluginService("PhysicalArchiveDashboardPlugin", "PhysicalArchiveDashBoardService",params);
-	
-							var resultSet = new ResultSet(response);
-	
-							var results = [];
-							if (!resultSet.result.startsWith("ERROR")) {
-								results = this.fullStructure = json.parse(resultSet.result, true);
-								if (results.length === 0) {
-									this.toaster.redToaster(lcl.USER_DEPARTMENT_UNDEFINED);
-						            this.hide();
-									this.destroyRecursive();
-								}
-	
-							} else {
-								if (resultSet.result.includes("(ACCESS DENIED)")) {
-									this.toaster.redToaster(lcl.ACCESS_DENIED);
-									console.log(resultSet.result);
-								} else {
-									this.toaster.redToaster(lcl.FAILED_TO_FETCH_DATA);
-								}
-					   			this.destroyRecursive();
-					            this.hide();
-							}
-							return results;
-	
-						},
 						
-						GetOperation : function() {
-							debugger
-							params = {
-								method : "GetAllOperation",
-							};
-	
-					 		var response = ecm.model.Request.invokeSynchronousPluginService("PhysicalArchiveDashboardPlugin", "PhysicalArchiveDashBoardService",params);
-	
-							var resultSet = new ResultSet(response);
-	
-							var results = [];
-							if (!resultSet.result.startsWith("ERROR")) {
-								results = this.fullStructure = json.parse(resultSet.result, true);
-								if (results.length === 0) {
-									this.toaster.redToaster(lcl.USER_DEPARTMENT_UNDEFINED);
+						GetDepartments: function() {
+						    try {
+						        debugger;
+						        var params = {
+						            method: "GetUserDepartments",
+						            userId: ecm.model.desktop.userId
+						        };
+
+						        var response = ecm.model.Request.invokeSynchronousPluginService("PhysicalArchiveDashboardPlugin", "PhysicalArchiveDashBoardService", params);
+
+						        var resultSet = new ResultSet(response);
+
+						        var results = [];
+						        if (!resultSet.result.startsWith("ERROR")) {
+						            results = this.fullStructure = json.parse(resultSet.result, true);
+						            if (results.length === 0) {
+						                this.toaster.redToaster(lcl.USER_DEPARTMENT_UNDEFINED);
+						                this.hide();
+						                this.destroyRecursive();
+						            }
+						        } else {
+						            if (resultSet.result.includes("(ACCESS DENIED)")) {
+						                this.toaster.redToaster(lcl.ACCESS_DENIED);
+						                console.log(resultSet.result);
+						            } else {
+						                this.toaster.redToaster(lcl.FAILED_TO_FETCH_DATA);
+						            }
+						            this.destroyRecursive();
 						            this.hide();
-									this.destroyRecursive();
-								}
-	
-							} else {
-								if (resultSet.result.includes("(ACCESS DENIED)")) {
-									this.toaster.redToaster(lcl.ACCESS_DENIED);
-									console.log(resultSet.result);
-								} else {
-									this.toaster.redToaster(lcl.FAILED_TO_FETCH_DATA);
-								}
-					   			this.destroyRecursive();
-					            this.hide();
-							}
-							return results;
-	
+						        }
+						        return results;
+						    } catch (error) {
+						        console.error("An error occurred while fetching departments:", error);
+						        this.toaster.redToaster(lcl.FAILED_TO_FETCH_DATA);
+						        this.destroyRecursive();
+						        this.hide();
+						        return [];
+						    }
 						},
+
+						
+						GetOperation: function() {
+						    try {
+						        debugger;
+						        var params = {
+						            method: "GetAllOperation",
+						        };
+
+						        var response = ecm.model.Request.invokeSynchronousPluginService("PhysicalArchiveDashboardPlugin", "PhysicalArchiveDashBoardService", params);
+
+						        var resultSet = new ResultSet(response);
+
+						        var results = [];
+						        if (!resultSet.result.startsWith("ERROR")) {
+						            results = this.fullStructure = json.parse(resultSet.result, true);
+						            if (results.length === 0) {
+						                this.toaster.redToaster(lcl.USER_DEPARTMENT_UNDEFINED);
+						                this.hide();
+						                this.destroyRecursive();
+						            }
+						        } else {
+						            if (resultSet.result.includes("(ACCESS DENIED)")) {
+						                this.toaster.redToaster(lcl.ACCESS_DENIED);
+						                console.log(resultSet.result);
+						            } else {
+						                this.toaster.redToaster(lcl.FAILED_TO_FETCH_DATA);
+						            }
+						            this.destroyRecursive();
+						            this.hide();
+						        }
+						        return results;
+						    } catch (error) {
+						        console.error("An error occurred while fetching operations:", error);
+						        this.toaster.redToaster(lcl.FAILED_TO_FETCH_DATA);
+						        this.destroyRecursive();
+						        this.hide();
+						        return [];
+						    }
+						}
+
 
 
 

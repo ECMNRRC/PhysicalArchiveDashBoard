@@ -53,7 +53,7 @@ public class GetUserDepartments extends CommandBase {
 
 	@Override
 	protected ActionType getActionType() {
-		return ActionType.VIEW;
+		return null;
 	}
 
 }

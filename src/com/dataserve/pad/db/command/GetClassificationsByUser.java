@@ -26,8 +26,9 @@ public class GetClassificationsByUser extends CommandBase {
 			}
 			
 			Set<ClassificationModel> classifications;
-			System.out.println("our currentUserId" + currentUserId);
+			System.out.println("our currentUserId " + currentUserId);
 			System.out.println("getSuperUserName: " + ConfigManager.getSuperUserName());
+	
 			if (ConfigManager.getSuperUserName().equalsIgnoreCase(currentUserId)) {
 				System.out.println("we enter superUser Condition");
 				classifications = ClassificationModel.getAllClassifications();
@@ -58,7 +59,7 @@ public class GetClassificationsByUser extends CommandBase {
 
 	@Override
 	protected ActionType getActionType() {
-		return ActionType.VIEW;
+		return null;
 	}
 
 }
