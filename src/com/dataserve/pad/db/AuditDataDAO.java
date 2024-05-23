@@ -52,43 +52,61 @@ public class AuditDataDAO extends AbstractDAO {
         try {
             StringBuilder queryBuilder = new StringBuilder();
             queryBuilder.append("SELECT ")
-                        .append("[dbo].[USERS].[UserArname], ")
-                        .append("[dbo].[USERS].[UserEnName], ")
-                        .append("[dbo].[DEPARTMENTS].[DEPT_AR_NAME], ")
-                        .append("[dbo].[DEPARTMENTS].[DEPT_EN_NAME], ")
-                        .append("[dbo].[CLASSIFICTIONS].[CLASS_AR_NAME], ")
-                        .append("[dbo].[CLASSIFICTIONS].[CLASS_EN_NAME], ")
-                        .append("COUNT([dbo].[DMS_AUDIT].[DOCUMENT_CLASS]) AS FileCount ")
-                        .append("FROM [dbo].[DMS_AUDIT] ")
-                        .append("INNER JOIN [dbo].[USERS] ON [dbo].[DMS_AUDIT].[USER_ID] = [dbo].[USERS].[UsernameLDAP] ")
-                        .append("INNER JOIN [dbo].[DEPARTMENTS] ON [dbo].[DEPARTMENTS].[DEPT_ID] = [dbo].[USERS].[DEPARTMENT_ID] ")
-                        .append("INNER JOIN [dbo].[CLASSIFICTIONS] ON [dbo].[DMS_AUDIT].[DOCUMENT_CLASS] = [dbo].[CLASSIFICTIONS].[SYMPOLIC_NAME] ")
-                        .append("WHERE [dbo].[DMS_AUDIT].[OPERATION_ID] = 7 ");
+                .append("[dbo].[USERS].[UserArname], ")
+                .append("[dbo].[USERS].[UserEnName], ")
+                .append("[dbo].[DEPARTMENTS].[DEPT_AR_NAME], ")
+                .append("[dbo].[DEPARTMENTS].[DEPT_EN_NAME], ")
+                .append("[dbo].[CLASSIFICTIONS].[CLASS_AR_NAME], ")
+                .append("[dbo].[CLASSIFICTIONS].[CLASS_EN_NAME], ")
+                .append("COUNT([dbo].[DMS_AUDIT].[DOCUMENT_CLASS]) AS FileCount ")
+                .append("FROM [dbo].[DMS_AUDIT] ")
+                .append("INNER JOIN [dbo].[USERS] ON [dbo].[DMS_AUDIT].[USER_ID] = [dbo].[USERS].[UsernameLDAP] ")
+                .append("INNER JOIN [dbo].[DEPARTMENTS] ON [dbo].[DEPARTMENTS].[DEPT_ID] = [dbo].[USERS].[DEPARTMENT_ID] ")
+                .append("INNER JOIN [dbo].[CLASSIFICTIONS] ON [dbo].[DMS_AUDIT].[DOCUMENT_CLASS] = [dbo].[CLASSIFICTIONS].[SYMPOLIC_NAME] ")
+                .append("WHERE [dbo].[DMS_AUDIT].[OPERATION_ID] = 7 ");
+
             if (dataObj != null) {
                 String usernameLDAP = (String) dataObj.get("employeeId");
-                String symbolicName = (String) dataObj.get("classificationId");
+                Object symbolicNameObj = dataObj.get("classificationId");
                 String deptId = (String) dataObj.get("departmentId");
-//                String deptId = (departmentIdLong != null) ? String.valueOf(departmentIdLong) : null;
 
-                if (deptId != null && !deptId.isEmpty() && !deptId.equals(" ")) {
-                	System.out.println("enter empty If");
-                    queryBuilder.append("AND dbo.DEPARTMENTS.DEPT_ID = ").append(deptId).append(" ");
+                if (deptId != null && !deptId.trim().isEmpty()) {
+                    queryBuilder.append("AND dbo.DEPARTMENTS.DEPT_ID = '").append(deptId).append("' ");
                 }
-                if (usernameLDAP != null && !usernameLDAP.isEmpty() && !usernameLDAP.equals(" ")) {
+                if (usernameLDAP != null && !usernameLDAP.trim().isEmpty()) {
                     queryBuilder.append("AND dbo.USERS.UsernameLDAP = '").append(usernameLDAP).append("' ");
                 }
-                if (symbolicName != null && !symbolicName.isEmpty() && !symbolicName.equals(" ")) {
-                    queryBuilder.append("AND dbo.CLASSIFICTIONS.SYMPOLIC_NAME = '").append(symbolicName).append("' ");
+                if (symbolicNameObj != null) {
+                    if (symbolicNameObj instanceof JSONArray) {
+                        JSONArray symbolicNameArray = (JSONArray) symbolicNameObj;
+                        if (!symbolicNameArray.isEmpty()) {
+                            StringBuilder symbolicNameBuilder = new StringBuilder();
+                            for (int i = 0; i < symbolicNameArray.size(); i++) {
+                                if (i > 0) {
+                                    symbolicNameBuilder.append(",");
+                                }
+                                symbolicNameBuilder.append("'").append(symbolicNameArray.get(i)).append("'");
+                            }
+                            queryBuilder.append("AND dbo.CLASSIFICTIONS.SYMPOLIC_NAME IN (").append(symbolicNameBuilder.toString()).append(") ");
+                        }
+                    } else if (symbolicNameObj instanceof String) {
+                        String symbolicName = (String) symbolicNameObj;
+                        if (!symbolicName.trim().isEmpty()) {
+                            queryBuilder.append("AND dbo.CLASSIFICTIONS.SYMPOLIC_NAME = '").append(symbolicName).append("' ");
+                        }
+                    }
                 }
             }
-            
+
             queryBuilder.append("GROUP BY ")
-                        .append("[dbo].[USERS].[UserArname], ")
-                        .append("[dbo].[USERS].[UserEnName], ")
-                        .append("[dbo].[DEPARTMENTS].[DEPT_AR_NAME], ")
-                        .append("[dbo].[DEPARTMENTS].[DEPT_EN_NAME], ")
-                        .append("[dbo].[CLASSIFICTIONS].[CLASS_AR_NAME], ")
-                        .append("[dbo].[CLASSIFICTIONS].[CLASS_EN_NAME]");
+                .append("[dbo].[USERS].[UserArname], ")
+                .append("[dbo].[USERS].[UserEnName], ")
+                .append("[dbo].[DEPARTMENTS].[DEPT_AR_NAME], ")
+                .append("[dbo].[DEPARTMENTS].[DEPT_EN_NAME], ")
+                .append("[dbo].[CLASSIFICTIONS].[CLASS_AR_NAME], ")
+                .append("[dbo].[CLASSIFICTIONS].[CLASS_EN_NAME]");
+            
+            System.out.println("queryBuilder classificationId method>> " + queryBuilder.toString());
 
             stmt = con.prepareStatement(queryBuilder.toString());
             rs = stmt.executeQuery();
@@ -104,13 +122,10 @@ public class AuditDataDAO extends AbstractDAO {
 
                 AuditDataBean bean = new AuditDataBean();
                 bean.setUserArName(userArName);
-                // Check if English user name is null or empty, if so, use Arabic user name
                 bean.setUserEnName(userEnName != null && !userEnName.isEmpty() ? userEnName : userArName);
                 bean.setDepNameAr(depNameAr);
-                // Check if English department name is null or empty, if so, use Arabic department name
                 bean.setDepNameEn(depNameEn != null && !depNameEn.isEmpty() ? depNameEn : depNameAr);
                 bean.setClassNameAr(classNameAr);
-                // Check if English class name is null or empty, if so, use Arabic class name
                 bean.setClassNameEn(classNameEn != null && !classNameEn.isEmpty() ? classNameEn : classNameAr);
                 bean.setFileCount(fileCount);
                 beans.add(bean);
@@ -119,9 +134,12 @@ public class AuditDataDAO extends AbstractDAO {
             throw new DatabaseException("Error fetching record from table DMS_AUDIT", e);
         } finally {
             // Close resources if necessary
+            // safeClose(stmt, rs); // Assuming you have a method `safeClose` that closes both the statement and result set
+            // closeConnection(con); // Close connection if it's not managed outside this method
         }
         return beans;
     }
+
 
 
     
@@ -187,7 +205,6 @@ public class AuditDataDAO extends AbstractDAO {
         return beans;
     }
 
-    
     public Set<AuditDataBean> fetchOperationForClass(JSONObject dataObjs) throws DatabaseException {
         Set<AuditDataBean> beans = new LinkedHashSet<>();
         try {
@@ -210,17 +227,36 @@ public class AuditDataDAO extends AbstractDAO {
             if (dataObjs != null) {
                 queryBuilder.append("WHERE 1 = 1 "); // Starting the WHERE clause
                 String departmentId = (String) dataObjs.get("departmentId");
-                String classificationId = (String) dataObjs.get("classificationId");
+                Object classificationIdObj = dataObjs.get("classificationId");
                 String operationId = (String) dataObjs.get("operationId");
-//                String departmentId = (departmentIdLong != null) ? String.valueOf(departmentIdLong) : null;
-
 
                 if (departmentId != null && !departmentId.isEmpty() && !departmentId.equals(" ")) {
                     queryBuilder.append("AND dbo.USERS.DEPARTMENT_ID = '").append(departmentId).append("' ");
                 }
-                if (classificationId != null && !classificationId.isEmpty() && !classificationId.equals(" ")) {
-                    queryBuilder.append("AND dbo.CLASSIFICTIONS.SYMPOLIC_NAME = '").append(classificationId).append("' ");
+
+                if (classificationIdObj != null) {
+                    if (classificationIdObj instanceof JSONArray) {
+                        // Handle JSON array of strings
+                        JSONArray classificationIdArray = (JSONArray) classificationIdObj;
+                        if (!classificationIdArray.isEmpty()) {
+                            StringBuilder classificationIdBuilder = new StringBuilder();
+                            for (int i = 0; i < classificationIdArray.size(); i++) {
+                                if (i > 0) {
+                                    classificationIdBuilder.append(",");
+                                }
+                                classificationIdBuilder.append("'").append(classificationIdArray.get(i)).append("'");
+                            }
+                            queryBuilder.append("AND dbo.CLASSIFICTIONS.SYMPOLIC_NAME IN (").append(classificationIdBuilder.toString()).append(") ");
+                        }
+                    } else if (classificationIdObj instanceof String) {
+                        // Handle single value string
+                        String classificationId = (String) classificationIdObj;
+                        if (!classificationId.trim().isEmpty()) {
+                            queryBuilder.append("AND dbo.CLASSIFICTIONS.SYMPOLIC_NAME = '").append(classificationId).append("' ");
+                        }
+                    }
                 }
+
                 if (operationId != null && !operationId.isEmpty() && !operationId.equals(" ")) {
                     queryBuilder.append("AND dbo.DMS_AUDIT.OPERATION_ID = '").append(operationId).append("' ");
                 }
@@ -250,8 +286,7 @@ public class AuditDataDAO extends AbstractDAO {
                 bean.setClassNameEn(clsNameEn);
                 bean.setOperationNameAr(operationNameAr);
                 bean.setOperationNameEn(optNameEn);
-                beans.add(bean);
-            }
+                beans.add(bean);            }
         } catch (SQLException e) {
             throw new DatabaseException("Error fetching operation for class data from table DMS_AUDIT", e);
         } finally {
@@ -261,6 +296,7 @@ public class AuditDataDAO extends AbstractDAO {
         }
         return beans;
     }
+
 
     
     

@@ -990,7 +990,7 @@ function(
 								};
 
 
-						    if (dataObj.departmentId || dataObj.employeeId || dataObj.classificationId) {
+//						    if (dataObj.departmentId || dataObj.employeeId || dataObj.classificationId) {
 			                    this.renderUserClassificationChart(this.getDocFilterByClass(dataObj));
 			                    this.renderSecondChart(this.getOperationToDep(dataObj));
 			                    this.renderOperationsChart(this.getOperationForCLass(dataObj));
@@ -1000,7 +1000,7 @@ function(
 			                    
 
 
-							}
+//							}
 							console.log( "data Obj "+ dataObj)
 							console.log( "data Obj ", dataObj)
 
