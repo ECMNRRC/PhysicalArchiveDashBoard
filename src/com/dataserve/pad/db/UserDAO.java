@@ -82,6 +82,34 @@ public class UserDAO extends   AbstractDAO {
 		}
 	}
 	
+	public Set<UserBean> fetchUsersByDepId(String ids) throws DatabaseException {
+		Set<UserBean> Users = new LinkedHashSet<UserBean>();
+		try {
+			stmt = con.prepareStatement("SELECT USER_ID, UserArname, UserEnName, UsernameLDAP, UserEmail, IsLogin, IsActive, DEPARTMENT_ID FROM USERS where DEPARTMENT_ID in (" + ids + ")");
+			rs = stmt.executeQuery();
+			while (rs.next()) {
+				UserBean bean = new UserBean();
+				bean.setId(rs.getInt("USER_ID"));
+				bean.setNameAr(rs.getString("UserArname"));
+				bean.setNameEn(rs.getString("UserEnName"));
+				bean.setUsernameLDAP(rs.getString("UsernameLDAP"));
+				bean.setEmail(rs.getString("UserEmail"));
+				bean.setIsLogin(rs.getBoolean("IsLogin"));
+				bean.setIsActive(rs.getBoolean("IsActive"));
+				bean.setDepartmentId(rs.getInt("DEPARTMENT_ID"));
+				
+				bean.setGroupsIds(fetchUserGroupIds(bean.getId()));
+				Users.add(bean);
+			}
+			return Users;
+		} catch (SQLException e) {
+			throw new DatabaseException("Error fetching record from table User", e);
+		} finally {
+			safeClose();
+			releaseResources();
+		}
+	}
+	
 	public UserBean fetchUser(int userId) throws DatabaseException {
 		try {
 			stmt = con.prepareStatement("SELECT USER_ID,UserArname, UserEnName, UsernameLDAP, UserEmail, IsLogin, IsActive, DEPARTMENT_ID FROM USERS where USER_ID = ?");

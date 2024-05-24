@@ -71,6 +71,20 @@ public class UserModel {
 		}
 	}
 	
+	public static Set<UserModel> getUsersByDepId(String DepId) throws UserException {
+		Set<UserModel> users = new LinkedHashSet<UserModel>();
+		try {
+			UserDAO dao = new UserDAO();
+			Set<UserBean> userBeans = dao.fetchUsersByDepId(DepId);
+			for (UserBean b : userBeans) {
+				users.add(new UserModel(b));
+			}
+			return users;
+		} catch (Exception e) {
+			throw new UserException("Error getting User Models for ids '" + DepId + "'", e);
+		}
+	}
+	
 	public static UserModel getUserByLDAPName(String userNameLDAP) throws UserException {
 		try {
 			UserDAO dao = new UserDAO();

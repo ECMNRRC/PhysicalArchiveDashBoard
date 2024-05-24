@@ -56,10 +56,8 @@ function(
         	
             this.logEntry("postCreate");
             this.inherited(arguments);
-            this.GetOperation()
-            this.GetDepartments()
-            this.getFilterData()
-            this.addDepSelect()
+		    this.getEmployeesByDepartment("1002");         
+			this.addDepSelect()
             
             this.firstChartRendered = false;
             this.secondChartRendered = false;
@@ -947,10 +945,75 @@ function(
 						    }.bind(this);
 
 						    createFilterItem(lcl.DEPARTMENTS, 'departmentSelect', this.deptsSelectFiller, deps);
-						    createFilterItem(lcl.EMP, 'empSelect', this.empSelectFiller, departments);
+						    createFilterItem(lcl.EMP, 'empSelect', this.empSelectFiller, []); // Initially empty
 						    createFilterItem(lcl.CLASSIFICATION, 'classSelect', this.classSelectFiller, classes);
 						    createFilterItem(lcl.OPERATION, 'operationSelect', this.operationSelectFiller, opt);
+						    debugger
+						    // Add change event listener for department select
+						    this.selectWidgets['departmentSelect'].on('change', function() {
+						    	debugger
+						    	console.log("enter change")
+//						        this.updateEmployeeSelect(selectedDepartment);
+						        this.updateEmployeeSelect();
+						    }.bind(this));
 						},
+
+						updateEmployeeSelect: function() {
+							var dep = this.getSelectValueAndOption("departmentSelect")
+						    var employees = this.getEmployeesByDepartment(dep.value.toString()); // Fetch employees based on department
+						    var empSelect = this.selectWidgets['empSelect'];
+
+						    // Clear existing options
+						    empSelect.set('options', this.empSelectFiller([]));
+
+						    // Update with new options
+						    empSelect.set('options', this.empSelectFiller(employees));
+
+						    // Set the default value to empty
+						    empSelect.set(' ', ' ');
+						},
+
+						getEmployeesByDepartment: function(departmentId) {
+						    try {
+						        debugger;
+						        var params = {
+						            method: "GetUsersByDepartmentId",
+						            depId: departmentId
+						        };
+
+						        var response = ecm.model.Request.invokeSynchronousPluginService("PhysicalArchiveDashboardPlugin", "PhysicalArchiveDashBoardService", params);
+
+						        var resultSet = new ResultSet(response);
+
+						        var results = [];
+						        if (!resultSet.result.startsWith("ERROR")) {
+						            results = this.fullStructure = json.parse(resultSet.result, true);
+						            if (results.length === 0) {
+						                this.toaster.redToaster(lcl.USER_DEPARTMENT_UNDEFINED);
+						                this.hide();
+						                this.destroyRecursive();
+						            }
+						        } else {
+						            if (resultSet.result.includes("(ACCESS DENIED)")) {
+						                this.toaster.redToaster(lcl.ACCESS_DENIED);
+						                console.log(resultSet.result);
+						            } else {
+						                this.toaster.redToaster(lcl.FAILED_TO_FETCH_DATA);
+						            }
+						            this.destroyRecursive();
+						            this.hide();
+						        }
+						        return results;
+						    } catch (error) {
+						        console.error("An error occurred while fetching departments:", error);
+//						        this.toaster.redToaster(lcl.FAILED_TO_FETCH_DATA);
+//						        this.destroyRecursive();
+//						        this.hide();
+						        return [];
+						    }
+						},
+						
+
 
 
 						
@@ -1033,7 +1096,7 @@ function(
 						    var addedEmp = new Set();
 
 						    for (var emp of employees) {
-						        var label = ecm.model.desktop.valueFormatter.locale === 'en' ? emp.userEnName : emp.userArName;
+						        var label = ecm.model.desktop.valueFormatter.locale === 'en' ? emp.nameEn : emp.nameAr;
 						        if (!addedEmp.has(label)) {
 						            result.push({label: label, value: emp.usernameLDAP});
 						            addedEmp.add(label);
