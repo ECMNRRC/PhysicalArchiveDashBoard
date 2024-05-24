@@ -948,18 +948,22 @@ function(
 						    createFilterItem(lcl.EMP, 'empSelect', this.empSelectFiller, []); // Initially empty
 						    createFilterItem(lcl.CLASSIFICATION, 'classSelect', this.classSelectFiller, classes);
 						    createFilterItem(lcl.OPERATION, 'operationSelect', this.operationSelectFiller, opt);
-						    debugger
+
 						    // Add change event listener for department select
 						    this.selectWidgets['departmentSelect'].on('change', function() {
-						    	debugger
-						    	console.log("enter change")
-//						        this.updateEmployeeSelect(selectedDepartment);
+						        console.log("Department changed");
 						        this.updateEmployeeSelect();
+						    }.bind(this));
+
+						    // Add change event listener for employee select
+						    this.selectWidgets['empSelect'].on('change', function() {
+						        console.log("Employee selected: ", this.selectWidgets['empSelect'].get('value'));
+						        // You can add additional logic here to handle the employee selection
 						    }.bind(this));
 						},
 
 						updateEmployeeSelect: function() {
-							var dep = this.getSelectValueAndOption("departmentSelect")
+						    var dep = this.getSelectValueAndOption("departmentSelect");
 						    var employees = this.getEmployeesByDepartment(dep.value.toString()); // Fetch employees based on department
 						    var empSelect = this.selectWidgets['empSelect'];
 
@@ -970,12 +974,11 @@ function(
 						    empSelect.set('options', this.empSelectFiller(employees));
 
 						    // Set the default value to empty
-						    empSelect.set(' ', ' ');
+						    empSelect.set('value', '');
 						},
 
 						getEmployeesByDepartment: function(departmentId) {
 						    try {
-						        debugger;
 						        var params = {
 						            method: "GetUsersByDepartmentId",
 						            depId: departmentId
@@ -1006,12 +1009,10 @@ function(
 						        return results;
 						    } catch (error) {
 						        console.error("An error occurred while fetching departments:", error);
-//						        this.toaster.redToaster(lcl.FAILED_TO_FETCH_DATA);
-//						        this.destroyRecursive();
-//						        this.hide();
 						        return [];
 						    }
 						},
+
 						
 
 
@@ -1098,7 +1099,7 @@ function(
 						    for (var emp of employees) {
 						        var label = ecm.model.desktop.valueFormatter.locale === 'en' ? emp.nameEn : emp.nameAr;
 						        if (!addedEmp.has(label)) {
-						            result.push({label: label, value: emp.usernameLDAP});
+						            result.push({label: label, value: emp.UsernameLDAP});
 						            addedEmp.add(label);
 						        }
 						    }
@@ -1107,7 +1108,6 @@ function(
 
 						    return result;
 						},
-
 						classSelectFiller: function(classes) {
 						    var result = [{label: " ", value: " "}]; // Add empty choice first
 						    var addedClass = new Set();

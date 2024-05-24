@@ -48,7 +48,7 @@ public class GetUsersByDepartmentId extends CommandBase {
 
 	@Override
 	protected ActionType getActionType() {
-		return ActionType.VIEW;
+		return null;
 	}
 
 }
