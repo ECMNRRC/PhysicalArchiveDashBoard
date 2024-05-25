@@ -19,7 +19,11 @@ public class ConfigManager {
 			ConfigDAO dao = new ConfigDAO();
 			Set<ConfigBean> beans = dao.fetchAllConfigs();
 			for (ConfigBean b : beans) {
-				props.put(b.getName(), b.getValue());
+				if(b.IsEncrypted() == true) {
+					props.put(b.getName(), EncryptionUtil.decrypt(b.getValue()));
+				}else {
+					props.put(b.getName(), b.getValue());
+				}
 			}
 			System.out.println("Configurations have been loaded successfully!");
 		} catch(Exception e){
@@ -32,9 +36,6 @@ public class ConfigManager {
 		return props.getProperty("LDAP_USER_NAME");
 	}
 
-	public static String getLdapPassword() {
-		return props.getProperty("LDAP_PASSWORD");
-	}
 
 	public static String getLdapProviderURL() {
 		return props.getProperty("LDAP_PROVIDER_URL");
@@ -65,7 +66,7 @@ public class ConfigManager {
 	}
 	
 	public static boolean isAccessCheckDisabled() {
-		return "1".equals(props.getProperty("DISABLE_BACKEND_ACCESS_CHECK"));
+		return "1".equals(props.getProperty("SECURITY_DISABLE_BACKEND_ACCESS_CHECK"));
 	}
 	
 	public static String getKeywordsPropertyName() {

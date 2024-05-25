@@ -20,13 +20,15 @@ public class ConfigDAO  extends AbstractDAO{
 	public Set<ConfigBean> fetchAllConfigs() throws DatabaseException{
 		Set<ConfigBean> configs = new LinkedHashSet<ConfigBean>();
 		try {
-			stmt = con.prepareStatement("SELECT NAME, ISNULL(VALUE, '') VALUE, COMMENT FROM CONFIG ORDER BY NAME");
+			stmt = con.prepareStatement("SELECT NAME, ISNULL(VALUE, '') VALUE, COMMENT , IsEncrypted FROM CONFIG ORDER BY NAME");
 			rs = stmt.executeQuery();
 			while (rs.next()) {	
 				ConfigBean bean = new ConfigBean();
 				bean.setName(rs.getString("NAME"));
 				bean.setValue(rs.getString("VALUE"));
 				bean.setComment(rs.getString("COMMENT"));
+				bean.setIsEncrypted(rs.getBoolean("IsEncrypted"));
+
 				configs.add(bean);
 			}
 		}catch (SQLException e) {
