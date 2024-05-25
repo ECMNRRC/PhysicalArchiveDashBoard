@@ -994,8 +994,8 @@ function(
 						            results = this.fullStructure = json.parse(resultSet.result, true);
 						            if (results.length === 0) {
 						                toaster.redToaster(lcl.USER_DEPARTMENT_UNDEFINED);
-						                this.hide();
-						                this.destroyRecursive();
+						                
+						               
 						            }
 						        } else {
 						            if (resultSet.result.includes("(ACCESS DENIED)")) {
@@ -1004,8 +1004,8 @@ function(
 						            } else {
 						                toaster.redToaster(lcl.FAILED_TO_FETCH_DATA);
 						            }
-						            this.destroyRecursive();
-						            this.hide();
+						           
+						            
 						        }
 						        return results;
 						    } catch (error) {
@@ -1199,8 +1199,8 @@ function(
 						            results = this.fullStructure = json.parse(resultSet.result, true);
 						            if (results.length === 0) {
 						                toaster.redToaster(lcl.USER_DEPARTMENT_UNDEFINED);
-						                this.hide();
-						                this.destroyRecursive();
+						                
+						               
 						            }
 						        } else {
 						            if (resultSet.result.includes("(ACCESS DENIED)")) {
@@ -1209,15 +1209,15 @@ function(
 						            } else {
 						                toaster.redToaster(lcl.FAILED_TO_FETCH_DATA);
 						            }
-						            this.destroyRecursive();
-						            this.hide();
+						           
+						            
 						        }
 						        return results;
 						    } catch (error) {
 						        console.error("An error occurred while fetching departments:", error);
 						        toaster.redToaster(lcl.FAILED_TO_FETCH_DATA);
-						        this.destroyRecursive();
-						        this.hide();
+						       
+						        
 						        return [];
 						    }
 						},
@@ -1240,8 +1240,8 @@ function(
 						            results = this.fullStructure = json.parse(resultSet.result, true);
 						            if (results.length === 0) {
 						                toaster.redToaster(lcl.USER_DEPARTMENT_UNDEFINED);
-						                this.hide();
-						                this.destroyRecursive();
+						                
+						               
 						            }
 						        } else {
 						            if (resultSet.result.includes("(ACCESS DENIED)")) {
@@ -1250,15 +1250,15 @@ function(
 						            } else {
 						                toaster.redToaster(lcl.FAILED_TO_FETCH_DATA);
 						            }
-						            this.destroyRecursive();
-						            this.hide();
+						           
+						            
 						        }
 						        return results;
 						    } catch (error) {
 						        console.error("An error occurred while fetching operations:", error);
 						        toaster.redToaster(lcl.FAILED_TO_FETCH_DATA);
-						        this.destroyRecursive();
-						        this.hide();
+						       
+						        
 						        return [];
 						    }
 						}
