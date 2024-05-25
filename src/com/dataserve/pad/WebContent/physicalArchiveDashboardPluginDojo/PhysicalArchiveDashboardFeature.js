@@ -978,6 +978,7 @@ function(
 						},
 
 						getEmployeesByDepartment: function(departmentId) {
+							var toaster = new Toaster();
 						    try {
 						        var params = {
 						            method: "GetUsersByDepartmentId",
@@ -992,16 +993,16 @@ function(
 						        if (!resultSet.result.startsWith("ERROR")) {
 						            results = this.fullStructure = json.parse(resultSet.result, true);
 						            if (results.length === 0) {
-						                this.toaster.redToaster(lcl.USER_DEPARTMENT_UNDEFINED);
+						                toaster.redToaster(lcl.USER_DEPARTMENT_UNDEFINED);
 						                this.hide();
 						                this.destroyRecursive();
 						            }
 						        } else {
 						            if (resultSet.result.includes("(ACCESS DENIED)")) {
-						                this.toaster.redToaster(lcl.ACCESS_DENIED);
+						                toaster.redToaster(lcl.ACCESS_DENIED);
 						                console.log(resultSet.result);
 						            } else {
-						                this.toaster.redToaster(lcl.FAILED_TO_FETCH_DATA);
+						                toaster.redToaster(lcl.FAILED_TO_FETCH_DATA);
 						            }
 						            this.destroyRecursive();
 						            this.hide();
@@ -1144,6 +1145,7 @@ function(
 
 						
 						getClassesData: function() {
+							var toaster = new Toaster();
 						    try {
 						        debugger;
 						        var params = {
@@ -1160,9 +1162,9 @@ function(
 						            results = this.fullStructure = json.parse(resultSet.result, true);
 						        } else {
 						            if (resultSet.result.includes("(ACCESS DENIED)")) {
-						                this.toaster.redToaster(lcl.ACCESS_DENIED);
+						                toaster.redToaster(lcl.ACCESS_DENIED);
 						            } else {
-						                this.toaster.redToaster(lcl.FAILED_TO_FETCH_DATA);
+						                toaster.redToaster(lcl.FAILED_TO_FETCH_DATA);
 						            }
 						            console.log("Failed to load data!");
 						            console.log(resultSet);
@@ -1172,7 +1174,7 @@ function(
 						        return results;
 						    } catch (error) {
 						        console.error("An error occurred while fetching classes data:", error);
-						        this.toaster.redToaster(lcl.FAILED_TO_FETCH_DATA);
+						        toaster.redToaster(lcl.FAILED_TO_FETCH_DATA);
 						        return [];
 						    }
 						},
@@ -1180,6 +1182,7 @@ function(
 						
 						
 						GetDepartments: function() {
+							var toaster = new Toaster();
 						    try {
 						        debugger;
 						        var params = {
@@ -1195,16 +1198,16 @@ function(
 						        if (!resultSet.result.startsWith("ERROR")) {
 						            results = this.fullStructure = json.parse(resultSet.result, true);
 						            if (results.length === 0) {
-						                this.toaster.redToaster(lcl.USER_DEPARTMENT_UNDEFINED);
+						                toaster.redToaster(lcl.USER_DEPARTMENT_UNDEFINED);
 						                this.hide();
 						                this.destroyRecursive();
 						            }
 						        } else {
 						            if (resultSet.result.includes("(ACCESS DENIED)")) {
-						                this.toaster.redToaster(lcl.ACCESS_DENIED);
+						                toaster.redToaster(lcl.ACCESS_DENIED);
 						                console.log(resultSet.result);
 						            } else {
-						                this.toaster.redToaster(lcl.FAILED_TO_FETCH_DATA);
+						                toaster.redToaster(lcl.FAILED_TO_FETCH_DATA);
 						            }
 						            this.destroyRecursive();
 						            this.hide();
@@ -1212,7 +1215,7 @@ function(
 						        return results;
 						    } catch (error) {
 						        console.error("An error occurred while fetching departments:", error);
-						        this.toaster.redToaster(lcl.FAILED_TO_FETCH_DATA);
+						        toaster.redToaster(lcl.FAILED_TO_FETCH_DATA);
 						        this.destroyRecursive();
 						        this.hide();
 						        return [];
@@ -1221,6 +1224,7 @@ function(
 
 						
 						GetOperation: function() {
+							var toaster = new Toaster();
 						    try {
 						        debugger;
 						        var params = {
@@ -1235,16 +1239,16 @@ function(
 						        if (!resultSet.result.startsWith("ERROR")) {
 						            results = this.fullStructure = json.parse(resultSet.result, true);
 						            if (results.length === 0) {
-						                this.toaster.redToaster(lcl.USER_DEPARTMENT_UNDEFINED);
+						                toaster.redToaster(lcl.USER_DEPARTMENT_UNDEFINED);
 						                this.hide();
 						                this.destroyRecursive();
 						            }
 						        } else {
 						            if (resultSet.result.includes("(ACCESS DENIED)")) {
-						                this.toaster.redToaster(lcl.ACCESS_DENIED);
+						                toaster.redToaster(lcl.ACCESS_DENIED);
 						                console.log(resultSet.result);
 						            } else {
-						                this.toaster.redToaster(lcl.FAILED_TO_FETCH_DATA);
+						                toaster.redToaster(lcl.FAILED_TO_FETCH_DATA);
 						            }
 						            this.destroyRecursive();
 						            this.hide();
@@ -1252,7 +1256,7 @@ function(
 						        return results;
 						    } catch (error) {
 						        console.error("An error occurred while fetching operations:", error);
-						        this.toaster.redToaster(lcl.FAILED_TO_FETCH_DATA);
+						        toaster.redToaster(lcl.FAILED_TO_FETCH_DATA);
 						        this.destroyRecursive();
 						        this.hide();
 						        return [];
