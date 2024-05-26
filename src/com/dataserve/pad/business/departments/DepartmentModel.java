@@ -11,7 +11,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import com.dataserve.pad.bean.ClassificationBean;
 import com.dataserve.pad.bean.DepartmentBean;
+import com.dataserve.pad.business.classification.ClassificationModel;
 import com.dataserve.pad.business.users.UserException;
 import com.dataserve.pad.db.DatabaseException;
 import com.dataserve.pad.db.DepartmentsDAO;
@@ -211,39 +213,47 @@ public class DepartmentModel {
 		return dm;
 	}
 	
-	public static List<DepartmentModel> getDepartmentStructureById(Integer departmentId) throws DepartmentException {
+	public static Set<DepartmentModel> getDepartmentStructureById(Integer departmentId) throws DepartmentException {
 		Set<Integer> deptIds = new HashSet<Integer>();
 		deptIds.add(departmentId);
 		List<DepartmentModel> dmList = null;
 		try {
 			DepartmentsDAO dao = new DepartmentsDAO();
 			Set<DepartmentBean> deptBeans = dao.fetchDepartments(deptIds);
-			dmList = new ArrayList<>();
+//			dmList = new ArrayList<>();
+//
+//		    Map<Integer, DepartmentModel> departmentMap = new HashMap<>();
+			Set<DepartmentModel> models = new LinkedHashSet<DepartmentModel>();
+			
+			for (DepartmentBean b : deptBeans) {
+				DepartmentModel depModel = new DepartmentModel(b);
+				models.add(	depModel);
+			}
 
-		    Map<Integer, DepartmentModel> departmentMap = new HashMap<>();
+//		    for (DepartmentBean bean : deptBeans) {
+//		         DepartmentModel dm = new DepartmentModel(bean);
+//		         departmentMap.put(bean.getId(), dm);
+////		    }
+//		        // tree Node
+//		    for (DepartmentBean bean : deptBeans) {
+//		        DepartmentModel dm = departmentMap.get(bean.getId());
+//		        if (bean.getParentId() != 0) {
+//		                // If there is a parent
+//		        	DepartmentModel parent = departmentMap.get(bean.getParentId());
+//	                if (parent != null) {
+//	                    parent.addChild(dm);
+//	                }
+//		         } else {
+//		                // If no parent
+//		                dmList.add(dm);
+//		         }
+//		    }
+		 return models;
 
-		    for (DepartmentBean bean : deptBeans) {
-		         DepartmentModel dm = new DepartmentModel(bean);
-		         departmentMap.put(bean.getId(), dm);
-		    }
-		        // tree Node
-		    for (DepartmentBean bean : deptBeans) {
-		        DepartmentModel dm = departmentMap.get(bean.getId());
-		        if (bean.getParentId() != 0) {
-		                // If there is a parent
-		        	DepartmentModel parent = departmentMap.get(bean.getParentId());
-	                if (parent != null) {
-	                    parent.addChild(dm);
-	                }
-		         } else {
-		                // If no parent
-		                dmList.add(dm);
-		         }
-		    }
 	    } catch (DatabaseException e) {
 	        throw new DepartmentException("Error getting user departments", e);
 	    }
-	    return dmList;
+//	    return dmList;
 	}
 
 	public static List<DepartmentModel> getDepartmentsByIds(Set<Integer> deptIds) throws DepartmentException {
@@ -293,38 +303,46 @@ public class DepartmentModel {
 		}
 	}
 	
-	public static List<DepartmentModel> getAllDepartmentsAsTree() throws DepartmentException {
+	public static Set<DepartmentModel> getAllDepartmentsAsTree() throws DepartmentException {
 	    List<DepartmentModel> dmList = null;
 	    try {
-	        DepartmentsDAO dao = new DepartmentsDAO();
-	        Set<DepartmentBean> deptBeans = dao.fetchDepartments();
-	        dmList = new ArrayList<>();
+			DepartmentsDAO dao = new DepartmentsDAO();
+			Set<DepartmentBean> deptBeans = dao.fetchDepartments();
 
-	        Map<Integer, DepartmentModel> departmentMap = new HashMap<>();
+			Set<DepartmentModel> models = new LinkedHashSet<DepartmentModel>();
+			
+			for (DepartmentBean b : deptBeans) {
+				DepartmentModel depModel = new DepartmentModel(b);
+				models.add(	depModel);
+			}
 
-	        for (DepartmentBean bean : deptBeans) {
-	            DepartmentModel dm = new DepartmentModel(bean);
-	            departmentMap.put(bean.getId(), dm);
-	        }
-
-	        // tree Node
-	        for (DepartmentBean bean : deptBeans) {
-	            DepartmentModel dm = departmentMap.get(bean.getId());
-	            if (bean.getParentId() != 0) {
-	                // If there is a parent
-	                DepartmentModel parent = departmentMap.get(bean.getParentId());
-	                if (parent != null) {
-	                    parent.addChild(dm);
-	                }
-	            } else {
-	                // If no parent
-	                dmList.add(dm);
-	            }
-	        }
+//	        dmList = new ArrayList<>();
+//
+//	        Map<Integer, DepartmentModel> departmentMap = new HashMap<>();
+//
+//	        for (DepartmentBean bean : deptBeans) {
+//	            DepartmentModel dm = new DepartmentModel(bean);
+//	            departmentMap.put(bean.getId(), dm);
+//	        }
+//
+//	        // tree Node
+//	        for (DepartmentBean bean : deptBeans) {
+//	            DepartmentModel dm = departmentMap.get(bean.getId());
+//	            if (bean.getParentId() != 0) {
+//	                // If there is a parent
+//	                DepartmentModel parent = departmentMap.get(bean.getParentId());
+//	                if (parent != null) {
+//	                    parent.addChild(dm);
+//	                }
+//	            } else {
+//	                // If no parent
+//	                dmList.add(dm);
+//	            }
+//	        }
+		return models;
 	    } catch (DatabaseException e) {
 	        throw new DepartmentException("Error getting user departments", e);
 	    }
-	    return dmList;
 	}
    
 	public void addChild(DepartmentModel child) {

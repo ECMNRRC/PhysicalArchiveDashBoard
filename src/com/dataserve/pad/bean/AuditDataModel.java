@@ -115,10 +115,10 @@ public class AuditDataModel {
     	}
     }
     
-    public static Set<AuditDataModel> getDocByFilteredDate(String dateTo, String DateFrom) throws ClassificationException {
+    public static Set<AuditDataModel> getDocByFilteredDate(String dateTo, String DateFrom, JSONObject dataObj) throws ClassificationException {
     	try {
     		AuditDataDAO dao = new AuditDataDAO(); // Consider renaming this DAO if it specifically handles AuditData now.           
-    		Set<AuditDataBean> beans = dao.fetchDocByFilteredDate(dateTo, DateFrom);
+    		Set<AuditDataBean> beans = dao.fetchDocByFilteredDate(dateTo, DateFrom, dataObj);
     		Set<AuditDataModel> lmSet = new LinkedHashSet<AuditDataModel>();
     		for (AuditDataBean b : beans) {
     			lmSet.add(new AuditDataModel(b));
@@ -129,10 +129,10 @@ public class AuditDataModel {
     	}
     }
     
-    public static Set<AuditDataModel> getFilterData() throws ClassificationException {
+    public static Set<AuditDataModel> getFilterData(JSONObject dataObj) throws ClassificationException {
     	try {
     		AuditDataDAO dao = new AuditDataDAO(); // Consider renaming this DAO if it specifically handles AuditData now.           
-    		Set<AuditDataBean> beans = dao.fetchFilterData();
+    		Set<AuditDataBean> beans = dao.fetchFilterData(dataObj);
     		Set<AuditDataModel> lmSet = new LinkedHashSet<AuditDataModel>();
     		for (AuditDataBean b : beans) {
     			lmSet.add(new AuditDataModel(b));

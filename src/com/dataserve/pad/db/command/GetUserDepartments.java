@@ -1,6 +1,7 @@
 package com.dataserve.pad.db.command;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -29,13 +30,13 @@ public class GetUserDepartments extends CommandBase {
 		try {
 			JSONArray arr = new JSONArray();
 			if (currentUserId.equalsIgnoreCase(ConfigManager.getSuperUserName())) {
-				List<DepartmentModel> departments = DepartmentModel.getAllDepartmentsAsTree();
+				Set<DepartmentModel> departments = DepartmentModel.getAllDepartmentsAsTree();
 				for (DepartmentModel dm : departments) {
 					arr.add(dm.getAsJson());
 				}
 			} else {
 				UserModel um = UserModel.getUserByLDAPName(currentUserId);
-				List<DepartmentModel> departments = DepartmentModel.getDepartmentStructureById(um.getDepartmentId());
+				Set<DepartmentModel> departments = DepartmentModel.getDepartmentStructureById(um.getDepartmentId());
 		    	for (DepartmentModel dm : departments) {
 			        arr.add(dm.getAsJson());
 		    	}

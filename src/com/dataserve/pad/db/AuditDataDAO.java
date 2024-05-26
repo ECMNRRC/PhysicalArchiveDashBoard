@@ -316,7 +316,6 @@ public class AuditDataDAO extends AbstractDAO {
                 queryBuilder.append("WHERE 1 = 1 ");
 
                 String departmentId = (String) dataObj.get("departmentId");
-//                String departmentId = (departmentIdLong != null) ? departmentIdLong.toString() : null;
                 String operationId = (String) dataObj.get("operationId");
                 String usernameLDAP = (String) dataObj.get("employeeId");
 
@@ -445,45 +444,79 @@ public class AuditDataDAO extends AbstractDAO {
     }
     
     
-    public Set<AuditDataBean> fetchDocByFilteredDate(String dateTo, String dateFrom) throws DatabaseException {
+    public Set<AuditDataBean> fetchDocByFilteredDate(String dateTo, String dateFrom, JSONObject dataObj) throws DatabaseException {
         Set<AuditDataBean> beans = new LinkedHashSet<>();
-        
+
         try {
-            stmt = con.prepareStatement(
-                    "SELECT " +
-                            "dbo.DEPARTMENTS.DEPT_AR_NAME, " +
-                            "dbo.DEPARTMENTS.DEPT_EN_NAME, " +
-                            "dbo.CLASSIFICTIONS.CLASS_AR_NAME, " +
-                            "dbo.CLASSIFICTIONS.CLASS_EN_NAME, " +
-                            "DATEPART(week, dbo.DMS_AUDIT.DATE) AS WeekNumber, " +
-                            "YEAR(dbo.DMS_AUDIT.DATE) AS Year, " +
-                            "COUNT(*) AS ClassCount " +
-                            "FROM dbo.DMS_AUDIT " +
-                            "LEFT JOIN dbo.DMS_FILES ON dbo.DMS_AUDIT.FILE_ID = dbo.DMS_FILES.FILE_ID " +
-                            "LEFT JOIN dbo.DEPARTMENTS ON dbo.DMS_FILES.DEPT_ID = dbo.DEPARTMENTS.DEPT_ID " +
-                            "LEFT JOIN dbo.CLASSIFICTIONS ON dbo.DMS_AUDIT.DOCUMENT_CLASS = dbo.CLASSIFICTIONS.SYMPOLIC_NAME " +
-                            "WHERE dbo.DMS_AUDIT.OPERATION_ID = 7 " +
-                            "AND dbo.DEPARTMENTS.DEPT_AR_NAME IS NOT NULL " +
-                            "AND dbo.DEPARTMENTS.DEPT_EN_NAME IS NOT NULL " +
-                            "AND dbo.CLASSIFICTIONS.CLASS_AR_NAME IS NOT NULL " +
-                            "AND dbo.CLASSIFICTIONS.CLASS_EN_NAME IS NOT NULL " +
-                            "AND dbo.DMS_AUDIT.DATE BETWEEN ? AND ? " +
-                            "GROUP BY " +
-                            "dbo.DEPARTMENTS.DEPT_AR_NAME, " +
-                            "dbo.DEPARTMENTS.DEPT_EN_NAME, " +
-                            "dbo.CLASSIFICTIONS.CLASS_AR_NAME, " +
-                            "dbo.CLASSIFICTIONS.CLASS_EN_NAME, " +
-                            "DATEPART(week, dbo.DMS_AUDIT.DATE), " +
-                            "YEAR(dbo.DMS_AUDIT.DATE) " +
-                            "ORDER BY " +
-                            "YEAR(dbo.DMS_AUDIT.DATE), " +
-                            "DATEPART(week, dbo.DMS_AUDIT.DATE)"
-                    );
+            StringBuilder queryBuilder = new StringBuilder();
+            queryBuilder.append("SELECT ")
+                        .append("dbo.DEPARTMENTS.DEPT_AR_NAME, ")
+                        .append("dbo.DEPARTMENTS.DEPT_EN_NAME, ")
+                        .append("dbo.CLASSIFICTIONS.CLASS_AR_NAME, ")
+                        .append("dbo.CLASSIFICTIONS.CLASS_EN_NAME, ")
+                        .append("DATEPART(week, dbo.DMS_AUDIT.DATE) AS WeekNumber, ")
+                        .append("YEAR(dbo.DMS_AUDIT.DATE) AS Year, ")
+                        .append("COUNT(*) AS ClassCount ")
+                        .append("FROM dbo.DMS_AUDIT ")
+                        .append("INNER JOIN dbo.USERS ON dbo.DMS_AUDIT.USER_ID = dbo.USERS.UsernameLDAP ")
+                        .append("INNER JOIN dbo.DEPARTMENTS ON dbo.DEPARTMENTS.DEPT_ID = dbo.USERS.DEPARTMENT_ID ")
+                        .append("INNER JOIN dbo.CLASSIFICTIONS ON dbo.DMS_AUDIT.DOCUMENT_CLASS = dbo.CLASSIFICTIONS.SYMPOLIC_NAME ")
+                        .append("WHERE dbo.DMS_AUDIT.OPERATION_ID = 7 ")
+                        .append("AND dbo.DMS_AUDIT.DATE BETWEEN ? AND ? ");
+
+            // Check if dataObj is not null
+            if (dataObj != null) {
+                // Add the condition for departmentId if it is not null or empty
+                String departmentId = (String) dataObj.get("departmentId");
+                if (departmentId != null && !departmentId.isEmpty() && !departmentId.equals(" ")) {
+                    queryBuilder.append("AND dbo.DEPARTMENTS.DEPT_ID = '").append(departmentId).append("' ");
+                }
+
+                // Add the condition for classificationId
+                Object classificationIdObj = dataObj.get("classificationId");
+                if (classificationIdObj != null) {
+                    if (classificationIdObj instanceof JSONArray) {
+                        // Handle JSON array of strings
+                        JSONArray classificationIdArray = (JSONArray) classificationIdObj;
+                        if (!classificationIdArray.isEmpty()) {
+                            StringBuilder classificationIdBuilder = new StringBuilder();
+                            for (int i = 0; i < classificationIdArray.size(); i++) {
+                                if (i > 0) {
+                                    classificationIdBuilder.append(",");
+                                }
+                                classificationIdBuilder.append("'").append(classificationIdArray.get(i)).append("'");
+                            }
+                            queryBuilder.append("AND dbo.CLASSIFICTIONS.SYMPOLIC_NAME IN (").append(classificationIdBuilder.toString()).append(") ");
+                        }
+                    } else if (classificationIdObj instanceof String) {
+                        // Handle single value string
+                        String classificationId = (String) classificationIdObj;
+                        if (!classificationId.trim().isEmpty()) {
+                            queryBuilder.append("AND dbo.CLASSIFICTIONS.SYMPOLIC_NAME = '").append(classificationId).append("' ");
+                        }
+                    }
+                }
+            }
+
+            queryBuilder.append("GROUP BY ")
+                        .append("dbo.DEPARTMENTS.DEPT_AR_NAME, ")
+                        .append("dbo.DEPARTMENTS.DEPT_EN_NAME, ")
+                        .append("dbo.CLASSIFICTIONS.CLASS_AR_NAME, ")
+                        .append("dbo.CLASSIFICTIONS.CLASS_EN_NAME, ")
+                        .append("DATEPART(week, dbo.DMS_AUDIT.DATE), ")
+                        .append("YEAR(dbo.DMS_AUDIT.DATE) ")
+                        .append("ORDER BY ")
+                        .append("YEAR(dbo.DMS_AUDIT.DATE), ")
+                        .append("DATEPART(week, dbo.DMS_AUDIT.DATE)");
+
+            System.out.println("Query: " + queryBuilder.toString());
+
+            stmt = con.prepareStatement(queryBuilder.toString());
 
             // Set the parameters for the date range
             stmt.setString(1, dateFrom);
             stmt.setString(2, dateTo);
-            
+
             rs = stmt.executeQuery();
             while (rs.next()) {
                 String deptArName = rs.getNString("DEPT_AR_NAME");
@@ -493,7 +526,7 @@ public class AuditDataDAO extends AbstractDAO {
                 int weekNumber = rs.getInt("WeekNumber");
                 int year = rs.getInt("Year");
                 int classCount = rs.getInt("ClassCount");
-                
+
                 AuditDataBean bean = new AuditDataBean();
                 bean.setDepNameAr(deptArName);
                 bean.setDepNameEn(deptEnName);
@@ -516,12 +549,16 @@ public class AuditDataDAO extends AbstractDAO {
         }
         return beans;
     }
+
+
+
     
-    public Set<AuditDataBean> fetchFilterData() throws DatabaseException {
+    public Set<AuditDataBean> fetchFilterData(JSONObject dataObj) throws DatabaseException {
         Set<AuditDataBean> beans = new LinkedHashSet<>();
         
         try {
-            stmt = con.prepareStatement(
+            StringBuilder queryBuilder = new StringBuilder();
+            queryBuilder.append(
                 "SELECT DISTINCT " +
                     "DEPARTMENTS.DEPT_AR_NAME, " +
                     "DEPARTMENTS.DEPT_EN_NAME, " +
@@ -537,32 +574,55 @@ public class AuditDataDAO extends AbstractDAO {
                     "DMS_OPERATION.OPERATION_ID " +
                 "FROM " +
                     "DMS_AUDIT " +
-                "LEFT JOIN " +
-                    "DMS_FILES ON DMS_AUDIT.FILE_ID = DMS_FILES.FILE_ID " +
-                "LEFT JOIN " +
-                    "DEPARTMENTS ON DMS_FILES.DEPT_ID = DEPARTMENTS.DEPT_ID " +
-                "LEFT JOIN " +
-                    "CLASSIFICTIONS ON DMS_AUDIT.DOCUMENT_CLASS = CLASSIFICTIONS.SYMPOLIC_NAME " +
-                "LEFT JOIN " +
+                "INNER JOIN " +
                     "USERS ON DMS_AUDIT.USER_ID = USERS.UsernameLDAP " +
-                "LEFT JOIN " +
-                    "DMS_OPERATION ON DMS_AUDIT.OPERATION_ID = DMS_OPERATION.OPERATION_ID " +
-                "WHERE " +
-                    "DEPARTMENTS.DEPT_AR_NAME IS NOT NULL AND " +
-                    "DEPARTMENTS.DEPT_EN_NAME IS NOT NULL AND " +
-                    "DEPARTMENTS.DEPT_ID IS NOT NULL AND " +
-                    "CLASSIFICTIONS.CLASS_AR_NAME IS NOT NULL AND " +
-                    "CLASSIFICTIONS.CLASS_EN_NAME IS NOT NULL AND " +
-                    "CLASSIFICTIONS.SYMPOLIC_NAME IS NOT NULL AND " +
-                    "USERS.UserArname IS NOT NULL AND " +
-                    "USERS.UserEnName IS NOT NULL AND " +
-                    "USERS.UsernameLDAP IS NOT NULL AND " +
-                    "DMS_OPERATION.NAME_AR IS NOT NULL AND " +
-                    "DMS_OPERATION.NAME_EN IS NOT NULL AND " +
-                    "DMS_OPERATION.OPERATION_ID IS NOT NULL"
+                "INNER JOIN " +
+                    "DEPARTMENTS ON DEPARTMENTS.DEPT_ID = USERS.DEPARTMENT_ID " +
+                "INNER JOIN " +
+                    "CLASSIFICTIONS ON DMS_AUDIT.DOCUMENT_CLASS = CLASSIFICTIONS.SYMPOLIC_NAME " +
+                "INNER JOIN " +
+                    "DMS_OPERATION ON DMS_AUDIT.OPERATION_ID = DMS_OPERATION.OPERATION_ID "
             );
 
+            // Check if dataObj is not null
+            if (dataObj != null) {
+                queryBuilder.append("WHERE 1=1 ");
+
+                // Add the condition for departmentId if it is not null or empty
+                String departmentId = (String) dataObj.get("departmentId");
+                if (departmentId != null && !departmentId.isEmpty() && !departmentId.equals(" ")) {
+                    queryBuilder.append("AND DEPARTMENTS.DEPT_ID = '").append(departmentId).append("' ");
+                }
+
+                // Add the condition for classificationId
+                Object classificationIdObj = dataObj.get("classificationId");
+                if (classificationIdObj != null) {
+                    if (classificationIdObj instanceof JSONArray) {
+                        // Handle JSON array of strings
+                        JSONArray classificationIdArray = (JSONArray) classificationIdObj;
+                        if (!classificationIdArray.isEmpty()) {
+                            StringBuilder classificationIdBuilder = new StringBuilder();
+                            for (int i = 0; i < classificationIdArray.size(); i++) {
+                                if (i > 0) {
+                                    classificationIdBuilder.append(",");
+                                }
+                                classificationIdBuilder.append("'").append(classificationIdArray.get(i)).append("'");
+                            }
+                            queryBuilder.append("AND CLASSIFICTIONS.SYMPOLIC_NAME IN (").append(classificationIdBuilder.toString()).append(") ");
+                        }
+                    } else if (classificationIdObj instanceof String) {
+                        // Handle single value string
+                        String classificationId = (String) classificationIdObj;
+                        if (!classificationId.trim().isEmpty()) {
+                            queryBuilder.append("AND CLASSIFICTIONS.SYMPOLIC_NAME = '").append(classificationId).append("' ");
+                        }
+                    }
+                }
+            }
+
+            stmt = con.prepareStatement(queryBuilder.toString());
             rs = stmt.executeQuery();
+
             while (rs.next()) {
                 AuditDataBean bean = new AuditDataBean();
                 bean.setDepNameAr(rs.getString("DEPT_AR_NAME"));
@@ -591,6 +651,7 @@ public class AuditDataDAO extends AbstractDAO {
         }
         return beans;
     }
+
 
     
 }
