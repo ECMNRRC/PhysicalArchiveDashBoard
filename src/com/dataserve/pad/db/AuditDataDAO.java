@@ -63,6 +63,7 @@ public class AuditDataDAO extends AbstractDAO {
                 .append("INNER JOIN [dbo].[USERS] ON [dbo].[DMS_AUDIT].[USER_ID] = [dbo].[USERS].[UsernameLDAP] ")
                 .append("INNER JOIN [dbo].[DEPARTMENTS] ON [dbo].[DEPARTMENTS].[DEPT_ID] = [dbo].[USERS].[DEPARTMENT_ID] ")
                 .append("INNER JOIN [dbo].[CLASSIFICTIONS] ON [dbo].[DMS_AUDIT].[DOCUMENT_CLASS] = [dbo].[CLASSIFICTIONS].[SYMPOLIC_NAME] ")
+                .append("INNER JOIN [dbo].[DMS_FILES] ON [dbo].[DMS_AUDIT].[FILE_ID] = [dbo].[DMS_FILES].[FILE_ID] ")
                 .append("WHERE [dbo].[DMS_AUDIT].[OPERATION_ID] = 7 ");
 
             if (dataObj != null) {
