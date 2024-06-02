@@ -32,17 +32,16 @@ public class AuditDataDAO extends AbstractDAO {
                 bean.setDocumentId(rs.getString("DOCUMENT_ID"));
                 bean.setFileId(rs.getInt("FILE_ID"));
                 bean.setAuditId(rs.getInt("DMS_AUDIT_ID"));
-                bean.setOperationId(rs.getString("OPERATION_ID")); // Assuming this is a String
-                bean.setUserId(rs.getString("USER_ID")); // Assuming USER_ID is a String
+                bean.setOperationId(rs.getString("OPERATION_ID")); 
+                bean.setUserId(rs.getString("USER_ID")); 
                 beans.add(bean);
             }
         } catch (SQLException e) {
             throw new DatabaseException("Error fetching record from table DMS_AUDIT", e);
         } finally {
-            // safeClose();
-            // releaseResources();
+            
         }
-        return beans; // Moved to ensure it always returns the collection, even if empty
+        return beans;
     }
     
 
@@ -107,7 +106,6 @@ public class AuditDataDAO extends AbstractDAO {
                 .append("[dbo].[CLASSIFICTIONS].[CLASS_AR_NAME], ")
                 .append("[dbo].[CLASSIFICTIONS].[CLASS_EN_NAME]");
             
-            System.out.println("queryBuilder classificationId method>> " + queryBuilder.toString());
 
             stmt = con.prepareStatement(queryBuilder.toString());
             rs = stmt.executeQuery();
@@ -134,9 +132,7 @@ public class AuditDataDAO extends AbstractDAO {
         } catch (SQLException e) {
             throw new DatabaseException("Error fetching record from table DMS_AUDIT", e);
         } finally {
-            // Close resources if necessary
-            // safeClose(stmt, rs); // Assuming you have a method `safeClose` that closes both the statement and result set
-            // closeConnection(con); // Close connection if it's not managed outside this method
+
         }
         return beans;
     }
@@ -157,13 +153,11 @@ public class AuditDataDAO extends AbstractDAO {
                         .append("INNER JOIN dbo.DEPARTMENTS ON dbo.USERS.DEPARTMENT_ID = dbo.DEPARTMENTS.DEPT_ID ")
                         .append("INNER JOIN dbo.DMS_OPERATION ON dbo.DMS_AUDIT.OPERATION_ID = dbo.DMS_OPERATION.OPERATION_ID ");
 
-            // Append WHERE clause only when conditions are present
             if (dataObj != null && !dataObj.isEmpty()) {
                 queryBuilder.append("WHERE 1=1");
 
                 String operationId = (String) dataObj.get("operationId");
                 String departmentId = (String) dataObj.get("departmentId");
-//                String departmentId = (departmentIdLong != null) ? String.valueOf(departmentIdLong) : null;
 
                 if (departmentId != null && !departmentId.isEmpty() && !departmentId.equals(" ")) {
                     queryBuilder.append("AND dbo.DEPARTMENTS.DEPT_ID = ").append(departmentId).append(" ");
@@ -184,11 +178,9 @@ public class AuditDataDAO extends AbstractDAO {
                 String depNameAr = rs.getNString("DEPT_AR_NAME");
                 String depNameEn = rs.getNString("DEPT_EN_NAME");
 
-                // Check and handle null or empty English data
                 String operationNameEn = (nameEn != null && !nameEn.isEmpty()) ? nameEn : nameAr;
                 String departmentNameEn = (depNameEn != null && !depNameEn.isEmpty()) ? depNameEn : depNameAr;
 
-                // Now set them in the bean
                 AuditDataBean bean = new AuditDataBean();
                 bean.setOperationNameAr(nameAr);
                 bean.setOperationNameEn(operationNameEn);
@@ -199,9 +191,7 @@ public class AuditDataDAO extends AbstractDAO {
         } catch (SQLException e) {
             throw new DatabaseException("Error fetching operation to department data from table DMS_AUDIT", e);
         } finally {
-            // It's a good practice to close your resources in a finally block
-            // safeClose(stmt, rs); // Assuming you have a method `safeClose` that closes both the statement and result set
-            // closeConnection(con); // Close connection if it's not managed outside this method
+
         }
         return beans;
     }
@@ -209,7 +199,6 @@ public class AuditDataDAO extends AbstractDAO {
     public Set<AuditDataBean> fetchOperationForClass(JSONObject dataObjs) throws DatabaseException {
         Set<AuditDataBean> beans = new LinkedHashSet<>();
         try {
-            System.out.println("dataObj drba fe talt rsma :" + dataObjs);
             StringBuilder queryBuilder = new StringBuilder();
             queryBuilder.append("SELECT ")
                 .append("dbo.DEPARTMENTS.DEPT_AR_NAME, ")
@@ -224,9 +213,8 @@ public class AuditDataDAO extends AbstractDAO {
                 .append("INNER JOIN dbo.DEPARTMENTS ON dbo.USERS.DEPARTMENT_ID = dbo.DEPARTMENTS.DEPT_ID ")
                 .append("INNER JOIN dbo.CLASSIFICTIONS ON dbo.DMS_AUDIT.DOCUMENT_CLASS = dbo.CLASSIFICTIONS.SYMPOLIC_NAME ");
 
-            // Check if dataObjs is not null
             if (dataObjs != null) {
-                queryBuilder.append("WHERE 1 = 1 "); // Starting the WHERE clause
+                queryBuilder.append("WHERE 1 = 1 ");
                 String departmentId = (String) dataObjs.get("departmentId");
                 Object classificationIdObj = dataObjs.get("classificationId");
                 String operationId = (String) dataObjs.get("operationId");
@@ -237,7 +225,6 @@ public class AuditDataDAO extends AbstractDAO {
 
                 if (classificationIdObj != null) {
                     if (classificationIdObj instanceof JSONArray) {
-                        // Handle JSON array of strings
                         JSONArray classificationIdArray = (JSONArray) classificationIdObj;
                         if (!classificationIdArray.isEmpty()) {
                             StringBuilder classificationIdBuilder = new StringBuilder();
@@ -250,7 +237,6 @@ public class AuditDataDAO extends AbstractDAO {
                             queryBuilder.append("AND dbo.CLASSIFICTIONS.SYMPOLIC_NAME IN (").append(classificationIdBuilder.toString()).append(") ");
                         }
                     } else if (classificationIdObj instanceof String) {
-                        // Handle single value string
                         String classificationId = (String) classificationIdObj;
                         if (!classificationId.trim().isEmpty()) {
                             queryBuilder.append("AND dbo.CLASSIFICTIONS.SYMPOLIC_NAME = '").append(classificationId).append("' ");
@@ -263,7 +249,6 @@ public class AuditDataDAO extends AbstractDAO {
                 }
             }
 
-            System.out.println("here is the queryBuilder>> " + queryBuilder.toString());
             stmt = con.prepareStatement(queryBuilder.toString());
             rs = stmt.executeQuery();
             while (rs.next()) {
@@ -274,12 +259,10 @@ public class AuditDataDAO extends AbstractDAO {
                 String operationNameAr = rs.getNString("NAME_AR");
                 String operationNameEn = rs.getNString("NAME_EN");
 
-                // Check and handle null or empty English data
                 String departmentNameEn = (depNameEn != null && !depNameEn.isEmpty()) ? depNameEn : depNameAr;
                 String clsNameEn = (classNameEn != null && !classNameEn.isEmpty()) ? classNameEn : classNameAr;
                 String optNameEn = (operationNameEn != null && !operationNameEn.isEmpty()) ? operationNameEn : operationNameAr;
 
-                // Now set them in the bean
                 AuditDataBean bean = new AuditDataBean();
                 bean.setDepNameAr(depNameAr);
                 bean.setDepNameEn(departmentNameEn);
@@ -291,9 +274,7 @@ public class AuditDataDAO extends AbstractDAO {
         } catch (SQLException e) {
             throw new DatabaseException("Error fetching operation for class data from table DMS_AUDIT", e);
         } finally {
-            // It's a good practice to close your resources in a finally block
-            // safeClose(stmt, rs); // Assuming you have a method `safeClose` that closes both the statement and result set
-            // closeConnection(con); // Close connection if it's not managed outside this method
+
         }
         return beans;
     }
@@ -347,12 +328,10 @@ public class AuditDataDAO extends AbstractDAO {
                 String operationNameEn = rs.getNString("NAME_EN");
                 int operationCount = rs.getInt("OperationCount");
 
-                // Check and handle null or empty English data
                 String userEnNameAdjusted = (userEnName != null && !userEnName.isEmpty()) ? userEnName : userArname;
                 String deptEnNameAdjusted = (deptEnName != null && !deptEnName.isEmpty()) ? deptEnName : deptArName;
                 String operationNameEnAdjusted = (operationNameEn != null && !operationNameEn.isEmpty()) ? operationNameEn : operationNameAr;
 
-                // Now set them in the bean
                 AuditDataBean bean = new AuditDataBean();
                 bean.setUserArName(userArname);
                 bean.setUserEnName(userEnNameAdjusted);
@@ -366,9 +345,7 @@ public class AuditDataDAO extends AbstractDAO {
         } catch (SQLException e) {
             throw new DatabaseException("Error fetching operation for user data from table DMS_AUDIT", e);
         } finally {
-            // It's a good practice to close your resources in a finally block
-            // safeClose(stmt, rs); // Assuming you have a method `safeClose` that closes both the statement and result set
-            // closeConnection(con); // Close connection if it's not managed outside this method
+
         }
         return beans;
     }
@@ -438,7 +415,6 @@ public class AuditDataDAO extends AbstractDAO {
                 if (rs != null) rs.close();
                 if (stmt != null) stmt.close();
             } catch (SQLException e) {
-                // Log this error or handle it as you see fit
             }
         }
         return beans;
@@ -465,19 +441,15 @@ public class AuditDataDAO extends AbstractDAO {
                         .append("WHERE dbo.DMS_AUDIT.OPERATION_ID = 7 ")
                         .append("AND dbo.DMS_AUDIT.DATE BETWEEN ? AND ? ");
 
-            // Check if dataObj is not null
             if (dataObj != null) {
-                // Add the condition for departmentId if it is not null or empty
                 String departmentId = (String) dataObj.get("departmentId");
                 if (departmentId != null && !departmentId.isEmpty() && !departmentId.equals(" ")) {
                     queryBuilder.append("AND dbo.DEPARTMENTS.DEPT_ID = '").append(departmentId).append("' ");
                 }
 
-                // Add the condition for classificationId
                 Object classificationIdObj = dataObj.get("classificationId");
                 if (classificationIdObj != null) {
                     if (classificationIdObj instanceof JSONArray) {
-                        // Handle JSON array of strings
                         JSONArray classificationIdArray = (JSONArray) classificationIdObj;
                         if (!classificationIdArray.isEmpty()) {
                             StringBuilder classificationIdBuilder = new StringBuilder();
@@ -490,7 +462,6 @@ public class AuditDataDAO extends AbstractDAO {
                             queryBuilder.append("AND dbo.CLASSIFICTIONS.SYMPOLIC_NAME IN (").append(classificationIdBuilder.toString()).append(") ");
                         }
                     } else if (classificationIdObj instanceof String) {
-                        // Handle single value string
                         String classificationId = (String) classificationIdObj;
                         if (!classificationId.trim().isEmpty()) {
                             queryBuilder.append("AND dbo.CLASSIFICTIONS.SYMPOLIC_NAME = '").append(classificationId).append("' ");
@@ -510,11 +481,9 @@ public class AuditDataDAO extends AbstractDAO {
                         .append("YEAR(dbo.DMS_AUDIT.DATE), ")
                         .append("DATEPART(week, dbo.DMS_AUDIT.DATE)");
 
-            System.out.println("Query: " + queryBuilder.toString());
 
             stmt = con.prepareStatement(queryBuilder.toString());
 
-            // Set the parameters for the date range
             stmt.setString(1, dateFrom);
             stmt.setString(2, dateTo);
 
@@ -545,7 +514,6 @@ public class AuditDataDAO extends AbstractDAO {
                 if (rs != null) rs.close();
                 if (stmt != null) stmt.close();
             } catch (SQLException e) {
-                // Log this error or handle it as you see fit
             }
         }
         return beans;
@@ -585,21 +553,17 @@ public class AuditDataDAO extends AbstractDAO {
                     "DMS_OPERATION ON DMS_AUDIT.OPERATION_ID = DMS_OPERATION.OPERATION_ID "
             );
 
-            // Check if dataObj is not null
             if (dataObj != null) {
                 queryBuilder.append("WHERE 1=1 ");
 
-                // Add the condition for departmentId if it is not null or empty
                 String departmentId = (String) dataObj.get("departmentId");
                 if (departmentId != null && !departmentId.isEmpty() && !departmentId.equals(" ")) {
                     queryBuilder.append("AND DEPARTMENTS.DEPT_ID = '").append(departmentId).append("' ");
                 }
 
-                // Add the condition for classificationId
                 Object classificationIdObj = dataObj.get("classificationId");
                 if (classificationIdObj != null) {
                     if (classificationIdObj instanceof JSONArray) {
-                        // Handle JSON array of strings
                         JSONArray classificationIdArray = (JSONArray) classificationIdObj;
                         if (!classificationIdArray.isEmpty()) {
                             StringBuilder classificationIdBuilder = new StringBuilder();
@@ -612,7 +576,6 @@ public class AuditDataDAO extends AbstractDAO {
                             queryBuilder.append("AND CLASSIFICTIONS.SYMPOLIC_NAME IN (").append(classificationIdBuilder.toString()).append(") ");
                         }
                     } else if (classificationIdObj instanceof String) {
-                        // Handle single value string
                         String classificationId = (String) classificationIdObj;
                         if (!classificationId.trim().isEmpty()) {
                             queryBuilder.append("AND CLASSIFICTIONS.SYMPOLIC_NAME = '").append(classificationId).append("' ");
@@ -647,7 +610,6 @@ public class AuditDataDAO extends AbstractDAO {
                 if (rs != null) rs.close();
                 if (stmt != null) stmt.close();
             } catch (SQLException e) {
-                // Log this error or handle it as you see fit
             }
         }
         return beans;

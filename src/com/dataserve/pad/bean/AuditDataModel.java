@@ -15,9 +15,7 @@ import com.ibm.json.java.JSONObject;
 
 public class AuditDataModel {
     private AuditDataBean bean;
-    private AuditDataModel parent;
 
-    private Set<AuditDataModel> children = new LinkedHashSet<AuditDataModel>();
 
     public AuditDataModel(AuditDataBean bean) {
         this.bean = bean;
@@ -33,7 +31,7 @@ public class AuditDataModel {
 
     public static Set<AuditDataModel> getDocFilterByClass(JSONObject dataObj) throws ClassificationException {
         try {
-            AuditDataDAO dao = new AuditDataDAO(); // Consider renaming this DAO if it specifically handles AuditData now.           
+            AuditDataDAO dao = new AuditDataDAO();            
             Set<AuditDataBean> beans = dao.fetchDocFilterByClassData(dataObj);
             Set<AuditDataModel> lmSet = new LinkedHashSet<AuditDataModel>();
             for (AuditDataBean b : beans) {
@@ -47,7 +45,7 @@ public class AuditDataModel {
     
 	public static Set<AuditDataModel> getOperationToDep(JSONObject dataObj) throws ClassificationException {
         try {
-            AuditDataDAO dao = new AuditDataDAO(); // Consider renaming this DAO if it specifically handles AuditData now.           
+            AuditDataDAO dao = new AuditDataDAO();            
             Set<AuditDataBean> beans = dao.fetchOperationToDepData(dataObj);
             Set<AuditDataModel> lmSet = new LinkedHashSet<AuditDataModel>();
             for (AuditDataBean b : beans) {
@@ -61,7 +59,7 @@ public class AuditDataModel {
     
     public static Set<AuditDataModel> getAuditData() throws ClassificationException {
         try {
-            AuditDataDAO dao = new AuditDataDAO(); // Consider renaming this DAO if it specifically handles AuditData now.           
+            AuditDataDAO dao = new AuditDataDAO();            
             Set<AuditDataBean> beans = dao.featchAuditData();
             Set<AuditDataModel> lmSet = new LinkedHashSet<AuditDataModel>();
             for (AuditDataBean b : beans) {
@@ -89,7 +87,7 @@ public class AuditDataModel {
     
     public static Set<AuditDataModel> getOperationForUser(JSONObject dataObj) throws ClassificationException {
     	try {
-    		AuditDataDAO dao = new AuditDataDAO(); // Consider renaming this DAO if it specifically handles AuditData now.           
+    		AuditDataDAO dao = new AuditDataDAO();            
     		Set<AuditDataBean> beans = dao.fetchOperationForUser(dataObj);
     		Set<AuditDataModel> lmSet = new LinkedHashSet<AuditDataModel>();
     		for (AuditDataBean b : beans) {
@@ -103,7 +101,7 @@ public class AuditDataModel {
     
     public static Set<AuditDataModel> getDocByDate() throws ClassificationException {
     	try {
-    		AuditDataDAO dao = new AuditDataDAO(); // Consider renaming this DAO if it specifically handles AuditData now.           
+    		AuditDataDAO dao = new AuditDataDAO();            
     		Set<AuditDataBean> beans = dao.fetchDocByData();
     		Set<AuditDataModel> lmSet = new LinkedHashSet<AuditDataModel>();
     		for (AuditDataBean b : beans) {
@@ -117,7 +115,7 @@ public class AuditDataModel {
     
     public static Set<AuditDataModel> getDocByFilteredDate(String dateTo, String DateFrom, JSONObject dataObj) throws ClassificationException {
     	try {
-    		AuditDataDAO dao = new AuditDataDAO(); // Consider renaming this DAO if it specifically handles AuditData now.           
+    		AuditDataDAO dao = new AuditDataDAO();           
     		Set<AuditDataBean> beans = dao.fetchDocByFilteredDate(dateTo, DateFrom, dataObj);
     		Set<AuditDataModel> lmSet = new LinkedHashSet<AuditDataModel>();
     		for (AuditDataBean b : beans) {
@@ -131,7 +129,7 @@ public class AuditDataModel {
     
     public static Set<AuditDataModel> getFilterData(JSONObject dataObj) throws ClassificationException {
     	try {
-    		AuditDataDAO dao = new AuditDataDAO(); // Consider renaming this DAO if it specifically handles AuditData now.           
+    		AuditDataDAO dao = new AuditDataDAO();            
     		Set<AuditDataBean> beans = dao.fetchFilterData(dataObj);
     		Set<AuditDataModel> lmSet = new LinkedHashSet<AuditDataModel>();
     		for (AuditDataBean b : beans) {
@@ -200,18 +198,7 @@ public class AuditDataModel {
     	return obj;
     }
     
-//    public JSONObject getFilterDataJson() throws ClassificationException {
-//    	JSONObject obj = new JSONObject();
-//    	obj.put("depNameAr", getDepNameAr());
-//    	obj.put("depNameEn", getDepNameEn());
-//    	obj.put("classNameAr", getClassNameAr());
-//    	obj.put("classNameEn", getClasNameEn());
-//        obj.put("userNameAr", getUserArName());
-//        obj.put("userNameEn", getUserEnName());
-//        obj.put("operationNameAr", getOperationNameAr());
-//        obj.put("operationNameEn", getOperationNameEn());
-//    	return obj;
-//    }
+
     
     public JSONObject getFilterDataJson() throws ClassificationException {
         JSONObject obj = new JSONObject();
@@ -234,8 +221,7 @@ public class AuditDataModel {
     
     public void save() throws ClassificationException {
         try {
-        	AuditDataDAO dao = new AuditDataDAO(); // Consider renaming this DAO if it specifically handles AuditData now.
-//            dao.addLinkDocument(bean);
+        	AuditDataDAO dao = new AuditDataDAO(); 
         } catch (DatabaseException e) {
             throw new ClassificationException("Error happened while trying to save Classification!", e);
         }
