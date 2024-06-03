@@ -50,7 +50,6 @@ public class ClassificationDAO extends AbstractDAO{
 	            		stmt.setInt(1, rs.getInt(1));
 	            		stmt.setInt(2, DCModele.getDEPT_ID());
 	            		stmt.setInt(3, DCModele.getSAVE_PERIOD());
-//	            		stmt.setInt(4, DCModele.getCLASS_SAVE_TYPE());
 	            		stmt.execute();
             		}
             	}
@@ -86,7 +85,6 @@ public class ClassificationDAO extends AbstractDAO{
         	stmt.setNString(1, bean.getNameAr());
         	stmt.setString(2, bean.getNameEn());
         	stmt.setString(3, bean.getSymbolicName());
-//        	stmt.setInt(4, bean.getParentID());
         	stmt.setString(4, bean.getClassCode());
         	stmt.setInt(5, bean.getSaveTypeId());
         	stmt.setInt(6, bean.getId());
@@ -100,7 +98,6 @@ public class ClassificationDAO extends AbstractDAO{
               			stmt.setInt(1,bean.getId());
               			stmt.setInt(2, DCModele.getDEPT_ID());
               			stmt.setInt(3, DCModele.getSAVE_PERIOD());
-//              			stmt.setInt(4, DCModele.getCLASS_SAVE_TYPE());
               			stmt.execute();
               		}
         		}

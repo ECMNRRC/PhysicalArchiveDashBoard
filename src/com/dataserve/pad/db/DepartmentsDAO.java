@@ -17,7 +17,6 @@ public class DepartmentsDAO extends AbstractDAO {
 	public boolean addDepartment(DepartmentBean bean) throws DatabaseException {
         try {
         	
-        	// first check if department code already exists before adding to db
         	stmt = con.prepareStatement("SELECT * FROM DEPARTMENTS WHERE DEPT_CODE = ?");
         	stmt.setString(1, bean.getCode());
         	rs = stmt.executeQuery();
@@ -25,7 +24,6 @@ public class DepartmentsDAO extends AbstractDAO {
         		throw new DatabaseException("Department already exists");
         	}
         	
-        	// check if there is an already archived department before adding to db
         	if(bean.getIsArchiveCenter() == 1) {
 	        	stmt = con.prepareStatement("SELECT * FROM DEPARTMENTS WHERE IS_ARCHIVE_CENTER = 1");
 	        	rs = stmt.executeQuery();

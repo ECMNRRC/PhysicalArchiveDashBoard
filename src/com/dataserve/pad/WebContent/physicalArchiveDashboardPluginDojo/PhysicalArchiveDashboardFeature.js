@@ -56,7 +56,6 @@ function(
         	
             this.logEntry("postCreate");
             this.inherited(arguments);
-		    this.getEmployeesByDepartment("1002");         
 			this.addDepSelect()
             
             this.firstChartRendered = false;
@@ -72,13 +71,7 @@ function(
             this.logEntry("loadContent");
             
             if (!this.isLoaded) {
-                setTimeout(lang.hitch(this, function() {
-//                    this.renderFirstChart();
-//                    this.renderSecondChart(this.getOperationToDep(null));
-//                    this.renderUserClassificationChart(this.getDocFilterByClass(null));
-//                    this.renderOperationsChart(this.getOperationForCLass(null));
-//                    this.renderOperationsForUserChart(this.getOperationForUser(null));
-                }), 0);
+
                 
                 this.isLoaded = true;
                 this.needReset = false;
@@ -169,15 +162,12 @@ function(
 		        }
 		    };
 
-		    // Check if the chart already exists
 		    if (this.secondChartRendered) {
-		        // If the chart exists, destroy it
 		        if (this.chart) {
 		            this.chart.destroy();
 		        }
 		    }
 
-		    // Render the new chart
 		    this.chart = new ApexCharts(this.secondChartContainer, options);
 		    this.chart.render();
 		    this.secondChartRendered = true;
@@ -325,78 +315,7 @@ function(
 		  		    };
 		  		},
 
-//		  		renderUserClassificationChart: function(dataRes) {
-//		  			if (!this.userClassificationChartRendered) {
-//		  		    const dataResponse = dataRes;
-//		  		    let processedData = this.processDataForUserClassificationChart(dataResponse);
-//
-//		  		    const options = {
-//		  		        series: processedData.series,
-//		  		        chart: {
-//		  		            type: 'bar',
-//		  		            height: 600, 
-//		  		            stacked: true
-//		  		        },
-//		  		        plotOptions: {
-//		  		            bar: {
-//		  		                horizontal: false,
-//		  		                columnWidth: '70%',
-//		  		                dataLabels: {
-//		  		                    position: 'top',
-//		  		                }
-//		  		            }
-//		  		        },
-//		  		        dataLabels: {
-//		  		            enabled: true
-//		  		        },
-//		  		        xaxis: {
-//		  		            categories: processedData.categories,
-//		  		            labels: {
-//		  		                rotate: -45,
-//		  		                trim: false,
-//		  		                minHeight: 120,
-//		  		                style: {
-//		  		                    cssClass: 'apexcharts-xaxis-label',
-//		  		                },
-//		  		            },
-//		  		            axisTicks: {
-//		  		                show: true
-//		  		            }
-//		  		        },
-//		  		        yaxis: {
-//		  		            title: {
-//		  		                text: 'Document Count'
-//		  		            }
-//		  		        },
-//		  		        tooltip: {
-//		  		            shared: true,
-//		  		            intersect: false,
-//		  		            y: {
-//		  		                formatter: function(val) {
-//		  		                    return val + " documents";
-//		  		                }
-//		  		            }
-//		  		        },
-//		  		        title: {
-//		  		            text: this._lcl.FIRST_CHART_TITLE,
-//		  		            align: 'center',
-//		  		        },
-//		  		        legend: {
-//		  		            position: 'right',
-//		  		            offsetY: 10
-//		  		        },
-//		  		        grid: {
-//		  		            padding: {
-//		  		                bottom: 30  
-//		  		            }
-//		  		        }
-//		  		    };
-//		  		    
-//		  		    var chart = new ApexCharts(this.thirdChartContainer, options);
-//		  		    chart.render();
-//		  		  this.userClassificationChartRendered = true;
-//		          }
-//		  		},
+
 		  		
 		  		
 		  		renderUserClassificationChart: function(dataRes) {
@@ -465,24 +384,19 @@ function(
 		  		        }
 		  		    };
 		  		    
-		  		    // Check if chart is already rendered
 		  		    if (this.userClassificationChartRendered) {
-		  		        // Destroy the existing chart
 		  		        this.userClassificationChart.destroy();
 		  		    }
 		  		    
-		  		    // Render the new chart
 		  		    this.userClassificationChart = new ApexCharts(this.thirdChartContainer, options);
 		  		    this.userClassificationChart.render();
 		  		    
-		  		    // Update the flag indicating that the chart is rendered
 		  		    this.userClassificationChartRendered = true;
 		  		},
 
 		  		
 		  		
 		  		renderOperationsChart: function(dataRes) {
-		  		    // Destroy existing chart instance if it exists
 		  		    if (this.operationsChart) {
 		  		        this.operationsChart.destroy();
 		  		    }
@@ -565,7 +479,6 @@ function(
 		  		        }
 		  		    };
 
-		  		    // Create a new chart instance and save it
 		  		    this.operationsChart = new ApexCharts(this.fourthChartContainer, options);
 		  		    this.operationsChart.render();
 		  		},
@@ -683,7 +596,6 @@ function(
 			  		        this.fifthChart.destroy();
 			  		    }
 
-			  		    // Render the new chart
 			  		    this.fifthChart = new ApexCharts(this.fifthChartContainer, options);
 			  		    this.fifthChart.render();
 			  		},
@@ -754,7 +666,6 @@ function(
 				  		processDataForStackedBarChart: function(dataResponse) {
 				  		    let dataByWeekAndClass = {};
 
-				  		    // Organize data by week and class
 				  		    dataResponse.forEach(function(item) {
 				  		        const weekYearKey = `Week ${item.weekNum}, ${item.year}`;
 				  		        const className = ecm.model.desktop.valueFormatter.locale === 'en' ? item.classNameEn : item.classNameAr;
@@ -773,7 +684,6 @@ function(
 				  		    let categories = Object.keys(dataByWeekAndClass).sort();
 				  		    let seriesData = {};
 
-				  		    // Convert the organized data into series format for ApexCharts
 				  		    for (let weekYearKey in dataByWeekAndClass) {
 				  		        for (let className in dataByWeekAndClass[weekYearKey]) {
 				  		            if (!seriesData[className]) {
@@ -810,10 +720,8 @@ function(
 
 				  			}
 
-				  		    // Process the data to fit the ApexCharts series format
 				  		    var processedChartData = this.processDataForStackedBarChart(dataResponse);
 
-				  		    // Define the chart options
 				  		    var chartOptions = {
 				  		        series: processedChartData.series,
 				  		        chart: {
@@ -935,7 +843,7 @@ function(
 						            id: selectId,
 						            options: optionFiller(selectData),
 						            style: 'width: 300px;',
-						            value: "" // Ensure the empty option is selected by default
+						            value: "" 
 						        });
 						        select.placeAt(container);
 
@@ -945,20 +853,17 @@ function(
 						    }.bind(this);
 
 						    createFilterItem(lcl.DEPARTMENTS, 'departmentSelect', this.deptsSelectFiller, deps);
-						    createFilterItem(lcl.EMP, 'empSelect', this.empSelectFiller, []); // Initially empty
+						    createFilterItem(lcl.EMP, 'empSelect', this.empSelectFiller, []); 
 						    createFilterItem(lcl.CLASSIFICATION, 'classSelect', this.classSelectFiller, classes);
 						    createFilterItem(lcl.OPERATION, 'operationSelect', this.operationSelectFiller, opt);
 
-						    // Add change event listener for department select
 						    this.selectWidgets['departmentSelect'].on('change', function() {
 						        console.log("Department changed");
 						        this.updateEmployeeSelect();
 						    }.bind(this));
 
-						    // Add change event listener for employee select
 						    this.selectWidgets['empSelect'].on('change', function() {
 						        console.log("Employee selected: ", this.selectWidgets['empSelect'].get('value'));
-						        // You can add additional logic here to handle the employee selection
 						    }.bind(this));
 						},
 
@@ -967,13 +872,10 @@ function(
 						    var employees = this.getEmployeesByDepartment(dep.value.toString()); // Fetch employees based on department
 						    var empSelect = this.selectWidgets['empSelect'];
 
-						    // Clear existing options
 						    empSelect.set('options', this.empSelectFiller([]));
 
-						    // Update with new options
 						    empSelect.set('options', this.empSelectFiller(employees));
 
-						    // Set the default value to empty
 						    empSelect.set('value', '');
 						},
 
@@ -1055,7 +957,6 @@ function(
 								};
 
 
-//						    if (dataObj.departmentId || dataObj.employeeId || dataObj.classificationId) {
 			                    this.renderUserClassificationChart(this.getDocFilterByClass(dataObj));
 			                    this.renderSecondChart(this.getOperationToDep(dataObj));
 			                    this.renderOperationsChart(this.getOperationForCLass(dataObj));
@@ -1077,7 +978,7 @@ function(
 				
 
 						deptsSelectFiller: function(departments) {
-						    var result = [{label: " ", value: " "}]; // Add empty choice first
+						    var result = [{label: " ", value: " "}]; 
 						    var addedDepartments = new Set();
 
 						    for (var department of departments) {
@@ -1088,13 +989,13 @@ function(
 						        }
 						    }
 
-						    console.log("Department Options: ", result); // Debug print
+						    console.log("Department Options: ", result); 
 
 						    return result;
 						},
 
 						empSelectFiller: function(employees) {
-						    var result = [{label: " ", value: " "}]; // Add empty choice first
+						    var result = [{label: " ", value: " "}]; 
 						    var addedEmp = new Set();
 
 						    for (var emp of employees) {
@@ -1105,12 +1006,12 @@ function(
 						        }
 						    }
 
-						    console.log("Employee Options: ", result); // Debug print
+						    console.log("Employee Options: ", result); 
 
 						    return result;
 						},
 						classSelectFiller: function(classes) {
-						    var result = [{label: " ", value: " "}]; // Add empty choice first
+						    var result = [{label: " ", value: " "}]; 
 						    var addedClass = new Set();
 
 						    for (var cls of classes) {
@@ -1121,13 +1022,13 @@ function(
 						        }
 						    }
 
-						    console.log("Class Options: ", result); // Debug print
+						    console.log("Class Options: ", result); 
 
 						    return result;
 						},
 
 						operationSelectFiller: function(opts) {
-						    var result = [{label: " ", value: " "}]; // Add empty choice first
+						    var result = [{label: " ", value: " "}]; 
 						    var addedOperation = new Set();
 
 						    for (var opt of opts) {
@@ -1138,7 +1039,7 @@ function(
 						        }
 						    }
 
-						    console.log("Operation Options: ", result); // Debug print
+						    console.log("Operation Options: ", result); 
 
 						    return result;
 						},
