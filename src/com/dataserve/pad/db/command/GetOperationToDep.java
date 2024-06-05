@@ -29,15 +29,11 @@ public class GetOperationToDep extends CommandBase{
 	    	
             String departmentId = dataObj.containsKey("departmentId") ? (String) dataObj.get("departmentId") : "";
 
-            // Check if departmentId is empty or null
             if (departmentId.trim().isEmpty()) {
                 if (!currentUserId.equalsIgnoreCase(ConfigManager.getSuperUserName())) {
-                    // Call GetUserDepartments class
                     GetUserDepartments getUserDepartments = new GetUserDepartments(request);
                     String userDepartmentsOutput = getUserDepartments.execute();
-                    System.out.println("GetUserDepartments output: " + userDepartmentsOutput);
 
-                    // Parse the output to get the id
                     JSONArray userDepartmentsArray = JSONArray.parse(userDepartmentsOutput);
                     if (!userDepartmentsArray.isEmpty()) {
                         JSONObject firstDepartment = (JSONObject) userDepartmentsArray.get(0);
@@ -48,7 +44,6 @@ public class GetOperationToDep extends CommandBase{
             }
             
 			Set<AuditDataModel> docs = AuditDataModel.getOperationToDep(dataObj);
-			System.out.println("getLink groups: "+ docs);
 			JSONArray arr = new JSONArray();
 			for (AuditDataModel lm : docs) {
 				arr.add(lm.getOperationToDepJson());

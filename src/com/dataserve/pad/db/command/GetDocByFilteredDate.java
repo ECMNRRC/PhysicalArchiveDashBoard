@@ -23,18 +23,14 @@ public class GetDocByFilteredDate extends CommandBase {
     public String execute() throws Exception {
         String dateTo = request.getParameter("dateTo");
         String dateFrom = request.getParameter("dateFrom");
-        String currentUserId = request.getUserPrincipal().getName(); // Assumes the user ID is obtained this way
+        String currentUserId = request.getUserPrincipal().getName(); 
         JSONObject dataObj = new JSONObject();
 
         try {
-            // Check if the current user is not the superuser
             if (!currentUserId.equalsIgnoreCase(ConfigManager.getSuperUserName())) {
-                // Call GetUserDepartments class
                 GetUserDepartments getUserDepartments = new GetUserDepartments(request);
                 String userDepartmentsOutput = getUserDepartments.execute();
-                System.out.println("GetUserDepartments output: " + userDepartmentsOutput);
 
-                // Parse the output to get the department ID
                 JSONArray userDepartmentsArray = JSONArray.parse(userDepartmentsOutput);
                 if (!userDepartmentsArray.isEmpty()) {
                     JSONObject firstDepartment = (JSONObject) userDepartmentsArray.get(0);
@@ -42,12 +38,9 @@ public class GetDocByFilteredDate extends CommandBase {
                     dataObj.put("departmentId", firstDepartmentId);
                 }
 
-                // Call GetClassificationsByUser class
                 GetClassificationsByUser getClassificationsByUser = new GetClassificationsByUser(request);
                 String classificationsOutput = getClassificationsByUser.execute();
-                System.out.println("GetClassificationsByUser output: " + classificationsOutput);
 
-                // Parse the output and collect all classification symbolic names
                 JSONArray classificationsArray = JSONArray.parse(classificationsOutput);
                 if (classificationsArray.size() == 1) {
                     JSONObject singleClassification = (JSONObject) classificationsArray.get(0);
@@ -61,13 +54,9 @@ public class GetDocByFilteredDate extends CommandBase {
                     dataObj.put("classificationId", classificationSymbols);
                 }
 
-                // Print the classificationId to verify
-                System.out.println("Updated classificationId in dataObj: " + dataObj.get("classificationId"));
             }
 
-            // Pass dataObj as a parameter to getDocByFilteredDate method
             Set<AuditDataModel> docs = AuditDataModel.getDocByFilteredDate(dateTo, dateFrom, dataObj);
-            System.out.println("getLink groups: " + docs);
             JSONArray arr = new JSONArray();
             for (AuditDataModel lm : docs) {
                 arr.add(lm.getDocByDateJson());

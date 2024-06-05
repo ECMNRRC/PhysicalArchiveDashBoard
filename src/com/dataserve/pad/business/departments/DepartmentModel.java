@@ -166,34 +166,27 @@ public class DepartmentModel {
 		obj.put("id", bean.getId());
 		obj.put("nameAr", bean.getNameAr());
 		obj.put("nameEn", bean.getNameEn());
-		obj.put("parentId", bean.getParentId());
-		obj.put("isEnabled", bean.isEnabled());
-		obj.put("code", bean.getCode());
-		obj.put("email", bean.getDeptEmail());
-		obj.put("managerId", bean.getManagerId());
-		obj.put("isArchiveCenter",bean.getIsArchiveCenter());
-		obj.put("savePeriod", "");
-		try {
-			JSONArray users = JSONArray.parse(bean.getUsersIds().toString());
-			obj.put("users", users);
-			
-			JSONArray storageCenters = JSONArray.parse(bean.getStorageCenters().toString());
-			obj.put("centers", storageCenters);
-			
-			JSONArray classifications = JSONArray.parse(bean.getClassificationIds().toString());
-			obj.put("classifications", classifications);
-	        JSONArray childrenArray = new JSONArray();
-	        if (this.children != null) {
-	            for (DepartmentModel child : this.children) {
-	                childrenArray.add(child.getAsJson());
-	            }
-	        }
-	      
-	        obj.put("children", childrenArray);
-
-		} catch (IOException e) {
-			throw new DepartmentException("Error generating JSON for department with id '" + bean.getId() + "'", e);
-		}
+//		try {
+//			JSONArray users = JSONArray.parse(bean.getUsersIds().toString());
+//			obj.put("users", users);
+//			
+//			JSONArray storageCenters = JSONArray.parse(bean.getStorageCenters().toString());
+//			obj.put("centers", storageCenters);
+//			
+//			JSONArray classifications = JSONArray.parse(bean.getClassificationIds().toString());
+//			obj.put("classifications", classifications);
+//	        JSONArray childrenArray = new JSONArray();
+//	        if (this.children != null) {
+//	            for (DepartmentModel child : this.children) {
+//	                childrenArray.add(child.getAsJson());
+//	            }
+//	        }
+//	      
+//	        obj.put("children", childrenArray);
+//
+//		} catch (IOException e) {
+//			throw new DepartmentException("Error generating JSON for department with id '" + bean.getId() + "'", e);
+//		}
 		return obj;
 	}
 	
@@ -220,9 +213,6 @@ public class DepartmentModel {
 		try {
 			DepartmentsDAO dao = new DepartmentsDAO();
 			Set<DepartmentBean> deptBeans = dao.fetchDepartments(deptIds);
-//			dmList = new ArrayList<>();
-//
-//		    Map<Integer, DepartmentModel> departmentMap = new HashMap<>();
 			Set<DepartmentModel> models = new LinkedHashSet<DepartmentModel>();
 			
 			for (DepartmentBean b : deptBeans) {
@@ -230,30 +220,12 @@ public class DepartmentModel {
 				models.add(	depModel);
 			}
 
-//		    for (DepartmentBean bean : deptBeans) {
-//		         DepartmentModel dm = new DepartmentModel(bean);
-//		         departmentMap.put(bean.getId(), dm);
-////		    }
-//		        // tree Node
-//		    for (DepartmentBean bean : deptBeans) {
-//		        DepartmentModel dm = departmentMap.get(bean.getId());
-//		        if (bean.getParentId() != 0) {
-//		                // If there is a parent
-//		        	DepartmentModel parent = departmentMap.get(bean.getParentId());
-//	                if (parent != null) {
-//	                    parent.addChild(dm);
-//	                }
-//		         } else {
-//		                // If no parent
-//		                dmList.add(dm);
-//		         }
-//		    }
+
 		 return models;
 
 	    } catch (DatabaseException e) {
 	        throw new DepartmentException("Error getting user departments", e);
 	    }
-//	    return dmList;
 	}
 
 	public static List<DepartmentModel> getDepartmentsByIds(Set<Integer> deptIds) throws DepartmentException {
@@ -276,7 +248,7 @@ public class DepartmentModel {
 	    try {
 	        JSONObject obj = getAsJson();
 	        JSONArray jsonChildren = new JSONArray();
-	        loadChildren(); // Load children before processing
+	        loadChildren(); 
 	        for (DepartmentModel child : getChildren()) {
 	            jsonChildren.add(child.getFullStructure());
 	        }
@@ -316,29 +288,7 @@ public class DepartmentModel {
 				models.add(	depModel);
 			}
 
-//	        dmList = new ArrayList<>();
-//
-//	        Map<Integer, DepartmentModel> departmentMap = new HashMap<>();
-//
-//	        for (DepartmentBean bean : deptBeans) {
-//	            DepartmentModel dm = new DepartmentModel(bean);
-//	            departmentMap.put(bean.getId(), dm);
-//	        }
-//
-//	        // tree Node
-//	        for (DepartmentBean bean : deptBeans) {
-//	            DepartmentModel dm = departmentMap.get(bean.getId());
-//	            if (bean.getParentId() != 0) {
-//	                // If there is a parent
-//	                DepartmentModel parent = departmentMap.get(bean.getParentId());
-//	                if (parent != null) {
-//	                    parent.addChild(dm);
-//	                }
-//	            } else {
-//	                // If no parent
-//	                dmList.add(dm);
-//	            }
-//	        }
+
 		return models;
 	    } catch (DatabaseException e) {
 	        throw new DepartmentException("Error getting user departments", e);

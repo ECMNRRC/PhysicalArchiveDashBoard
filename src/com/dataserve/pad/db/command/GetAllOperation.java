@@ -20,8 +20,7 @@ public class GetAllOperation extends CommandBase{
 
 	
 	public String execute() throws Exception {
-		String dateTo = request.getParameter("dateTo");
-		String dateFrom = request.getParameter("dateFrom");
+
 
 		try{
 			

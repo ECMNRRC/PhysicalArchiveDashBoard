@@ -43,30 +43,7 @@ private Set<ClassificationModel> children = new LinkedHashSet<ClassificationMode
 			this.DCModels= DCModel;	 
 		}
 		
-		public static Set<ClassificationModel> getClassificationsByIds(String classIds) throws ClassificationException {
-			try {
-				ClassificationDAO dao = new ClassificationDAO();			
-				Set<ClassificationBean> beans = dao.fetchClassificationsByIds(classIds);
-				Set<ClassificationModel> cmSet = new LinkedHashSet<ClassificationModel>();
-				for (ClassificationBean b : beans) {
-					cmSet.add(new ClassificationModel(b));
-				}
-				return cmSet;
-			} catch (DatabaseException e) {
-				throw new ClassificationException("Error getting Classificafions with id's '" + classIds + "'", e);
-			}
-		}
 
-		public static ClassificationModel getClassificationBySybolicName(String className) throws ClassificationException {
-			try {
-				ClassificationDAO dao = new ClassificationDAO();
-				ClassificationBean bean = dao.fetchClassificationBySymbolicName(className);
-				ClassificationModel model = new ClassificationModel(bean);
-				return model;
-			} catch (DatabaseException e) {
-				throw new ClassificationException("Error getting Classificafion with symbolic name '" + className + "'", e);
-			}
-		}
 		
 		public static Set<ClassificationModel> getClassificationsByUserId(int userId) throws ClassificationException {
 			return getClassificationsByUserAndStorageCenter(userId, null);
@@ -124,25 +101,6 @@ private Set<ClassificationModel> children = new LinkedHashSet<ClassificationMode
 			}
 		}
 		
-		public static Map<Integer, ClassificationModel> getClassificationsMapByUserIdAndStorageCenter(int userId, Integer storageCenterId) throws ClassificationException {
-			try {
-				ClassificationDAO dao = new ClassificationDAO();			
-				Set<ClassificationBean> beans;
-				if (storageCenterId == null) {
-					beans = dao.fetchClassificationsByUserId(userId);
-				} else {
-					beans = dao.fetchClassificationsByUserAndStorageCenter(userId, storageCenterId);
-				}
-				Map<Integer, ClassificationModel> models = new HashMap<Integer, ClassificationModel>();
-				for (ClassificationBean b : beans) {
-					ClassificationModel cm = new ClassificationModel(b);
-					models.put(cm.getId(), cm);							
-				}
-				return models;
-			} catch (DatabaseException e) {
-				throw new ClassificationException("Error getting Classificafion map for user with id '" + userId + "'", e);
-			}
-		}
 		
 		public JSONObject getAsJson() throws ClassificationException {
 			departments = DeptClassModel.fetchDeptClass(bean.getId());
@@ -151,14 +109,7 @@ private Set<ClassificationModel> children = new LinkedHashSet<ClassificationMode
 			obj.put("id", bean.getId());
 			obj.put("nameAr", bean.getNameAr());
 			obj.put("nameEn", bean.getNameEn());
-			obj.put("parentID", bean.getParentID());
 			obj.put("sympolicName", bean.getSymbolicName());
-			obj.put("ClassCode", bean.getClassCode());
-//			obj.put("saveType", bean.getSaveTypeId());
-//			obj.put("typeAr", SaveType.getSaveTypeById(bean.getSaveTypeId()).getTypeAr());
-//			obj.put("typeEn", SaveType.getSaveTypeById(bean.getSaveTypeId()).getTypeEn());
-			obj.put("isFnAdded", bean.getisFnAdded());
-			obj.put("children", new JSONArray());
 			
 			JSONArray depts = new JSONArray();
 			for (DeptClassModel m : departments) {

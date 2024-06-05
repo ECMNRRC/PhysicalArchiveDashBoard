@@ -110,30 +110,19 @@ public class GetDocFilterByClass extends CommandBase {
 
     @Override
     public String execute() throws Exception {
-        // Parse the dataObj parameter from the request
         String dataObjParam = request.getParameter("dataObj");
         JSONObject dataObj = (dataObjParam != null && !dataObjParam.isEmpty()) ? JSONObject.parse(dataObjParam) : new JSONObject();
 
-        System.out.println("************Before Obj *********");
-        System.out.println("here is the dataObj: " + dataObj);
-        System.out.println("************After Obj *********");
-
-        System.out.println("inside GetAudit Class");
 
         try {
             String departmentId = dataObj.containsKey("departmentId") ? (String) dataObj.get("departmentId") : "";
 
-            // Assume currentUserId is provided in the request parameter
 
-            // Check if departmentId is empty or null
             if (departmentId.trim().isEmpty()) {
                 if (!currentUserId.equalsIgnoreCase(ConfigManager.getSuperUserName())) {
-                    // Call GetUserDepartments class
                     GetUserDepartments getUserDepartments = new GetUserDepartments(request);
                     String userDepartmentsOutput = getUserDepartments.execute();
-                    System.out.println("GetUserDepartments output: " + userDepartmentsOutput);
 
-                    // Parse the output to get the id
                     JSONArray userDepartmentsArray = JSONArray.parse(userDepartmentsOutput);
                     if (!userDepartmentsArray.isEmpty()) {
                         JSONObject firstDepartment = (JSONObject) userDepartmentsArray.get(0);
@@ -141,12 +130,9 @@ public class GetDocFilterByClass extends CommandBase {
                         dataObj.put("departmentId", firstDepartmentId);
                     }
 
-                    // Call GetClassificationsByUser class
                     GetClassificationsByUser getClassificationsByUser = new GetClassificationsByUser(request);
                     String classificationsOutput = getClassificationsByUser.execute();
-                    System.out.println("GetClassificationsByUser output: " + classificationsOutput);
 
-                    // Parse the output and collect all classification symbolic names
                     JSONArray classificationsArray = JSONArray.parse(classificationsOutput);
                     JSONArray classificationSymbols = new JSONArray();
                     for (Object obj : classificationsArray) {
@@ -155,13 +141,10 @@ public class GetDocFilterByClass extends CommandBase {
                     }
                     dataObj.put("classificationId", classificationSymbols);
 
-                    // Print the classificationId to verify
-                    System.out.println("Updated classificationId in dataObj: " + classificationSymbols);
                 }
             }
 
             Set<AuditDataModel> docs = AuditDataModel.getDocFilterByClass(dataObj);
-            System.out.println("getLink groups: " + docs);
             JSONArray arr = new JSONArray();
             for (AuditDataModel lm : docs) {
                 arr.add(lm.getAsJson());

@@ -21,10 +21,8 @@ public class GetAuditData extends CommandBase{
 	
 	public String execute() throws Exception {
 		
-		System.out.println("inside GetAudit Class");
 		try{
 			Set<AuditDataModel> docs = AuditDataModel.getAuditData();
-			System.out.println("getLink groups: "+ docs);
 			JSONArray arr = new JSONArray();
 			for (AuditDataModel lm : docs) {
 				arr.add(lm.getAsJson());

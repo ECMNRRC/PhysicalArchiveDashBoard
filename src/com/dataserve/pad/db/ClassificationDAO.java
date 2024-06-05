@@ -194,7 +194,6 @@ public class ClassificationDAO extends AbstractDAO{
 		try {
 			stmt = con.prepareStatement("SELECT distinct CLASSIFICTIONS.CLASSIFICATION_ID CLASSIFICATION_ID, CLASSIFICTIONS.CLASS_AR_NAME CLASS_AR_NAME, " +
 				"CLASSIFICTIONS.CLASS_EN_NAME CLASS_EN_NAME, CLASSIFICTIONS.SYMPOLIC_NAME SYMPOLIC_NAME, " +
-				"CLASSIFICTIONS.PARENT_ID PARENT_ID, CLASSIFICTIONS.CLASS_CODE CLASS_CODE, CLASSIFICTIONS.SAVE_TYPE SAVE_TYPE " +
 				"FROM CLASSIFICTIONS CLASSIFICTIONS " +
                 "INNER JOIN CLASS_DEPT CLASS_DEPT ON CLASSIFICTIONS.CLASSIFICATION_ID = CLASS_DEPT.CLASSIFICATION_ID " + 
                 "INNER JOIN DEPARTMENTS DEPARTMENTS ON CLASS_DEPT.DEPT_ID = DEPARTMENTS.DEPT_ID " + 
@@ -210,10 +209,6 @@ public class ClassificationDAO extends AbstractDAO{
 				bean.setNameAr(rs.getString("CLASS_AR_NAME"));
 				bean.setNameEn(rs.getString("CLASS_EN_NAME"));
 				bean.setSymbolicName(rs.getString("SYMPOLIC_NAME"));
-				bean.setParentID(rs.getInt("PARENT_ID"));
-				bean.setClassCode(rs.getString("CLASS_CODE"));
-				bean.setSaveTypeId(rs.getInt("SAVE_TYPE"));
-				bean.setChildrenIds(getChildrenIds(userId, bean.getId()));
 				beans.add(bean);
 			}
 			return beans;
@@ -292,7 +287,7 @@ public class ClassificationDAO extends AbstractDAO{
 	public Set<ClassificationBean> fetchAllClassifications() throws DatabaseException {
 	    try {
 	        System.out.println("enter fetchAllClassifications method ");
-	        stmt = con.prepareStatement("SELECT CLASSIFICATION_ID, CLASS_AR_NAME, CLASS_EN_NAME, SYMPOLIC_NAME, PARENT_ID, CLASS_CODE, SAVE_TYPE FROM CLASSIFICTIONS");		
+	        stmt = con.prepareStatement("SELECT CLASSIFICATION_ID, CLASS_AR_NAME, CLASS_EN_NAME, SYMPOLIC_NAME FROM CLASSIFICTIONS");		
 	        rs = stmt.executeQuery();
 	        Set<ClassificationBean> beans = new LinkedHashSet<ClassificationBean>();			
 	        while (rs.next()) {
@@ -308,9 +303,6 @@ public class ClassificationDAO extends AbstractDAO{
 	            }
 	            
 	            bean.setSymbolicName(rs.getString("SYMPOLIC_NAME"));
-	            bean.setParentID(rs.getInt("PARENT_ID"));
-	            bean.setClassCode(rs.getString("CLASS_CODE"));
-	            bean.setSaveTypeId(rs.getInt("SAVE_TYPE"));
 	            bean.setChildrenIds(getChildrenIds(bean.getId()));
 	            beans.add(bean);
 	        }

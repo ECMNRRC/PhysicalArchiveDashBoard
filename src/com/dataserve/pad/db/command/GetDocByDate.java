@@ -23,7 +23,6 @@ public class GetDocByDate extends CommandBase{
 		
 		try{
 			Set<AuditDataModel> docs = AuditDataModel.getDocByDate();
-			System.out.println("getLink groups: "+ docs);
 			JSONArray arr = new JSONArray();
 			for (AuditDataModel lm : docs) {
 				arr.add(lm.getDocByDateJson());

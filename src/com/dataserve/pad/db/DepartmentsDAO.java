@@ -92,20 +92,18 @@ public class DepartmentsDAO extends AbstractDAO {
 	public Set<DepartmentBean> fetchDepartments() throws DatabaseException {
 		Set<DepartmentBean> departments = new LinkedHashSet<DepartmentBean>();
 		try {
-			stmt = con.prepareStatement("SELECT DEPT_ID,DEPT_AR_NAME ,DEPT_EN_NAME ,ENABLED,DEPT_CODE,PARENT_ID FROM DEPARTMENTS");
+			stmt = con.prepareStatement("SELECT DEPT_ID,DEPT_AR_NAME ,DEPT_EN_NAME  FROM DEPARTMENTS");
 			rs = stmt.executeQuery();
 			while (rs.next()) {		
 				DepartmentBean bean = new DepartmentBean();		
 				bean.setId(rs.getInt("DEPT_ID"));
 				bean.setNameAr(rs.getNString("DEPT_AR_NAME"));
 				bean.setNameEn(rs.getString("DEPT_EN_NAME"));
-				bean.setEnabled(rs.getBoolean("ENABLED"));
-				bean.setCode(rs.getNString("DEPT_CODE"));
-				bean.setParentId(rs.getInt("PARENT_ID"));
-				bean.setChildrenIds(getChildrenIds(bean.getId()));
-				bean.setUsersIds(fetchDepartmentUsers(bean.getId()));
-				bean.setStorageCenters(fetchDepartmentStorageCenters(bean.getId()));
-				bean.setClassificationIds(fetchDepartmentClassificationIds(bean.getId()));
+
+//				bean.setChildrenIds(getChildrenIds(bean.getId()));
+//				bean.setUsersIds(fetchDepartmentUsers(bean.getId()));
+//				bean.setStorageCenters(fetchDepartmentStorageCenters(bean.getId()));
+//				bean.setClassificationIds(fetchDepartmentClassificationIds(bean.getId()));
 				departments.add(bean);					
 			}
 		} catch (SQLException e) {

@@ -26,24 +26,19 @@ public class GetClassificationsByUser extends CommandBase {
 			}
 			
 			Set<ClassificationModel> classifications;
-			System.out.println("our currentUserId " + currentUserId);
-			System.out.println("getSuperUserName: " + ConfigManager.getSuperUserName());
+
 	
 			if (ConfigManager.getSuperUserName().equalsIgnoreCase(currentUserId)) {
-				System.out.println("we enter superUser Condition");
 				classifications = ClassificationModel.getAllClassifications();
 			} else {
-				System.out.println("not entering superUser");
 				UserModel user = UserModel.getUserByLDAPName(currentUserId);
 				classifications = ClassificationModel.getClassificationsByUserId(user.getUserId());
 			}
 			
 			JSONArray arr = new JSONArray();
 			for (ClassificationModel c : classifications){
-//				if (c.getParentID() == 0) {
-//					arr.add(c.getFullStructure());
-//				}
-				arr.add(c.getFullStructure());
+
+				arr.add(c.getAsJson());
 
 			}
 			return arr.toString();
