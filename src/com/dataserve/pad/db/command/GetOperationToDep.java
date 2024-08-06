@@ -30,7 +30,8 @@ public class GetOperationToDep extends CommandBase{
             String departmentId = dataObj.containsKey("departmentId") ? (String) dataObj.get("departmentId") : "";
 
             if (departmentId.trim().isEmpty()) {
-                if (!currentUserId.equalsIgnoreCase(ConfigManager.getSuperUserName())) {
+    			if (!isValuePresent(ConfigManager.getSuperUserName(), currentUserId)) {
+//                if (!currentUserId.equalsIgnoreCase(ConfigManager.getSuperUserName())) {
                     GetUserDepartments getUserDepartments = new GetUserDepartments(request);
                     String userDepartmentsOutput = getUserDepartments.execute();
 

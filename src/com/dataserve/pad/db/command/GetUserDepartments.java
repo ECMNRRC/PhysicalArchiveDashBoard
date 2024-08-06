@@ -1,6 +1,5 @@
 package com.dataserve.pad.db.command;
 
-import java.util.List;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -29,7 +28,7 @@ public class GetUserDepartments extends CommandBase {
 		}
 		try {
 			JSONArray arr = new JSONArray();
-			if (currentUserId.equalsIgnoreCase(ConfigManager.getSuperUserName())) {
+			if (isValuePresent(ConfigManager.getSuperUserName(), currentUserId)) {
 				Set<DepartmentModel> departments = DepartmentModel.getAllDepartmentsAsTree();
 				for (DepartmentModel dm : departments) {
 					arr.add(dm.getAsJson());
@@ -54,7 +53,7 @@ public class GetUserDepartments extends CommandBase {
 
 	@Override
 	protected ActionType getActionType() {
-		return null;
+		return ActionType.VIEW;
 	}
 
 }

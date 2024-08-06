@@ -4,12 +4,12 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.dataserve.pad.util.ConfigManager;
 import com.dataserve.pad.business.classification.ClassificationException;
 import com.dataserve.pad.business.classification.ClassificationModel;
+import com.dataserve.pad.business.users.UserModel;
 import com.dataserve.pad.permissions.ActionType;
 import com.dataserve.pad.permissions.Module;
-import com.dataserve.pad.business.users.UserModel;
+import com.dataserve.pad.util.ConfigManager;
 import com.ibm.json.java.JSONArray;
 
 public class GetClassificationsByUser extends CommandBase {
@@ -28,7 +28,7 @@ public class GetClassificationsByUser extends CommandBase {
 			Set<ClassificationModel> classifications;
 
 	
-			if (ConfigManager.getSuperUserName().equalsIgnoreCase(currentUserId)) {
+			if (isValuePresent(ConfigManager.getSuperUserName(), currentUserId)) {
 				classifications = ClassificationModel.getAllClassifications();
 			} else {
 				UserModel user = UserModel.getUserByLDAPName(currentUserId);
@@ -46,7 +46,8 @@ public class GetClassificationsByUser extends CommandBase {
 			throw new ClassificationException("Error getting classification for user with id '" + currentUserId + "'", e);
 		}
 	}
-
+	
+	
 	@Override
 	protected Module getModule() {
 		return Module.CLASSIFICATION;
@@ -54,7 +55,7 @@ public class GetClassificationsByUser extends CommandBase {
 
 	@Override
 	protected ActionType getActionType() {
-		return null;
+		return ActionType.VIEW;
 	}
 
 }

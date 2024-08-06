@@ -1,6 +1,8 @@
 package com.dataserve.pad.db.command;
 
 import java.sql.Timestamp;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -37,7 +39,7 @@ public abstract class CommandBase implements Command {
 			return true;
 		}
 		
-		if (currentUserId.equalsIgnoreCase(ConfigManager.getSuperUserName())) {
+		if (isValuePresent(ConfigManager.getSuperUserName(), currentUserId)) {
 			return true;
 		}
 		
@@ -98,4 +100,12 @@ public abstract class CommandBase implements Command {
 		bean.setUserId(UserModel.getUserByLDAPName(currentUserId).getUserId());
 		return bean;
 	}
+	
+	protected  boolean isValuePresent(String input, String value) {
+        if (input == null || value == null) {
+            return false;
+        }
+        List<String> items = Arrays.asList(input.split(";"));
+        return items.contains(value);
+    }
 }

@@ -25,7 +25,8 @@ public class GetFilterData extends CommandBase{
         JSONObject dataObj = new JSONObject();
 
 		try{
-            if (!currentUserId.equalsIgnoreCase(ConfigManager.getSuperUserName())) {
+			if (!isValuePresent(ConfigManager.getSuperUserName(), currentUserId)) {
+//            if (!currentUserId.equalsIgnoreCase(ConfigManager.getSuperUserName())) {
                 GetUserDepartments getUserDepartments = new GetUserDepartments(request);
                 String userDepartmentsOutput = getUserDepartments.execute();
 

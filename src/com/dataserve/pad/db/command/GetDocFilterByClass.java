@@ -119,7 +119,8 @@ public class GetDocFilterByClass extends CommandBase {
 
 
             if (departmentId.trim().isEmpty()) {
-                if (!currentUserId.equalsIgnoreCase(ConfigManager.getSuperUserName())) {
+    			if (!isValuePresent(ConfigManager.getSuperUserName(), currentUserId)) {
+//                if (!currentUserId.equalsIgnoreCase(ConfigManager.getSuperUserName())) {
                     GetUserDepartments getUserDepartments = new GetUserDepartments(request);
                     String userDepartmentsOutput = getUserDepartments.execute();
 

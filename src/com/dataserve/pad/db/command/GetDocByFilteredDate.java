@@ -1,5 +1,7 @@
 package com.dataserve.pad.db.command;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -27,7 +29,8 @@ public class GetDocByFilteredDate extends CommandBase {
         JSONObject dataObj = new JSONObject();
 
         try {
-            if (!currentUserId.equalsIgnoreCase(ConfigManager.getSuperUserName())) {
+			if (!isValuePresent(ConfigManager.getSuperUserName(), currentUserId)) {
+//            if (!currentUserId.equalsIgnoreCase(ConfigManager.getSuperUserName())) {
                 GetUserDepartments getUserDepartments = new GetUserDepartments(request);
                 String userDepartmentsOutput = getUserDepartments.execute();
 
@@ -66,7 +69,7 @@ public class GetDocByFilteredDate extends CommandBase {
             throw new Exception("Error getting Linked Document", e);
         }
     }
-
+   
     @Override
     protected Module getModule() {
         return null;
