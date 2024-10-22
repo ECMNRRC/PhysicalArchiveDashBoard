@@ -24,5 +24,22 @@
 	    <div data-dojo-attach-point="sixthChartContainer" style="width: 80%; height: 500px; margin: 0 auto; box-shadow: 0px 0px 10px rgba(0,0,0,0.5); box-sizing: content-box;"></div>   
 	</div>
 	
+<div data-dojo-type="dijit/layout/ContentPane" title="لوحة الاحصائيات" data-dojo-props="selected:true">
+    <div style="text-align: center; margin-bottom: 40px;">
+        <button data-dojo-attach-point="filterButtonElectronicAndArchiveDoc" data-dojo-attach-event="onClick: getElectronicAndArchiveDoc" style="width: 150px; height: 50px; font-size: 18px; margin-left: 20px; margin-right: 20px;">
+            ${_lcl.VIEW_DOCUMENTS}
+        </button>
+    </div>
+    
+    <!-- Total count container -->
+    <div id="totalCountContainer" style="text-align: center; font-size: 18px; margin-bottom: 20px;">
+        <!-- Total document count will be injected here -->
+    </div>
+    
+    <!-- Chart container -->
+    <div data-dojo-attach-point="firstChartContainerElectronicAndArchiveDoc" style="width: 80%; height: 500px; margin: 0 auto; box-shadow: 0px 0px 10px rgba(0,0,0,0.5); box-sizing: content-box;"></div>   
+</div>
+
+	
 	</div>
 </div>

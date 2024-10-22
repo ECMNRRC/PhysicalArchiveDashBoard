@@ -65,5 +65,13 @@ define({
 	EMP:"الموظفين",
 	OPERATION:"العمليه",
 	CLASSIFICATION:"التصنيف",
+	 ARCHIVED_DOCS: "الوثائق الورقية",
+     ELECTRONIC_DOCS: "الوثائق الإلكترونية",
+     DOCS_DISTRIBUTION_TITLE: "توزيع الوثائق الورقية والإلكترونية",
+     VIEW_DOCUMENTS: "عرض الوثائق",
+     DOCUMENTS: "الوثائق",
+     TOTAL_DOCS: "إجمالي الوثائق", 
+     DOCUMENT_COUNT_LABEL: "عدد الوثائق",  
+     PERCENTAGE_LABEL: "والنسبة المئوية" 
 
 });

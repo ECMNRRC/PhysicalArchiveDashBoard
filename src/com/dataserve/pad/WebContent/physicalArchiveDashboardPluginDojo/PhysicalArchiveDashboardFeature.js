@@ -606,6 +606,11 @@ function(
 			              this.renderCharts();
 			  		},
 			  		
+			  		getElectronicAndArchiveDoc: function(){
+
+			              this.renderChartsElectronicAndArchiveDoc();
+			  		},
+			  		
 			  		
 				  	getDocbyDate: function(){
 				  		debugger
@@ -633,6 +638,32 @@ function(
 						this.groups = JSON.parse(JSON.stringify(results));
 						return results;
 				  		},
+				  		
+				  		GetElectronicAndArchiveDocCount: function(){
+							var toaster = new Toaster();
+				  			params = {
+				  					method: "GetElectronicAndArchiveDoc",
+									};
+					  			
+					 		var response = ecm.model.Request.invokeSynchronousPluginService("PhysicalArchiveDashboardPlugin", "PhysicalArchiveDashBoardService",params);
+					 		var resultSet = new ResultSet(response);
+					       
+							var results = [];
+							if(!resultSet.result.startsWith("ERROR")){
+								results = json.parse(resultSet.result, true);
+							} else {
+								if (resultSet.result.includes("(ACCESS DENIED)")) {
+									toaster.redToaster(lcl.ACCESS_DENIED);						
+								} else {
+									toaster.redToaster(lcl.FAILED_TO_FETCH_DATA);
+								}
+								console.log("Failed to load data!");
+								console.log(resultSet);
+							}
+								
+							this.groups = JSON.parse(JSON.stringify(results));
+							return results;
+					  		},
 				  		
 				  		getDocByFilteredDate: function(dateTo, dateFrom){
 				  			debugger
@@ -784,6 +815,64 @@ function(
 				  		    this._chartInstance = new ApexCharts(this.sixthChartContainer, chartOptions);
 				  		    this._chartInstance.render();
 				  		},
+				  		
+				  		renderChartsElectronicAndArchiveDoc: function() {
+
+				  		    if (this._chartInstance) {
+				  		        this._chartInstance.destroy();
+				  		    }
+				  		    
+				  		    // Get the response for electronic and archived documents
+				  		    var dataResponse = this.GetElectronicAndArchiveDocCount();
+
+				  		    if (!dataResponse) {
+				  		        console.error('No data received for electronic and archived documents.');
+				  		        return;
+				  		    }
+
+				  		    // Extract the counts from the response
+				  		    var totalCount = dataResponse.TotalCount || 0;
+				  		    var archivedCount = dataResponse.ArchivedCount || 0;
+				  		    var electronicCount = dataResponse.ElectronicCount || 0;
+
+				  		    // Calculate percentages
+				  		    var archivedPercentage = totalCount > 0 ? ((archivedCount / totalCount) * 100).toFixed(2) : 0;
+				  		    var electronicPercentage = totalCount > 0 ? ((electronicCount / totalCount) * 100).toFixed(2) : 0;
+
+				  		    // Update the total document count in the totalCountContainer div
+				  		    document.getElementById('totalCountContainer').innerHTML = this._lcl.TOTAL_DOCS + ': ' + totalCount;
+
+				  		    // Chart options for displaying the archived and electronic document counts
+				  		  var chartOptions = {
+				  			    series: [archivedCount, electronicCount], // The data for the pie chart
+				  			    labels: [
+				  			        this._lcl.ARCHIVED_DOCS + ': ' + this._lcl.DOCUMENT_COUNT_LABEL+ ' (' + archivedCount +')' + ' ' + this._lcl.PERCENTAGE_LABEL +' (' + archivedPercentage + '%)',
+				  			        this._lcl.ELECTRONIC_DOCS + ': ' +this._lcl.DOCUMENT_COUNT_LABEL+ ' ('+ electronicCount + ')' + ' ' + this._lcl.PERCENTAGE_LABEL +' (' + electronicPercentage + '%)'
+				  			    ], // Labels with count and percentage
+				  			   
+				  			    chart: {
+				  			        type: 'pie',
+				  			        height: 400
+				  			    },
+				  			    title: {
+				  			        text: this._lcl.DOCS_DISTRIBUTION_TITLE, // Title for the chart
+				  			        align: 'center'
+				  			    },
+				  			    tooltip: {
+				  			        y: {
+				  			            formatter: function(value) {
+//				  			                return value + ' ' + this._lcl.DOCUMENTS; // Tooltip formatter for document count
+				  			            }.bind(this) // Bind this to ensure correct context
+				  			        }
+				  			    }
+				  			};
+
+				  			// Render the chart in the firstChartContainerElectronicAndArchiveDoc div
+				  			this._chartInstance = new ApexCharts(this.firstChartContainerElectronicAndArchiveDoc, chartOptions);
+				  			this._chartInstance.render();
+				  		},
+
+
 				  		
 				  		
 				  		getFilterData : function() {

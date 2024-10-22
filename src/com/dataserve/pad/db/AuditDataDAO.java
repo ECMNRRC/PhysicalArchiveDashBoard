@@ -421,6 +421,52 @@ public class AuditDataDAO extends AbstractDAO {
     }
     
     
+    public Map<String, Integer> fetchElectronicAndArchiveDocCounts() throws DatabaseException {
+        Map<String, Integer> counts = new HashMap<>();
+        try {
+            // Get total documents count
+            String totalQuery = "SELECT COUNT(*) AS TotalCount FROM dbo.DMS_FILES";
+            stmt = con.prepareStatement(totalQuery);
+            rs = stmt.executeQuery();
+            if (rs.next()) {
+                counts.put("TotalCount", rs.getInt("TotalCount"));
+            }
+            rs.close();
+            stmt.close();
+
+            // Get archived documents count
+            String archivedQuery = "SELECT COUNT(*) AS ArchivedCount FROM dbo.DMS_FILES WHERE FOLDER_ID IS NOT NULL";
+            stmt = con.prepareStatement(archivedQuery);
+            rs = stmt.executeQuery();
+            if (rs.next()) {
+                counts.put("ArchivedCount", rs.getInt("ArchivedCount"));
+            }
+            rs.close();
+            stmt.close();
+
+            // Get electronic documents count
+            String electronicQuery = "SELECT COUNT(*) AS ElectronicCount FROM dbo.DMS_FILES WHERE FOLDER_ID IS NULL";
+            stmt = con.prepareStatement(electronicQuery);
+            rs = stmt.executeQuery();
+            if (rs.next()) {
+                counts.put("ElectronicCount", rs.getInt("ElectronicCount"));
+            }
+            rs.close();
+            stmt.close();
+        } catch (SQLException e) {
+            throw new DatabaseException("Error fetching document counts", e);
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (stmt != null) stmt.close();
+            } catch (SQLException e) {
+                // Handle exceptions
+            }
+        }
+        return counts;
+    }
+
+    
     public Set<AuditDataBean> fetchDocByFilteredDate(String dateTo, String dateFrom, JSONObject dataObj) throws DatabaseException {
         Set<AuditDataBean> beans = new LinkedHashSet<>();
 

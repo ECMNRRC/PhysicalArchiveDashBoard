@@ -113,6 +113,16 @@ public class AuditDataModel {
     	}
     }
     
+    public static Map<String, Integer> getElectronicAndArchiveDocCounts() throws ClassificationException {
+        try {
+            AuditDataDAO dao = new AuditDataDAO();
+            return dao.fetchElectronicAndArchiveDocCounts();
+        } catch (DatabaseException e) {
+            throw new ClassificationException("Error getting document counts", e);
+        }
+    }
+
+    
     public static Set<AuditDataModel> getDocByFilteredDate(String dateTo, String DateFrom, JSONObject dataObj) throws ClassificationException {
     	try {
     		AuditDataDAO dao = new AuditDataDAO();           

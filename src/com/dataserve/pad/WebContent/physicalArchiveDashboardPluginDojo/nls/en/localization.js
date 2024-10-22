@@ -66,6 +66,14 @@ define({
 	EMP:"Employee",
 	OPERATION:"Operation",
 	CLASSIFICATION:"Classification",
+	ARCHIVED_DOCS: "Paper Documents",
+    ELECTRONIC_DOCS: "Electronic Documents",
+    DOCS_DISTRIBUTION_TITLE: "Distribution of Paper and Electronic Documents",
+    VIEW_DOCUMENTS: "View Documents",
+    DOCUMENTS: "documents",
+    TOTAL_DOCS: "Total Documents",
+    DOCUMENT_COUNT_LABEL: "Document Count:", 
+    PERCENTAGE_LABEL: "Percentage:"  
 
 	
 
