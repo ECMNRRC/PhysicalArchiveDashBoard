@@ -1,16 +1,14 @@
 package com.dataserve.pad.bean;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
-import java.util.Locale;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.dataserve.pad.bean.AuditDataBean;
 import com.dataserve.pad.business.classification.ClassificationException;
 import com.dataserve.pad.db.AuditDataDAO; // Consider renaming this DAO if it specifically handles AuditData now.
 import com.dataserve.pad.db.DatabaseException;
-import com.ibm.json.java.JSONArray;
 import com.ibm.json.java.JSONObject;
 
 public class AuditDataModel {
@@ -121,6 +119,40 @@ public class AuditDataModel {
             throw new ClassificationException("Error getting document counts", e);
         }
     }
+    
+    public static Map<String, Integer> getKeyWordDocCounts() throws ClassificationException {
+        try {
+            AuditDataDAO dao = new AuditDataDAO();
+            return dao.fetchKeyWordDocCounts();
+        } catch (DatabaseException e) {
+            throw new ClassificationException("Error getting document counts", e);
+        }
+    }
+    
+    public static List<Map<String, Object>> getViewRequestsData() throws ClassificationException {
+        try {
+            AuditDataDAO dao = new AuditDataDAO();
+            return dao.fetchViewRequestsData();
+        } catch (DatabaseException e) {
+            throw new ClassificationException("Error fetching view requests data", e);
+        }
+    }
+    
+ // Method to get borrowing requests data from the database
+    public static List<Map<String, Object>> getBorrowingRequestsData() throws ClassificationException {
+        List<Map<String, Object>> results = new ArrayList<>();
+
+        try {
+            AuditDataDAO dao = new AuditDataDAO();
+            results = dao.fetchBorrowingRequestsData();
+        } catch (DatabaseException e) {
+            throw new ClassificationException("Error fetching borrowing requests data", e);
+        }
+
+        return results;
+    }
+
+
 
     
     public static Set<AuditDataModel> getDocByFilteredDate(String dateTo, String DateFrom, JSONObject dataObj) throws ClassificationException {

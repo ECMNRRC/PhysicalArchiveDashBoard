@@ -25,21 +25,106 @@
 	</div>
 	
 <div data-dojo-type="dijit/layout/ContentPane" title="لوحة الاحصائيات" data-dojo-props="selected:true">
-    <div style="text-align: center; margin-bottom: 40px;">
-        <button data-dojo-attach-point="filterButtonElectronicAndArchiveDoc" data-dojo-attach-event="onClick: getElectronicAndArchiveDoc" style="width: 150px; height: 50px; font-size: 18px; margin-left: 20px; margin-right: 20px;">
-            ${_lcl.VIEW_DOCUMENTS}
-        </button>
-    </div>
-    
-    <!-- Total count container -->
-    <div id="totalCountContainer" style="text-align: center; font-size: 18px; margin-bottom: 20px;">
-        <!-- Total document count will be injected here -->
-    </div>
-    
-    <!-- Chart container -->
-    <div data-dojo-attach-point="firstChartContainerElectronicAndArchiveDoc" style="width: 80%; height: 500px; margin: 0 auto; box-shadow: 0px 0px 10px rgba(0,0,0,0.5); box-sizing: content-box;"></div>   
+
+     <!-- Buttons to switch between different datasets -->
+  <div style="text-align: center; margin-bottom: 40px; display: flex; justify-content: center; gap: 20px;">
+    <!-- Button to show View Requests Data -->
+    <button data-dojo-attach-point="filterButtonElectronicAndArchiveDoc" 
+                data-dojo-attach-event="onClick: getElectronicAndArchiveDoc" 
+            style="width: 150px; height: 50px; font-size: 18px;">
+        ${_lcl.VIEW_DOCUMENTS}
+    </button>
+  <!-- Button to show Borrowing Requests Data -->
+    <button data-dojo-attach-point="KeywordDocBtn" 
+            data-dojo-attach-event="onClick: getKeywordDocData" 
+            style="width: 150px; height: 50px; font-size: 18px;">
+        ${_lcl.VIEW_KEYWORD_DOCS}
+    </button>
 </div>
 
-	
+    <!-- Total document count container (for Electronic and Archive Documents) -->
+    <div id="totalCountContainer" data-dojo-attach-point="totalCountContainer" 
+         style="text-align: center; font-size: 18px; margin-bottom: 20px;">
+        <!-- Total document count will be injected here -->
+    </div>
+
+    <!-- Chart container for Electronic and Archive Documents -->
+    <div data-dojo-attach-point="firstChartContainerElectronicAndArchiveDoc" 
+         style="width: 80%; height: 500px;display: none; margin: 0 auto; box-shadow: 0px 0px 10px rgba(0,0,0,0.5); box-sizing: content-box;">
+    </div>
+    <div data-dojo-attach-point="secondChartContainerKeywordDoc" style="width: 80%; height: 500px; margin: 35px auto; box-shadow: 0px 0px 10px rgba(0,0,0,0.5); box-sizing: content-box;display: none;"></div>
+</div>
+
+ <!-- Chart container for Borrowing Requests -->
+<div data-dojo-type="dijit/layout/ContentPane" title="لوحة الطلبات" data-dojo-props="selected:true">
+<!-- Buttons to switch between different datasets -->
+<div style="text-align: center; margin-bottom: 40px; display: flex; justify-content: center; gap: 20px;">
+    <!-- Button to show View Requests Data -->
+    <button data-dojo-attach-point="filterButtonViewRequests" 
+            data-dojo-attach-event="onClick: getViewRequestsData" 
+            style="width: 150px; height: 50px; font-size: 18px; background-color: white; color: black; border: 2px solid black;">
+        ${_lcl.VIEW_REQUESTS}
+    </button>
+
+    <!-- Button to show Borrowing Requests Data -->
+   
+</div>
+
+
+    <!-- Total counts and statistics for View Requests (as a table) -->
+    <div id="totalRequestsContainer" data-dojo-attach-point="totalRequestsContainer" 
+         style="text-align: center; font-size: 18px; margin-bottom: 20px; display: none;">
+        <table style="width: 80%; margin: 0 auto; border-collapse: collapse; font-size: 16px;">
+            <thead>
+                <tr style="background-color: #f2f2f2;">
+                    <th style="padding: 10px; border: 1px solid #ddd;">${_lcl.REQUEST_TYPE}</th>
+                    <th style="padding: 10px; border: 1px solid #ddd;">${_lcl.REQUEST_COUNT}</th>
+                    <th style="padding: 10px; border: 1px solid #ddd;">${_lcl.PERCENTAGE_LABEL}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="padding: 10px; border: 1px solid #ddd;">${_lcl.TOTAL_REQUESTS}</td>
+                    <td id="totalRequestsCount" style="padding: 10px; border: 1px solid #ddd;"></td>
+                    <td></td> <!-- No percentage for total requests -->
+                </tr>
+                <tr>
+                    <td style="padding: 10px; border: 1px solid #ddd;">${_lcl.ELECTRONIC_REQUESTS}</td>
+                    <td id="electronicRequestsCount" style="padding: 10px; border: 1px solid #ddd;"></td>
+                    <td id="electronicPercentage" style="padding: 10px; border: 1px solid #ddd;"></td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px; border: 1px solid #ddd;">${_lcl.PAPER_REQUESTS}</td>
+                    <td id="paperRequestsCount" style="padding: 10px; border: 1px solid #ddd;"></td>
+                    <td id="paperPercentage" style="padding: 10px; border: 1px solid #ddd;"></td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px; border: 1px solid #ddd;">${_lcl.ACCEPTED_REQUESTS}</td>
+                    <td id="acceptedRequestsCount" style="padding: 10px; border: 1px solid #ddd;"></td>
+                    <td id="acceptedPercentage" style="padding: 10px; border: 1px solid #ddd;"></td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px; border: 1px solid #ddd;">${_lcl.REJECTED_REQUESTS}</td>
+                    <td id="rejectedRequestsCount" style="padding: 10px; border: 1px solid #ddd;"></td>
+                    <td id="rejectedPercentage" style="padding: 10px; border: 1px solid #ddd;"></td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px; border: 1px solid #ddd;">${_lcl.COMPLETED_REQUESTS}</td>
+                    <td id="completedRequestsCount" style="padding: 10px; border: 1px solid #ddd;"></td>
+                    <td id="completedPercentage" style="padding: 10px; border: 1px solid #ddd;"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Chart container for View Requests -->
+    <div data-dojo-attach-point="viewRequestsChartContainer" 
+         style="width: 80%; height: 500px; margin: 0 auto; box-shadow: 0px 0px 10px rgba(0,0,0,0.5); box-sizing: content-box; display: none;">
+    </div>
+
+ <!-- Total counts and statistics for Borrowing Requests (as a table) -->
+
+</div>
+
 	</div>
 </div>

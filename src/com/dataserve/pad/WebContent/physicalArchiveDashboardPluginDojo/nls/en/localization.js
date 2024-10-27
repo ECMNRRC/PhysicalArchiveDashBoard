@@ -73,7 +73,30 @@ define({
     DOCUMENTS: "documents",
     TOTAL_DOCS: "Total Documents",
     DOCUMENT_COUNT_LABEL: "Document Count:", 
-    PERCENTAGE_LABEL: "Percentage:"  
+    PERCENTAGE_LABEL: "Percentage:",
+    
+    VIEW_REQUESTS: "View Requests",
+    VIEW_REQUESTS_TITLE: "View Requests by Type and Status",
+    REQUESTS: "requests",
+    TOTAL_REQUESTS: 'Total Requests',
+    ELECTRONIC_REQUESTS: 'Electronic Requests',
+    PAPER_REQUESTS: 'Paper Requests',
+    ACCEPTED_REQUESTS: 'Accepted Requests',
+    REJECTED_REQUESTS: 'Rejected Requests',
+    COMPLETED_REQUESTS: 'Completed Requests',
+    REQUEST_COUNT: 'Request Count',
+    REQUEST_TYPE: 'Request Type',
+
+    
+    TOTAL_BORROWING_REQUESTS: 'Total Borrowing Requests',
+    BORROWING_REQUESTS_TITLE: 'Borrowing Requests Statistics',
+    REQUESTS: 'Requests',
+    VIEW_BORROWING_REQUESTS: 'View Borrowing Requests',
+
+    VIEW_KEYWORD_DOCS: "View Keyword Documents",
+    KEYWORD_DOCS:"Documents with keyword",
+    NON_KEYWORD_DOCS:"Documents without keyword",
+    KEYWORD_DOCS_TITLE:"Distribution of documents with keyword",
 
 	
 

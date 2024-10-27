@@ -1,17 +1,16 @@
 package com.dataserve.pad.db;
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
-import java.util.Locale;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import java.sql.SQLException;
 
 import com.dataserve.pad.bean.AuditDataBean;
-import com.dataserve.pad.business.classification.ClassificationException;
-import com.dataserve.pad.db.DatabaseException;
 import com.ibm.json.java.JSONArray;
 import com.ibm.json.java.JSONObject;
 
@@ -464,6 +463,124 @@ public class AuditDataDAO extends AbstractDAO {
             }
         }
         return counts;
+    }
+    
+    
+    public Map<String, Integer> fetchKeyWordDocCounts() throws DatabaseException {
+        Map<String, Integer> counts = new HashMap<>();
+        try {
+            String totalQuery = "SELECT COUNT(*) AS TotalCount FROM dbo.DMS_FILES";
+            stmt = con.prepareStatement(totalQuery);
+            rs = stmt.executeQuery();
+            if (rs.next()) {
+                counts.put("TotalCount", rs.getInt("TotalCount"));
+            }
+            rs.close();
+            stmt.close();
+            String keywordQuery = "SELECT COUNT(*) as keywordDocCount FROM DMS_FILES "+
+                    "INNER JOIN DMS_AUDIT ON DMS_AUDIT.FILE_ID = DMS_FILES.FILE_ID "+
+                    "INNER JOIN DMS_PROPERTIES_AUDIT ON DMS_AUDIT.DMS_AUDIT_ID = DMS_PROPERTIES_AUDIT.DMS_AUDIT_ID "+
+                    "WHERE DMS_AUDIT.OPERATION_ID IN (7, 4, 3) "+
+                    "AND DMS_PROPERTIES_AUDIT.PROPERTY_NAME = (SELECT VALUE FROM CONFIG WHERE NAME = 'KEYWORDS_PROPERTY_NAME')";
+            stmt = con.prepareStatement(keywordQuery);
+            rs = stmt.executeQuery();
+            if (rs.next()) {
+                counts.put("keywordDocCount", rs.getInt("keywordDocCount"));
+            }
+            rs.close();
+            stmt.close();
+        } catch (SQLException e) {
+            throw new DatabaseException("Error fetching document counts", e);
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (stmt != null) stmt.close();
+            } catch (SQLException e) {
+            }
+        }
+        return counts;
+    }
+    
+    public List<Map<String, Object>> fetchViewRequestsData() throws DatabaseException {
+        List<Map<String, Object>> results = new ArrayList();
+        try {
+            String query = "SELECT " +
+                "SYSL_VIEW_REQUEST_TYPE.NAME_AR AS ViewType, " +
+                "SYSL_CORR_STATUS.NAME_AR AS Status, " +
+                "COUNT(VIEW_REQUEST_TYPE_ID) AS ViewRequestTypeCount, " +
+                "COUNT(CORR_STATUS_ID) AS CorrStatusCount " +
+                "FROM req.CORR_DETAILS " +
+                "INNER JOIN req.SYSL_CORR_TYPE ON SYSL_CORR_TYPE.ID = CORR_DETAILS.CORR_TYPE_ID " +
+                "INNER JOIN req.SYSL_CORR_STATUS ON SYSL_CORR_STATUS.ID = CORR_DETAILS.CORR_STATUS_ID " +
+                "INNER JOIN req.SYSL_VIEW_REQUEST_TYPE ON SYSL_VIEW_REQUEST_TYPE.ID = CORR_DETAILS.VIEW_REQUEST_TYPE_ID " +
+                "WHERE CORR_DETAILS.CORR_TYPE_ID = 1 " +
+                "AND CORR_DETAILS.VIEW_REQUEST_TYPE_ID IN (1, 2) " +
+                "AND CORR_DETAILS.CORR_STATUS_ID IN (3, 4, 5) " +
+                "GROUP BY SYSL_VIEW_REQUEST_TYPE.NAME_AR, SYSL_CORR_STATUS.NAME_AR";
+
+            stmt = con.prepareStatement(query);
+            rs = stmt.executeQuery();
+            
+            while (rs.next()) {
+                Map<String, Object> row = new HashMap<>();
+                row.put("ViewType", rs.getString("ViewType"));
+                row.put("Status", rs.getString("Status"));
+                row.put("ViewRequestTypeCount", rs.getInt("ViewRequestTypeCount"));
+                row.put("CorrStatusCount", rs.getInt("CorrStatusCount"));
+                results.add(row);
+            }
+
+        } catch (SQLException e) {
+            throw new DatabaseException("Error fetching view requests data", e);
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (stmt != null) stmt.close();
+            } catch (SQLException e) {
+                // Handle exceptions
+            }
+        }
+        return results;
+    }
+
+    
+ // Fetch borrowing requests statistics
+    public List<Map<String, Object>> fetchBorrowingRequestsData() throws DatabaseException {
+        List<Map<String, Object>> results = new ArrayList<>();
+
+        try {
+            // SQL query to fetch borrowing request stats
+            String query = "SELECT SYSL_CORR_STATUS.NAME_AR AS Status, COUNT(CORR_STATUS_ID) AS CORR_STATUS_COUNT "
+                    + "FROM req.CORR_DETAILS "
+                    + "INNER JOIN req.SYSL_CORR_STATUS ON SYSL_CORR_STATUS.ID = CORR_DETAILS.CORR_STATUS_ID "
+                    + "WHERE CORR_DETAILS.CORR_TYPE_ID = 2 "
+                    + "AND CORR_DETAILS.CORR_STATUS_ID IN (3, 4, 5) "
+                    + "GROUP BY SYSL_CORR_STATUS.NAME_AR";
+
+            stmt = con.prepareStatement(query);
+            rs = stmt.executeQuery();
+
+            // Loop through the result set
+            while (rs.next()) {
+                Map<String, Object> row = new HashMap<>();
+                row.put("Status", rs.getString("Status"));
+                row.put("CORR_STATUS_COUNT", rs.getInt("CORR_STATUS_COUNT"));
+                results.add(row);
+            }
+
+        } catch (SQLException e) {
+            throw new DatabaseException("Error fetching borrowing requests data", e);
+        } finally {
+            // Close resources
+            try {
+                if (rs != null) rs.close();
+                if (stmt != null) stmt.close();
+            } catch (SQLException e) {
+                // Handle exception
+            }
+        }
+
+        return results;
     }
 
     

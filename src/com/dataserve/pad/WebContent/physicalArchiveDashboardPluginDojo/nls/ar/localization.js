@@ -72,6 +72,28 @@ define({
      DOCUMENTS: "الوثائق",
      TOTAL_DOCS: "إجمالي الوثائق", 
      DOCUMENT_COUNT_LABEL: "عدد الوثائق",  
-     PERCENTAGE_LABEL: "والنسبة المئوية" 
+     PERCENTAGE_LABEL: "النسبة المئوية" ,
+     VIEW_REQUESTS: "عرض طلبات الاطلاع",
+     VIEW_REQUESTS_TITLE: "طلبات الاطلاع حسب النوع والحالة",
+     REQUESTS: "الطلبات",
+     TOTAL_REQUESTS: 'إجمالي الطلبات',
+     ELECTRONIC_REQUESTS: 'الطلبات الإلكترونية',
+     PAPER_REQUESTS: 'الطلبات الورقية',
+     ACCEPTED_REQUESTS: 'الطلبات المقبولة',
+     REJECTED_REQUESTS: 'الطلبات المرفوضة',
+     COMPLETED_REQUESTS: 'الطلبات المنتهية',
+     REQUEST_COUNT: 'عدد الطلبات',
+     REQUEST_TYPE: 'نوع الطلب',
+     
+     
+     VIEW_BORROWING_REQUESTS: 'عرض طلبات الإعارة',
+     TOTAL_BORROWING_REQUESTS: 'إجمالي طلبات الإعارة',
+     BORROWING_REQUESTS_TITLE: 'إحصائيات طلبات الإعارة',
+     REQUESTS: 'الطلبات',
+     
+     VIEW_KEYWORD_DOCS: "عرض الكلمات المفتاحية",
+     KEYWORD_DOCS:"وثائق ذات كلمه مفتاحيه",
+	 NON_KEYWORD_DOCS:"وثائق لاتحتوي على كلمه مفتاحيه",
+	 KEYWORD_DOCS_TITLE:"توزيع الوثائق ذات كلمه مفتاحيه ",
 
 });
