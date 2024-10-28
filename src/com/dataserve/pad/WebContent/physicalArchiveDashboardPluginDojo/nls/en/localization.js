@@ -97,6 +97,8 @@ define({
     KEYWORD_DOCS:"Documents with keyword",
     NON_KEYWORD_DOCS:"Documents without keyword",
     KEYWORD_DOCS_TITLE:"Distribution of documents with keyword",
+    TOTAL_KEYWORD_DOCS: "Total Documents With Keyword",
+
 
 	
 

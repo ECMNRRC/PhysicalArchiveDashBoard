@@ -110,6 +110,10 @@ define([
                  this._parent.secondChartContainerKeywordDoc.style.display = 'block';
              }
              
+             if (this._parent.totalCountContainer) {
+                 this._parent.totalKeywordDoc.style.display = 'block';
+             }
+             
        	  if (this._chartInstance) {
               this._chartInstance.destroy();
           }
@@ -127,6 +131,8 @@ define([
             var keywordDocPercentage = totalCount > 0 ? ((keywordDocCount / totalCount) * 100).toFixed(2) : 0;
             var nonKeywordDocCount = totalCount - keywordDocCount;
             var nonKeywordDocPercentage = totalCount > 0 ? ((nonKeywordDocCount / totalCount) * 100).toFixed(2) : 0;
+
+            document.getElementById('totalKeywordDoc').innerHTML = this._lcl.TOTAL_KEYWORD_DOCS + ': ' + keywordDocCount;
 
             // Chart options for keyword document data
             var chartOptions = {
