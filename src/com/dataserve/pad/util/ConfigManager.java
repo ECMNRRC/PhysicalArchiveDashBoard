@@ -8,7 +8,10 @@ import com.dataserve.pad.db.dao.ConfigDAO;
 
 public class ConfigManager {
 	private static Properties props;
-	
+	private static String transferCustomProperty;
+
+
+
 	static {
 		props = new Properties();
 		loadProps();
@@ -71,5 +74,21 @@ public class ConfigManager {
 	
 	public static String getKeywordsPropertyName() {
 		return props.getProperty("KEYWORDS_PROPERTY_NAME");
+	}
+	
+	public static boolean useTransferCreateDate() {
+		return "1".equals(props.getProperty("USE_TRANSFER_CREATE_DATE"));
+	}
+	
+	public static String getTransferCustomProperty() {
+		return transferCustomProperty;
+	}
+	
+	public static boolean useDestructionCreateDate() {
+		return "1".equals(props.getProperty("USE_DESTRUCTION_CREATE_DATE"));
+	}
+	
+	public static String getDestructionCustomProperty() {
+		return props.getProperty("DESTRUCTION_CUSTOM_DATE_PROPERTY");
 	}
 }

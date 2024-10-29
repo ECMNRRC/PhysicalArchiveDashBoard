@@ -17,7 +17,8 @@ public class DmsFiles implements Serializable {
 
 	private int folerNo;
 	private int boxNo;
-	private ClassificationBean classifiction;
+	private ClassificationBean classification;
+	private Classifiction classifiction;
 	private Department department;
 	private User user;
 	private DMSDestroyStatus destroyStatus ;
@@ -69,12 +70,21 @@ public class DmsFiles implements Serializable {
 
 	
 
-	public ClassificationBean getClassifiction() {
+	public ClassificationBean getClassifictionBean() {
+		return classification;
+	}
+
+
+	public void setClassifictionBean(ClassificationBean classifiction) {
+		this.classification = classifiction;
+	}
+	
+	public Classifiction getClassifiction() {
 		return classifiction;
 	}
 
 
-	public void setClassifiction(ClassificationBean classifiction) {
+	public void setClassifiction(Classifiction classifiction) {
 		this.classifiction = classifiction;
 	}
 
@@ -284,11 +294,11 @@ public class DmsFiles implements Serializable {
 
 		if(this.getClassifiction() !=null){
 			if (Locale.ENGLISH.equals(locale)) {
-				obj.put("className", this.getClassifiction().getNameEn());
+				obj.put("className", this.getClassifictionBean().getNameEn());
 			}else{
-				obj.put("className", this.getClassifiction().getNameAr());
+				obj.put("className", this.getClassifictionBean().getNameAr());
 			}
-			obj.put("sympolicName", this.getClassifiction().getSymbolicName());
+			obj.put("sympolicName", this.getClassifictionBean().getSymbolicName());
 		}
 		if(this.getDepartment() !=null){
 			if (Locale.ENGLISH.equals(locale)) {
