@@ -103,7 +103,9 @@ function(
             var dataResponse = this.requestsDashboard.getViewRequestsData();
         },
 
-       
+        getBorrowingRequestsData: function () {
+            var dataResponse = this.requestsDashboard.getBorrowingRequestsData();
+        },
 
 		renderSecondChart: function(dataRes) {
 		    const dataResponse = dataRes;

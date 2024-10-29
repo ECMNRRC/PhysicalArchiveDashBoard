@@ -67,7 +67,11 @@
     </button>
 
     <!-- Button to show Borrowing Requests Data -->
-   
+    <button data-dojo-attach-point="filterButtonBorrowingRequests" 
+            data-dojo-attach-event="onClick: getBorrowingRequestsData" 
+            style="width: 150px; height: 50px; font-size: 18px; background-color: white; color: black; border: 2px solid black;">
+        ${_lcl.VIEW_BORROWING_REQUESTS}
+    </button>
 </div>
 
 
@@ -123,7 +127,47 @@
     </div>
 
  <!-- Total counts and statistics for Borrowing Requests (as a table) -->
+<div id="borrowingRequestsContainer" data-dojo-attach-point="borrowingRequestsContainer" 
+     style="text-align: center; font-size: 18px; margin-bottom: 20px; display: none;">
+    <table style="width: 80%; margin: 0 auto; border-collapse: collapse; font-size: 16px;">
+        <thead>
+            <tr style="background-color: #f2f2f2;">
+                <th style="padding: 10px; border: 1px solid #ddd;">${_lcl.REQUEST_TYPE}</th>
+                <th style="padding: 10px; border: 1px solid #ddd;">${_lcl.REQUEST_COUNT}</th>
+                <th style="padding: 10px; border: 1px solid #ddd;">${_lcl.PERCENTAGE_LABEL}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td style="padding: 10px; border: 1px solid #ddd;">${_lcl.TOTAL_BORROWING_REQUESTS}</td>
+                <td id="totalBorrowingRequestsCount" style="padding: 10px; border: 1px solid #ddd;"></td>
+                <td></td> <!-- No percentage for total borrowing requests -->
+            </tr>
+            <tr>
+                <td style="padding: 10px; border: 1px solid #ddd;">${_lcl.ACCEPTED_REQUESTS}</td>
+                <td id="acceptedBorrowingRequestsCount" style="padding: 10px; border: 1px solid #ddd;"></td>
+                <td id="acceptedBorrowingPercentage" style="padding: 10px; border: 1px solid #ddd;"></td>
+            </tr>
+            <tr>
+                <td style="padding: 10px; border: 1px solid #ddd;">${_lcl.REJECTED_REQUESTS}</td>
+                <td id="rejectedBorrowingRequestsCount" style="padding: 10px; border: 1px solid #ddd;"></td>
+                <td id="rejectedBorrowingPercentage" style="padding: 10px; border: 1px solid #ddd;"></td>
+            </tr>
+            <tr>
+                <td style="padding: 10px; border: 1px solid #ddd;">${_lcl.COMPLETED_REQUESTS}</td>
+                <td id="completedBorrowingRequestsCount" style="padding: 10px; border: 1px solid #ddd;"></td>
+                <td id="completedBorrowingPercentage" style="padding: 10px; border: 1px solid #ddd;"></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
 
+    
+
+    <!-- Chart container for Borrowing Requests -->
+    <div data-dojo-attach-point="borrowingRequestsChartContainer" 
+         style="width: 80%; height: 500px; margin: 0 auto; box-shadow: 0px 0px 10px rgba(0,0,0,0.5); box-sizing: content-box; display: none;">
+    </div>
 </div>
 
 	</div>

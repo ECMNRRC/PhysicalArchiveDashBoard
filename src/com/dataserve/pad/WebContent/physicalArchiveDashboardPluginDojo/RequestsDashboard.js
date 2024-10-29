@@ -186,7 +186,160 @@ define([
             dom.byId("completedPercentage").innerHTML = completedPercentage + "%";
         },
 
-        
+        // Method to get data for borrowing requests
+        GetBorrowingRequestsData: function () {
+            var params = {
+                method: "GetBorrowingRequestsData"
+            };
+
+            var response = ecm.model.Request.invokeSynchronousPluginService("PhysicalArchiveDashboardPlugin", "PhysicalArchiveDashBoardService", params);
+            var resultSet = new ResultSet(response);
+
+            var results = [];
+            if (!resultSet.result.startsWith("ERROR")) {
+                results = JSON.parse(resultSet.result, true);
+            } else {
+                this._handleError(resultSet);
+            }
+            return results;
+        },
+
+        // Show the borrowing requests chart and hide other sections
+        getBorrowingRequestsData: function () {
+            // Hide other sections
+            if (this._parent.firstChartContainerElectronicAndArchiveDoc) {
+                this._parent.firstChartContainerElectronicAndArchiveDoc.style.display = 'none';
+            }
+            if (this._parent.totalCountContainer) {
+                this._parent.totalCountContainer.style.display = 'none';
+            }
+            if (this._parent.totalRequestsContainer) {
+                this._parent.totalRequestsContainer.style.display = 'none';
+            }
+            if (this._parent.viewRequestsChartContainer) {
+                this._parent.viewRequestsChartContainer.style.display = 'none';
+            }
+
+            // Show borrowing requests section
+            if (this._parent.borrowingRequestsContainer) {
+                this._parent.borrowingRequestsContainer.style.display = 'block';
+            } else {
+                console.error("Borrowing Requests Container not found");
+            }
+            if (this._parent.borrowingRequestsChartContainer) {
+                this._parent.borrowingRequestsChartContainer.style.display = 'block';
+            }
+
+            // Call the method to render the borrowing requests chart
+            this.renderBorrowingRequestsChart();
+        },
+
+        // Render the chart for borrowing requests
+        renderBorrowingRequestsChart: function () {
+            if (this._chartInstance) {
+                this._chartInstance.destroy();
+            }
+
+            var dataResponse = this.GetBorrowingRequestsData();
+
+            if (!dataResponse || dataResponse.length === 0) {
+                console.error("No data received for borrowing requests.");
+                return;
+            }
+
+            var totalRequests = 0;
+            var acceptedRequestsCount = 0;
+            var rejectedRequestsCount = 0;
+            var completedRequestsCount = 0;
+
+            dataResponse.forEach(item => {
+                totalRequests += item.CORR_STATUS_COUNT;
+
+                if (item.Status === "موافقه") {
+                    acceptedRequestsCount += item.CORR_STATUS_COUNT;
+                } else if (item.Status === "رفض") {
+                    rejectedRequestsCount += item.CORR_STATUS_COUNT;
+                } else if (item.Status === "منتهي") {
+                    completedRequestsCount += item.CORR_STATUS_COUNT;
+                }
+            });
+
+            // Calculate percentages
+            var acceptedPercentage = totalRequests > 0 ? ((acceptedRequestsCount / totalRequests) * 100).toFixed(2) : 0;
+            var rejectedPercentage = totalRequests > 0 ? ((rejectedRequestsCount / totalRequests) * 100).toFixed(2) : 0;
+            var completedPercentage = totalRequests > 0 ? ((completedRequestsCount / totalRequests) * 100).toFixed(2) : 0;
+
+            // Prepare the data for the chart
+            var seriesData = [
+                {
+                    name: this._lcl.ACCEPTED_REQUESTS + ' (' + acceptedPercentage + '%)',
+                    data: [acceptedRequestsCount]
+                },
+                {
+                    name: this._lcl.REJECTED_REQUESTS + ' (' + rejectedPercentage + '%)',
+                    data: [rejectedRequestsCount]
+                },
+                {
+                    name: this._lcl.COMPLETED_REQUESTS + ' (' + completedPercentage + '%)',
+                    data: [completedRequestsCount]
+                }
+            ];
+
+            
+  		    // Chart options for rendering borrowing requests with vertical columns and percentages in the labels
+  		    var chartOptions = {
+  		        series: seriesData,
+  		        chart: {
+  		            type: 'bar',
+  		            height: 400,
+  		            stacked: false, // Not stacking bars
+  		        },
+  		        plotOptions: {
+  		            bar: {
+  		                horizontal: false, // Set to false to make vertical bars
+  		                columnWidth: '50%', // Adjust the width of the columns
+  		            }
+  		        },
+  		        xaxis: {
+  		            categories: [this._lcl.TOTAL_BORROWING_REQUESTS] // Only one category for total requests
+  		        },
+  		        title: {
+  		            text: this._lcl.BORROWING_REQUESTS_TITLE,
+  		            align: 'center'
+  		        },
+  		        tooltip: {
+  		            y: {
+  		                formatter: function (value, { seriesIndex, dataPointIndex, w }) {
+  		                    let percentage = '';
+  		                    switch (seriesIndex) {
+  		                        case 0: percentage = acceptedPercentage; break;
+  		                        case 1: percentage = rejectedPercentage; break;
+  		                        case 2: percentage = completedPercentage; break;
+  		                    }
+  		                    return value + ' ' + this._lcl.REQUESTS ;
+  		                }.bind(this)
+  		            }
+  		        }
+  		    };
+
+            this._chartInstance = new ApexCharts(this._parent.borrowingRequestsChartContainer, chartOptions);
+            this._chartInstance.render();
+
+            // Update borrowing request counts and percentages in the DOM
+            this._updateBorrowingRequestCounts(totalRequests, acceptedRequestsCount, rejectedRequestsCount, completedRequestsCount, acceptedPercentage, rejectedPercentage, completedPercentage);
+        },
+
+        // Update counts and percentages for borrowing requests
+        _updateBorrowingRequestCounts: function (total, accepted, rejected, completed, acceptedPercentage, rejectedPercentage, completedPercentage) {
+            dom.byId("totalBorrowingRequestsCount").innerHTML = total;
+            dom.byId("acceptedBorrowingRequestsCount").innerHTML = accepted;
+            dom.byId("acceptedBorrowingPercentage").innerHTML = acceptedPercentage + "%";
+            dom.byId("rejectedBorrowingRequestsCount").innerHTML = rejected;
+            dom.byId("rejectedBorrowingPercentage").innerHTML = rejectedPercentage + "%";
+            dom.byId("completedBorrowingRequestsCount").innerHTML = completed;
+            dom.byId("completedBorrowingPercentage").innerHTML = completedPercentage + "%";
+        },
+
         // Handle errors
         _handleError: function (resultSet) {
             if (resultSet.result.includes("(ACCESS DENIED)")) {
