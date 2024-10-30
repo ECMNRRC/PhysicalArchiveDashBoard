@@ -100,7 +100,10 @@ define({
    	    DEPARTMENT_NAME: "أسم الإداره",
    	    TOTAL_TRANSFARED_DOCUMENT: "عدد الوثائق المحوله",
 	   	TRANSFAR:"ترحيل",
-		DESTROY:"إتلاف"
+		DESTROY:"إتلاف",
+		ARCHIVE_CENTER_TRANSFARED_FILES:"الوثائق التي تم ترحيلها لمركز الوثائق",
+		NATIONAL_CENTER_TRANSFARED_FILES:"الوثائق التي تم ترحيلها للمركز الوطني"
+
 
 
 	    

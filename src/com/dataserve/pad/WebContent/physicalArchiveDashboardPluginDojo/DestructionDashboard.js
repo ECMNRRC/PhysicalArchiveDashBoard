@@ -97,6 +97,10 @@ define([
             if (container) {
             	container.style.display = 'block';
             }
+            if(this._parent.ArchiveCenterTransferdFilesTitle){
+            	this._parent.ArchiveCenterTransferdFilesTitle.style.display = 'block';
+
+            }
             domConstruct.empty(container); 
 
             const table = domConstruct.create("table", { 
@@ -180,6 +184,10 @@ define([
             const container = this._parent.getNationalCenterTransferdFiles;
             if (container) {
             	container.style.display = 'block';
+            }
+            if(this._parent.NationalCenterTransferdFilesTitle){
+            	this._parent.NationalCenterTransferdFilesTitle.style.display = 'block';
+
             }
             domConstruct.empty(container); 
 
