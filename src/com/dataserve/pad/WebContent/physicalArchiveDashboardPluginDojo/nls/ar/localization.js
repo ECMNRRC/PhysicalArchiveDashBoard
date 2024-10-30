@@ -96,6 +96,13 @@ define({
 	 NON_KEYWORD_DOCS:"وثائق لاتحتوي على كلمه مفتاحيه",
 	 KEYWORD_DOCS_TITLE:"توزيع الوثائق ذات كلمه مفتاحيه ",
 	 TOTAL_KEYWORD_DOCS: "عدد الوثائق ذات كلمه مفتاحيه",
+	 DEPARTMENT_NAME: "أسم الإداره",
+	 TOTAL_TRANSFARED_DOCUMENT: "عدد الوثائق المحوله",
+	 TRANSFAR:"ترحيل",
+	 DESTROY:"إتلاف"
+
+
+
 
 
 });

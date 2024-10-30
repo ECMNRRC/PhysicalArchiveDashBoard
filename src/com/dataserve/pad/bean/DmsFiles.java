@@ -294,11 +294,11 @@ public class DmsFiles implements Serializable {
 
 		if(this.getClassifiction() !=null){
 			if (Locale.ENGLISH.equals(locale)) {
-				obj.put("className", this.getClassifictionBean().getNameEn());
+				obj.put("className", this.getClassifiction().getClassEnName());
 			}else{
-				obj.put("className", this.getClassifictionBean().getNameAr());
+				obj.put("className", this.getClassifiction().getClassArName());
 			}
-			obj.put("sympolicName", this.getClassifictionBean().getSymbolicName());
+			obj.put("sympolicName", this.getClassifiction().getSympolicName());
 		}
 		if(this.getDepartment() !=null){
 			if (Locale.ENGLISH.equals(locale)) {

@@ -7,7 +7,11 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.dataserve.pad.bean.Classifiction;
@@ -208,95 +212,133 @@ public class TransferFilesDAO {
 			
 	}
 
-	public Set<DmsFiles> getArchiveCenterTransferdFiles() throws DatabaseException{
-		PreparedStatement stmt = null;
-		ResultSet rs = null;
-		try{
-			String SQL = " SELECT  "       
-					+ " DMS_FILES.DOCUMENT_ID, DMS_FILES.FILE_ID, DMS_FILES.FOLDER_ID, DMS_FILES.DOCUMENT_CLASS, DMS_FILES.DEPT_ID, "
-					+ " DMS_FILES.USER_ID,  DMS_FILES.NO_PAGES, "
-					
-					+ "	DMS_FILES.CREATED_DATE AS CREATE_DATE , DMS_FILES.MODIFIED_DATE , DMS_FILES.DOCUMENT_NAME , "
+//	public Set<DmsFiles> getArchiveCenterTransferdFiles() throws DatabaseException{
+//		PreparedStatement stmt = null;
+//		ResultSet rs = null;
+//		try{
+//			String SQL = " SELECT  "       
+//					+ " DMS_FILES.DOCUMENT_ID, DMS_FILES.FILE_ID, DMS_FILES.FOLDER_ID, DMS_FILES.DOCUMENT_CLASS, DMS_FILES.DEPT_ID, "
+//					+ " DMS_FILES.USER_ID,  DMS_FILES.NO_PAGES, "
+//					
+//					+ "	DMS_FILES.CREATED_DATE AS CREATE_DATE , DMS_FILES.MODIFIED_DATE , DMS_FILES.DOCUMENT_NAME , "
+//
+//					+ " DEPARTMENTS.DEPT_AR_NAME, DEPARTMENTS.DEPT_EN_NAME,  "
+//					+ " USERS.UserArname, USERS.UserEnName,  "
+//					+ " CLASSIFICTIONS.CLASS_AR_NAME, CLASSIFICTIONS.CLASS_EN_NAME, CLASSIFICTIONS.CLASSIFICATION_ID, CLASSIFICTIONS.SYMPOLIC_NAME, " 
+//					+ " CLASS_DEPT.SAVE_PERIOD,  " 
+////					+ " STORAGE_CENTER_TYPE.TYPE_AR, STORAGE_CENTER_TYPE.TYPE_EN,"
+//					+ " DMS_TRANSFER_STATUS.TRANSFER_STATUS_ID , DMS_TRANSFER_STATUS.TRANSFER_STATUS_NAME_AR, DMS_TRANSFER_STATUS.TRANSFER_STATUS_NAME_EN ,"
+//					+ " FOLDER.SERIAL FOLDER_NO, BOX.SERIAL BOX_NO"
+//					+ "	FROM "   
+//					+ " dbo.DMS_FILES "
+//					+ " INNER JOIN dbo.CLASSIFICTIONS on  CLASSIFICTIONS.SYMPOLIC_NAME = DMS_FILES.DOCUMENT_CLASS "
+//					+ " LEFT JOIN dbo.FOLDER ON FOLDER.FOLDER_ID = DMS_FILES.FOLDER_ID"
+//					+ " LEFT JOIN dbo.BOX on BOX.BOX_ID = FOLDER.BOX_ID"
+////					+ " INNER JOIN dbo.STORAGE_CENTER_TYPE on STORAGE_CENTER_TYPE.STORAGE_CENTER_TYPE_ID = CLASSIFICTIONS.SAVE_TYPE "
+//					+ " INNER JOIN dbo.CLASS_DEPT on CLASS_DEPT.CLASSIFICATION_ID = CLASSIFICTIONS.CLASSIFICATION_ID " 
+//					+ " and CLASS_DEPT.DEPT_ID = DMS_FILES.DEPT_ID "
+//					+ " INNER JOIN dbo.DEPARTMENTS on DEPARTMENTS.DEPT_ID = CLASS_DEPT.DEPT_ID "
+//					+ " INNER JOIN dbo.USERS on USERS.USER_ID = DMS_FILES.USER_ID "
+//					+ " LEFT JOIN dbo.DMS_TRANSFER_STATUS on  DMS_TRANSFER_STATUS.TRANSFER_STATUS_ID = DMS_FILES.TRANSFER_STATUS_ID "
+//					+ " WHERE  "
+//					+ " DMS_FILES.TRANSFER_STATUS_ID  =2 "
+//					+ " ORDER BY DEPARTMENTS.DEPT_ID ";
+//			stmt = dbConnection.getCon().prepareStatement(SQL);
+//			rs = stmt.executeQuery();
+//			Set<DmsFiles> dmsFiles = new HashSet<DmsFiles>();
+//			while(rs.next()){
+//				DmsFiles file = new DmsFiles();
+//				file.setFileId(rs.getInt("FILE_ID"));
+//				file.setDocumentId(rs.getString("DOCUMENT_ID"));
+//				file.setCreateDate(rs.getTimestamp("CREATE_DATE"));
+//				file.setModifiedDate(rs.getTimestamp("MODIFIED_DATE"));
+//				file.setSavePeriod(rs.getInt("SAVE_PERIOD"));
+//				file.setDocumentTitle(rs.getString("DOCUMENT_NAME"));
+//				file.setFolerNo(rs.getInt("FOLDER_NO"));
+//				file.setBoxNo(rs.getInt("BOX_NO"));
+//				file.setNoPages(rs.getInt("NO_PAGES"));
+//				LocalDate muslimDate = DateUtil.toMuslim(file.getCreateDate().toLocalDateTime());
+//				file.setCreateYearHijri(muslimDate.getYear()+"");
+//				file.setCreateYear(file.getCreateDate().toLocalDateTime().getYear()+"");
+//
+//				Classifiction classifiction = new Classifiction();
+//				classifiction.setSympolicName(rs.getString("SYMPOLIC_NAME"));
+//				classifiction.setClassArName(rs.getString("CLASS_AR_NAME"));
+//				classifiction.setClassEnName(rs.getString("CLASS_EN_NAME"));
+//				file.setClassifiction(classifiction);
+//				
+//				Department department =  new Department();
+//				department.setDeptArName(rs.getString("DEPT_AR_NAME"));
+//				department.setDeptEnName(rs.getString("DEPT_EN_NAME"));
+//				file.setDepartment(department);
+//					
+//				DMSTransferStatus transferStatus = new DMSTransferStatus();
+//				transferStatus.setTransferStatusId(rs.getInt("TRANSFER_STATUS_ID"));
+//				transferStatus.setTransferStatusNameAr(rs.getString("TRANSFER_STATUS_NAME_AR"));
+//				transferStatus.setTransferStatusNameEn(rs.getString("TRANSFER_STATUS_NAME_EN"));
+//				file.setTransferStatus(transferStatus);
+//		
+//				
+//				dmsFiles.add(file);
+//				
+//			}
+//			
+//			return dmsFiles;
+//		} catch (SQLException e) {
+//			throw new DatabaseException("Error getArchiveCenterTransferdFiles", e);
+//		} finally {
+//        	try {
+//				if (rs != null) {
+//					rs.close();
+//				}
+//
+//				if (stmt != null) {
+//					stmt.close();
+//				}
+//				
+//			} catch (SQLException unexpected) {
+//				throw new DatabaseException("Error getArchiveCenterTransferdFiles", unexpected);
+//			}
+//        }
+//	}
+	
+	public List<Map<String, Object>> getArchiveCenterTransferdFiles() throws DatabaseException {
+	    PreparedStatement stmt = null;
+	    ResultSet rs = null;
+	    try {
+	        String SQL = "SELECT DEPARTMENTS.DEPT_AR_NAME AS deptArName, "
+	                   + "COUNT(DMS_FILES.DOCUMENT_ID) AS documentCount "
+	                   + "FROM dbo.DMS_FILES "
+	                   + "INNER JOIN dbo.DEPARTMENTS ON DEPARTMENTS.DEPT_ID = DMS_FILES.DEPT_ID "
+	                   + "WHERE DMS_FILES.TRANSFER_STATUS_ID = 2 "
+	                   + "GROUP BY DEPARTMENTS.DEPT_AR_NAME "
+	                   + "ORDER BY DEPARTMENTS.DEPT_AR_NAME";
+	        
+	        stmt = dbConnection.getCon().prepareStatement(SQL);
+	        rs = stmt.executeQuery();
 
-					+ " DEPARTMENTS.DEPT_AR_NAME, DEPARTMENTS.DEPT_EN_NAME,  "
-					+ " USERS.UserArname, USERS.UserEnName,  "
-					+ " CLASSIFICTIONS.CLASS_AR_NAME, CLASSIFICTIONS.CLASS_EN_NAME, CLASSIFICTIONS.CLASSIFICATION_ID, CLASSIFICTIONS.SYMPOLIC_NAME, " 
-					+ " CLASS_DEPT.SAVE_PERIOD,  " 
-//					+ " STORAGE_CENTER_TYPE.TYPE_AR, STORAGE_CENTER_TYPE.TYPE_EN,"
-					+ " DMS_TRANSFER_STATUS.TRANSFER_STATUS_ID , DMS_TRANSFER_STATUS.TRANSFER_STATUS_NAME_AR, DMS_TRANSFER_STATUS.TRANSFER_STATUS_NAME_EN ,"
-					+ " FOLDER.SERIAL FOLDER_NO, BOX.SERIAL BOX_NO"
-					+ "	FROM "   
-					+ " dbo.DMS_FILES "
-					+ " INNER JOIN dbo.CLASSIFICTIONS on  CLASSIFICTIONS.SYMPOLIC_NAME = DMS_FILES.DOCUMENT_CLASS "
-					+ " LEFT JOIN dbo.FOLDER ON FOLDER.FOLDER_ID = DMS_FILES.FOLDER_ID"
-					+ " LEFT JOIN dbo.BOX on BOX.BOX_ID = FOLDER.BOX_ID"
-//					+ " INNER JOIN dbo.STORAGE_CENTER_TYPE on STORAGE_CENTER_TYPE.STORAGE_CENTER_TYPE_ID = CLASSIFICTIONS.SAVE_TYPE "
-					+ " INNER JOIN dbo.CLASS_DEPT on CLASS_DEPT.CLASSIFICATION_ID = CLASSIFICTIONS.CLASSIFICATION_ID " 
-					+ " and CLASS_DEPT.DEPT_ID = DMS_FILES.DEPT_ID "
-					+ " INNER JOIN dbo.DEPARTMENTS on DEPARTMENTS.DEPT_ID = CLASS_DEPT.DEPT_ID "
-					+ " INNER JOIN dbo.USERS on USERS.USER_ID = DMS_FILES.USER_ID "
-					+ " LEFT JOIN dbo.DMS_TRANSFER_STATUS on  DMS_TRANSFER_STATUS.TRANSFER_STATUS_ID = DMS_FILES.TRANSFER_STATUS_ID "
-					+ " WHERE  "
-					+ " DMS_FILES.TRANSFER_STATUS_ID  =2 "
-					+ " ORDER BY DEPARTMENTS.DEPT_ID ";
-			stmt = dbConnection.getCon().prepareStatement(SQL);
-			rs = stmt.executeQuery();
-			Set<DmsFiles> dmsFiles = new HashSet<DmsFiles>();
-			while(rs.next()){
-				DmsFiles file = new DmsFiles();
-				file.setFileId(rs.getInt("FILE_ID"));
-				file.setDocumentId(rs.getString("DOCUMENT_ID"));
-				file.setCreateDate(rs.getTimestamp("CREATE_DATE"));
-				file.setModifiedDate(rs.getTimestamp("MODIFIED_DATE"));
-				file.setSavePeriod(rs.getInt("SAVE_PERIOD"));
-				file.setDocumentTitle(rs.getString("DOCUMENT_NAME"));
-				file.setFolerNo(rs.getInt("FOLDER_NO"));
-				file.setBoxNo(rs.getInt("BOX_NO"));
-				file.setNoPages(rs.getInt("NO_PAGES"));
-				LocalDate muslimDate = DateUtil.toMuslim(file.getCreateDate().toLocalDateTime());
-				file.setCreateYearHijri(muslimDate.getYear()+"");
-				file.setCreateYear(file.getCreateDate().toLocalDateTime().getYear()+"");
-
-				Classifiction classifiction = new Classifiction();
-				classifiction.setSympolicName(rs.getString("SYMPOLIC_NAME"));
-				classifiction.setClassArName(rs.getString("CLASS_AR_NAME"));
-				classifiction.setClassEnName(rs.getString("CLASS_EN_NAME"));
-				file.setClassifiction(classifiction);
-				
-				Department department =  new Department();
-				department.setDeptArName(rs.getString("DEPT_AR_NAME"));
-				department.setDeptEnName(rs.getString("DEPT_EN_NAME"));
-				file.setDepartment(department);
-					
-				DMSTransferStatus transferStatus = new DMSTransferStatus();
-				transferStatus.setTransferStatusId(rs.getInt("TRANSFER_STATUS_ID"));
-				transferStatus.setTransferStatusNameAr(rs.getString("TRANSFER_STATUS_NAME_AR"));
-				transferStatus.setTransferStatusNameEn(rs.getString("TRANSFER_STATUS_NAME_EN"));
-				file.setTransferStatus(transferStatus);
-		
-				
-				dmsFiles.add(file);
-				
-			}
-			
-			return dmsFiles;
-		} catch (SQLException e) {
-			throw new DatabaseException("Error getArchiveCenterTransferdFiles", e);
-		} finally {
-        	try {
-				if (rs != null) {
-					rs.close();
-				}
-
-				if (stmt != null) {
-					stmt.close();
-				}
-				
-			} catch (SQLException unexpected) {
-				throw new DatabaseException("Error getArchiveCenterTransferdFiles", unexpected);
-			}
-        }
+	        List<Map<String, Object>> departmentCounts = new ArrayList<>();
+	        
+	        while (rs.next()) {
+	            Map<String, Object> departmentData = new HashMap<>();
+	            departmentData.put("deptArName", rs.getString("deptArName"));
+	            departmentData.put("documentCount", rs.getInt("documentCount"));
+	            departmentCounts.add(departmentData);
+	        }
+	        
+	        return departmentCounts;
+	    } catch (SQLException e) {
+	        throw new DatabaseException("Error getArchiveCenterTransferdFiles", e);
+	    } finally {
+	        try {
+	            if (rs != null) rs.close();
+	            if (stmt != null) stmt.close();
+	        } catch (SQLException unexpected) {
+	            throw new DatabaseException("Error closing resources", unexpected);
+	        }
+	    }
 	}
+
 
 	public Set<DmsFiles> getNationalCenterTransferReadyFiles() throws DatabaseException{
 		
@@ -423,96 +465,138 @@ public class TransferFilesDAO {
 	}
 	
 
-	public Set<DmsFiles> getNationalCenterTransferdFiles() throws DatabaseException{
-		PreparedStatement stmt = null;
-		ResultSet rs = null;
-		try{
-			String SQL =  " SELECT  "       
-					+ " DMS_FILES.DOCUMENT_ID, DMS_FILES.FILE_ID, DMS_FILES.FOLDER_ID, DMS_FILES.DOCUMENT_CLASS, DMS_FILES.DEPT_ID, "
-					+ "	DMS_FILES.USER_ID,  DMS_FILES.NO_PAGES, " 
-					+ "	DMS_FILES.CREATED_DATE AS CREATE_DATE , DMS_FILES.MODIFIED_DATE , DMS_FILES.DOCUMENT_NAME , "
+//	public Set<DmsFiles> getNationalCenterTransferdFiles() throws DatabaseException{
+//		PreparedStatement stmt = null;
+//		ResultSet rs = null;
+//		try{
+//			String SQL =  " SELECT  "       
+//					+ " DMS_FILES.DOCUMENT_ID, DMS_FILES.FILE_ID, DMS_FILES.FOLDER_ID, DMS_FILES.DOCUMENT_CLASS, DMS_FILES.DEPT_ID, "
+//					+ "	DMS_FILES.USER_ID,  DMS_FILES.NO_PAGES, " 
+//					+ "	DMS_FILES.CREATED_DATE AS CREATE_DATE , DMS_FILES.MODIFIED_DATE , DMS_FILES.DOCUMENT_NAME , "
+//
+//					+ " DEPARTMENTS.DEPT_AR_NAME, DEPARTMENTS.DEPT_EN_NAME,  "
+//					+ " USERS.UserArname, USERS.UserEnName,  "
+//					+ " CLASSIFICTIONS.CLASS_AR_NAME, CLASSIFICTIONS.CLASS_EN_NAME, CLASSIFICTIONS.CLASSIFICATION_ID, CLASSIFICTIONS.SYMPOLIC_NAME, " 
+//					+ " CLASS_DEPT.SAVE_PERIOD,  " 
+////					+ " STORAGE_CENTER_TYPE.TYPE_AR, STORAGE_CENTER_TYPE.TYPE_EN,"
+//					+ " DMS_TRANSFER_STATUS.TRANSFER_STATUS_ID , DMS_TRANSFER_STATUS.TRANSFER_STATUS_NAME_AR, DMS_TRANSFER_STATUS.TRANSFER_STATUS_NAME_EN ,"
+//					+ " FOLDER.SERIAL FOLDER_NO, BOX.SERIAL BOX_NO"
+//					+ "	FROM "   
+//					+ " dbo.DMS_FILES "
+//					+ " INNER JOIN dbo.CLASSIFICTIONS on  CLASSIFICTIONS.SYMPOLIC_NAME = DMS_FILES.DOCUMENT_CLASS "
+//					+ " LEFT JOIN dbo.FOLDER ON FOLDER.FOLDER_ID = DMS_FILES.FOLDER_ID"
+//					+ " LEFT JOIN dbo.BOX on BOX.BOX_ID = FOLDER.BOX_ID"
+////					+ " INNER JOIN dbo.STORAGE_CENTER_TYPE on STORAGE_CENTER_TYPE.STORAGE_CENTER_TYPE_ID = CLASSIFICTIONS.SAVE_TYPE "
+//					+ " INNER JOIN dbo.CLASS_DEPT on CLASS_DEPT.CLASSIFICATION_ID = CLASSIFICTIONS.CLASSIFICATION_ID " 
+//					+ " and CLASS_DEPT.DEPT_ID = DMS_FILES.DEPT_ID "
+//					+ " INNER JOIN dbo.DEPARTMENTS on DEPARTMENTS.DEPT_ID = CLASS_DEPT.DEPT_ID "
+//					+ " INNER JOIN dbo.USERS on USERS.USER_ID = DMS_FILES.USER_ID "
+//					+ " LEFT JOIN dbo.DMS_TRANSFER_STATUS on  DMS_TRANSFER_STATUS.TRANSFER_STATUS_ID = DMS_FILES.TRANSFER_STATUS_ID "
+//					+ " WHERE  "
+//					+ " CLASSIFICTIONS.SAVE_TYPE = 1 "
+//					+ " AND "
+//					+ " DMS_FILES.TRANSFER_STATUS_ID  =4 "
+//					+ " ORDER BY DEPARTMENTS.DEPT_ID ";
+//			stmt = dbConnection.getCon().prepareStatement(SQL);
+//			rs = stmt.executeQuery();
+//			Set<DmsFiles> dmsFiles = new HashSet<DmsFiles>();
+//			while(rs.next()){
+//				DmsFiles file = new DmsFiles();
+//				file.setFileId(rs.getInt("FILE_ID"));
+//				file.setDocumentId(rs.getString("DOCUMENT_ID"));
+//				file.setCreateDate(rs.getTimestamp("CREATE_DATE"));
+//				file.setModifiedDate(rs.getTimestamp("MODIFIED_DATE"));
+//				file.setSavePeriod(rs.getInt("SAVE_PERIOD"));
+//				file.setDocumentTitle(rs.getString("DOCUMENT_NAME"));
+//				file.setFolerNo(rs.getInt("FOLDER_NO"));
+//				file.setBoxNo(rs.getInt("BOX_NO"));
+//				file.setNoPages(rs.getInt("NO_PAGES"));
+//				LocalDate muslimDate = DateUtil.toMuslim(file.getCreateDate().toLocalDateTime());
+//				file.setCreateYearHijri(muslimDate.getYear()+"");
+//				file.setCreateYear(file.getCreateDate().toLocalDateTime().getYear()+"");
+//
+//				Classifiction classifiction = new Classifiction();
+//				classifiction.setSympolicName(rs.getString("SYMPOLIC_NAME"));
+//				classifiction.setClassArName(rs.getString("CLASS_AR_NAME"));
+//				classifiction.setClassEnName(rs.getString("CLASS_EN_NAME"));
+//				file.setClassifiction(classifiction);
+//				
+//				Department department =  new Department();
+//				department.setDeptArName(rs.getString("DEPT_AR_NAME"));
+//				department.setDeptEnName(rs.getString("DEPT_EN_NAME"));
+//				file.setDepartment(department);
+//					
+//				DMSTransferStatus transferStatus = new DMSTransferStatus();
+//				transferStatus.setTransferStatusId(rs.getInt("TRANSFER_STATUS_ID"));
+//				transferStatus.setTransferStatusNameAr(rs.getString("TRANSFER_STATUS_NAME_AR"));
+//				transferStatus.setTransferStatusNameEn(rs.getString("TRANSFER_STATUS_NAME_EN"));
+//				file.setTransferStatus(transferStatus);
+//		
+//				
+//				dmsFiles.add(file);
+//				
+//			}
+//			
+//			return dmsFiles;
+//		} catch (SQLException e) {
+//			throw new DatabaseException("Error getArchiveCenterTransferdFiles", e);
+//		} finally {
+//        	try {
+//				if (rs != null) {
+//					rs.close();
+//				}
+//
+//				if (stmt != null) {
+//					stmt.close();
+//				}
+//				
+//			} catch (SQLException unexpected) {
+//				throw new DatabaseException("Error getArchiveCenterTransferdFiles", unexpected);
+//			}
+//        }
+//	}
+	
+	public List<Map<String, Object>> getNationalCenterTransferdFiles() throws DatabaseException {
+	    PreparedStatement stmt = null;
+	    ResultSet rs = null;
+	    try {
+	        String SQL =  "SELECT DEPARTMENTS.DEPT_AR_NAME AS deptArName, "
+	                    + "COUNT(DMS_FILES.DOCUMENT_ID) AS documentCount "
+	                    + "FROM dbo.DMS_FILES "
+	                    + "INNER JOIN dbo.CLASSIFICTIONS ON CLASSIFICTIONS.SYMPOLIC_NAME = DMS_FILES.DOCUMENT_CLASS "
+	                    + "INNER JOIN dbo.CLASS_DEPT ON CLASS_DEPT.CLASSIFICATION_ID = CLASSIFICTIONS.CLASSIFICATION_ID "
+	                    + "AND CLASS_DEPT.DEPT_ID = DMS_FILES.DEPT_ID "
+	                    + "INNER JOIN dbo.DEPARTMENTS ON DEPARTMENTS.DEPT_ID = CLASS_DEPT.DEPT_ID "
+	                    + "WHERE CLASSIFICTIONS.SAVE_TYPE = 1 "
+	                    + "AND DMS_FILES.TRANSFER_STATUS_ID = 4 "
+	                    + "GROUP BY DEPARTMENTS.DEPT_AR_NAME "
+	                    + "ORDER BY DEPARTMENTS.DEPT_AR_NAME";
+	        
+	        stmt = dbConnection.getCon().prepareStatement(SQL);
+	        rs = stmt.executeQuery();
 
-					+ " DEPARTMENTS.DEPT_AR_NAME, DEPARTMENTS.DEPT_EN_NAME,  "
-					+ " USERS.UserArname, USERS.UserEnName,  "
-					+ " CLASSIFICTIONS.CLASS_AR_NAME, CLASSIFICTIONS.CLASS_EN_NAME, CLASSIFICTIONS.CLASSIFICATION_ID, CLASSIFICTIONS.SYMPOLIC_NAME, " 
-					+ " CLASS_DEPT.SAVE_PERIOD,  " 
-//					+ " STORAGE_CENTER_TYPE.TYPE_AR, STORAGE_CENTER_TYPE.TYPE_EN,"
-					+ " DMS_TRANSFER_STATUS.TRANSFER_STATUS_ID , DMS_TRANSFER_STATUS.TRANSFER_STATUS_NAME_AR, DMS_TRANSFER_STATUS.TRANSFER_STATUS_NAME_EN ,"
-					+ " FOLDER.SERIAL FOLDER_NO, BOX.SERIAL BOX_NO"
-					+ "	FROM "   
-					+ " dbo.DMS_FILES "
-					+ " INNER JOIN dbo.CLASSIFICTIONS on  CLASSIFICTIONS.SYMPOLIC_NAME = DMS_FILES.DOCUMENT_CLASS "
-					+ " LEFT JOIN dbo.FOLDER ON FOLDER.FOLDER_ID = DMS_FILES.FOLDER_ID"
-					+ " LEFT JOIN dbo.BOX on BOX.BOX_ID = FOLDER.BOX_ID"
-//					+ " INNER JOIN dbo.STORAGE_CENTER_TYPE on STORAGE_CENTER_TYPE.STORAGE_CENTER_TYPE_ID = CLASSIFICTIONS.SAVE_TYPE "
-					+ " INNER JOIN dbo.CLASS_DEPT on CLASS_DEPT.CLASSIFICATION_ID = CLASSIFICTIONS.CLASSIFICATION_ID " 
-					+ " and CLASS_DEPT.DEPT_ID = DMS_FILES.DEPT_ID "
-					+ " INNER JOIN dbo.DEPARTMENTS on DEPARTMENTS.DEPT_ID = CLASS_DEPT.DEPT_ID "
-					+ " INNER JOIN dbo.USERS on USERS.USER_ID = DMS_FILES.USER_ID "
-					+ " LEFT JOIN dbo.DMS_TRANSFER_STATUS on  DMS_TRANSFER_STATUS.TRANSFER_STATUS_ID = DMS_FILES.TRANSFER_STATUS_ID "
-					+ " WHERE  "
-					+ " CLASSIFICTIONS.SAVE_TYPE = 1 "
-					+ " AND "
-					+ " DMS_FILES.TRANSFER_STATUS_ID  =4 "
-					+ " ORDER BY DEPARTMENTS.DEPT_ID ";
-			stmt = dbConnection.getCon().prepareStatement(SQL);
-			rs = stmt.executeQuery();
-			Set<DmsFiles> dmsFiles = new HashSet<DmsFiles>();
-			while(rs.next()){
-				DmsFiles file = new DmsFiles();
-				file.setFileId(rs.getInt("FILE_ID"));
-				file.setDocumentId(rs.getString("DOCUMENT_ID"));
-				file.setCreateDate(rs.getTimestamp("CREATE_DATE"));
-				file.setModifiedDate(rs.getTimestamp("MODIFIED_DATE"));
-				file.setSavePeriod(rs.getInt("SAVE_PERIOD"));
-				file.setDocumentTitle(rs.getString("DOCUMENT_NAME"));
-				file.setFolerNo(rs.getInt("FOLDER_NO"));
-				file.setBoxNo(rs.getInt("BOX_NO"));
-				file.setNoPages(rs.getInt("NO_PAGES"));
-				LocalDate muslimDate = DateUtil.toMuslim(file.getCreateDate().toLocalDateTime());
-				file.setCreateYearHijri(muslimDate.getYear()+"");
-				file.setCreateYear(file.getCreateDate().toLocalDateTime().getYear()+"");
-
-				Classifiction classifiction = new Classifiction();
-				classifiction.setSympolicName(rs.getString("SYMPOLIC_NAME"));
-				classifiction.setClassArName(rs.getString("CLASS_AR_NAME"));
-				classifiction.setClassEnName(rs.getString("CLASS_EN_NAME"));
-				file.setClassifiction(classifiction);
-				
-				Department department =  new Department();
-				department.setDeptArName(rs.getString("DEPT_AR_NAME"));
-				department.setDeptEnName(rs.getString("DEPT_EN_NAME"));
-				file.setDepartment(department);
-					
-				DMSTransferStatus transferStatus = new DMSTransferStatus();
-				transferStatus.setTransferStatusId(rs.getInt("TRANSFER_STATUS_ID"));
-				transferStatus.setTransferStatusNameAr(rs.getString("TRANSFER_STATUS_NAME_AR"));
-				transferStatus.setTransferStatusNameEn(rs.getString("TRANSFER_STATUS_NAME_EN"));
-				file.setTransferStatus(transferStatus);
-		
-				
-				dmsFiles.add(file);
-				
-			}
-			
-			return dmsFiles;
-		} catch (SQLException e) {
-			throw new DatabaseException("Error getArchiveCenterTransferdFiles", e);
-		} finally {
-        	try {
-				if (rs != null) {
-					rs.close();
-				}
-
-				if (stmt != null) {
-					stmt.close();
-				}
-				
-			} catch (SQLException unexpected) {
-				throw new DatabaseException("Error getArchiveCenterTransferdFiles", unexpected);
-			}
-        }
+	        List<Map<String, Object>> departmentCounts = new ArrayList<>();
+	        
+	        while (rs.next()) {
+	            Map<String, Object> departmentData = new HashMap<>();
+	            departmentData.put("deptArName", rs.getString("deptArName"));
+	            departmentData.put("documentCount", rs.getInt("documentCount"));
+	            departmentCounts.add(departmentData);
+	        }
+	        
+	        return departmentCounts;
+	    } catch (SQLException e) {
+	        throw new DatabaseException("Error getNationalCenterTransferdFiles", e);
+	    } finally {
+	        try {
+	            if (rs != null) rs.close();
+	            if (stmt != null) stmt.close();
+	        } catch (SQLException unexpected) {
+	            throw new DatabaseException("Error closing resources", unexpected);
+	        }
+	    }
 	}
+
 	
 
 	

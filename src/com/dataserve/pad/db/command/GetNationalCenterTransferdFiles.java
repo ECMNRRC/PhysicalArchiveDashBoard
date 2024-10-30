@@ -1,5 +1,7 @@
 package com.dataserve.pad.db.command;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -9,6 +11,7 @@ import com.dataserve.pad.manager.TransferFilesManager;
 import com.dataserve.pad.permissions.ActionType;
 import com.dataserve.pad.permissions.Module;
 import com.ibm.json.java.JSONArray;
+import com.ibm.json.java.JSONObject;
 
 public class GetNationalCenterTransferdFiles extends CommandBase{
 
@@ -21,17 +24,20 @@ public class GetNationalCenterTransferdFiles extends CommandBase{
 	@Override
 	public String execute() throws Exception {
 		try {
-			TransferFilesManager filesManager  = new TransferFilesManager();
-			Set<DmsFiles> files = filesManager.getNationalCenterTransferdFiles(currentUserId);
-			
-			JSONArray arr = new JSONArray();
-			for (DmsFiles file : files) {
-				arr.add(file.getAsJson(callBacks.getLocale()));
-			}
-			return arr.toString();
-		} catch (Exception e) {
-			throw new Exception("Error GetNationalCenterTransferdFiles for user with username '" + currentUserId + "'", e);
-		}
+	        TransferFilesManager filesManager = new TransferFilesManager();
+	        List<Map<String, Object>> departmentCounts = filesManager.getNationalCenterTransferdFiles(currentUserId);
+
+	        JSONArray arr = new JSONArray();
+	        for (Map<String, Object> deptData : departmentCounts) {
+	            JSONObject deptJson = new JSONObject();
+	            deptJson.put("deptArName", deptData.get("deptArName"));
+	            deptJson.put("documentCount", deptData.get("documentCount"));
+	            arr.add(deptJson); 
+	        }
+	        return arr.toString();
+	    } catch (Exception e) {
+	        throw new Exception("Error GetNationalCenterTransferdFiles for user with username '" + currentUserId + "'", e);
+	    }
 	}
 	
 	@Override

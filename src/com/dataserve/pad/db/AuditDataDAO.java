@@ -43,6 +43,31 @@ public class AuditDataDAO extends AbstractDAO {
         return beans;
     }
     
+    public Map<String, Integer> totalDocsCount() throws DatabaseException {
+        Map<String, Integer> counts = new HashMap<>();
+        try {
+            // Get total documents count
+            String totalQuery = "SELECT COUNT(*) AS TotalCount FROM dbo.DMS_FILES";
+            stmt = con.prepareStatement(totalQuery);
+            rs = stmt.executeQuery();
+            if (rs.next()) {
+                counts.put("TotalCount", rs.getInt("TotalCount"));
+            }
+            rs.close();
+            stmt.close();
+        } catch (SQLException e) {
+            throw new DatabaseException("Error fetching document counts", e);
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (stmt != null) stmt.close();
+            } catch (SQLException e) {
+                // Handle exceptions
+            }
+        }
+        return counts;
+    }
+    
 
     
     public Set<AuditDataBean> fetchDocFilterByClassData(JSONObject dataObj) throws DatabaseException {

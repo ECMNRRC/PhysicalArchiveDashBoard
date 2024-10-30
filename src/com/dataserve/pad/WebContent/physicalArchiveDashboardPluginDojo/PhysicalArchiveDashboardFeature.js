@@ -14,6 +14,7 @@ define([
     "physicalArchiveDashboardPluginDojo/Toaster",
     "physicalArchiveDashboardPluginDojo/RequestsDashboard",
     "physicalArchiveDashboardPluginDojo/DocumentsDashboard",
+    "physicalArchiveDashboardPluginDojo/DestructionDashboard",
     "dijit/form/Select",
 
  
@@ -35,6 +36,7 @@ function(
     Toaster,
     RequestsDashboard,
     DocumentsDashboard,
+    DestructionDashboard,
     Select
     
 ) {
@@ -62,7 +64,8 @@ function(
 			params.parent=this;
 			this.requestsDashboard = new RequestsDashboard(params);
 			this.documentsDashboard = new DocumentsDashboard(params);
-	
+			this.destructionDashboard = new DestructionDashboard(params);
+			debugger
             this.logEntry("postCreate");
             this.inherited(arguments);
 			this.addDepSelect()
@@ -90,7 +93,12 @@ function(
         },
 
 		
+        getDestructionsTables:function(){
+			this.destructionDashboard.getArchiveCenterTransferdFilesTable();
+			this.destructionDashboard.getNationalCenterTransferdFilesTable();
 
+        },
+        
         getElectronicAndArchiveDoc: function () {
             var dataResponse = this.documentsDashboard.getElectronicAndArchiveDoc();
         },

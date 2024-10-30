@@ -120,6 +120,15 @@ public class AuditDataModel {
         }
     }
     
+    public static Map<String, Integer> getTotalDocsInSystem() throws ClassificationException {
+    	try {
+    		AuditDataDAO dao = new AuditDataDAO();
+    		return dao.fetchElectronicAndArchiveDocCounts();
+    	} catch (DatabaseException e) {
+    		throw new ClassificationException("Error getting document counts", e);
+    	}
+    }
+    
     public static Map<String, Integer> getKeyWordDocCounts() throws ClassificationException {
         try {
             AuditDataDAO dao = new AuditDataDAO();

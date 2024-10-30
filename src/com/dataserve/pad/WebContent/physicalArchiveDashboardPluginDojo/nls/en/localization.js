@@ -72,8 +72,8 @@ define({
     VIEW_DOCUMENTS: "View Documents",
     DOCUMENTS: "documents",
     TOTAL_DOCS: "Total Documents",
-    DOCUMENT_COUNT_LABEL: "Document Count:", 
-    PERCENTAGE_LABEL: "Percentage:",
+    DOCUMENT_COUNT_LABEL: "Document Count", 
+    PERCENTAGE_LABEL: "Percentage",
     
     VIEW_REQUESTS: "View Requests",
     VIEW_REQUESTS_TITLE: "View Requests by Type and Status",
@@ -98,6 +98,14 @@ define({
     NON_KEYWORD_DOCS:"Documents without keyword",
     KEYWORD_DOCS_TITLE:"Distribution of documents with keyword",
     TOTAL_KEYWORD_DOCS: "Total Documents With Keyword",
+	DEPARTMENT_NAME: "Department Name",
+	TOTAL_TRANSFARED_DOCUMENT: "Total Transferred Documents",
+	TRANSFAR:"Transfar",
+	DESTROY:"Destroy"
+	
+
+
+
 
 
 	

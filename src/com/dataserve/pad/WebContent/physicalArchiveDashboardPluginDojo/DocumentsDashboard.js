@@ -25,6 +25,9 @@ define([
             if (this._parent.secondChartContainerKeywordDoc) {
                 this._parent.secondChartContainerKeywordDoc.style.display = 'none';
             }
+            if (this._parent.totalKeywordDoc) {
+            	this._parent.totalKeywordDoc.style.display = 'none';
+            }
 
             // Show the electronic/archive document section
             if (this._parent.firstChartContainerElectronicAndArchiveDoc) {
@@ -33,6 +36,7 @@ define([
             if (this._parent.totalCountContainer) {
                 this._parent.totalCountContainer.style.display = 'block';
             }
+
 
             // Call the method to render the electronic and archive documents chart
             this.renderChartsElectronicAndArchiveDoc();
@@ -110,7 +114,7 @@ define([
                  this._parent.secondChartContainerKeywordDoc.style.display = 'block';
              }
              
-             if (this._parent.totalCountContainer) {
+             if (this._parent.totalKeywordDoc) {
                  this._parent.totalKeywordDoc.style.display = 'block';
              }
              

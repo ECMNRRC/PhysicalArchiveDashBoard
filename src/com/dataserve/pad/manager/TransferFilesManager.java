@@ -1,7 +1,9 @@
 package com.dataserve.pad.manager;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 
 import com.dataserve.pad.bean.DmsFiles;
@@ -58,37 +60,58 @@ public class TransferFilesManager {
 		}	
 	}
 	
-	public Set<DmsFiles> getArchiveCenterTransferdFiles(String currentUserId) throws Exception {
-		
-		
-		try {
-//			UserDAO userDAO = new UserDAO(dbConnection);
-//			User user = userDAO.fetUserByNameLDAP(currentUserId);
-			
-			TransferFilesDAO dao = new TransferFilesDAO(dbConnection);
-			return dao.getArchiveCenterTransferdFiles();
-			
-		} catch (Exception e) {
-			
-			try {
-				
-				dbConnection.rollBack();
-			} catch (DatabaseException ex) {
-				throw new Exception("Error rollback DB connection", ex);
-			}
-			// }
-			throw new Exception("Error get Archive Center Transfer Ready Files", e);
-
-		} finally {
-			// close connection
-			try {
-				dbConnection.releaseConnection();
-			} catch (DatabaseException ex) {
-				throw new Exception("Error releaseConnection DB connection", ex);
-			}
-
-		}
+//	public Set<DmsFiles> getArchiveCenterTransferdFiles(String currentUserId) throws Exception {
+//		
+//		
+//		try {
+////			UserDAO userDAO = new UserDAO(dbConnection);
+////			User user = userDAO.fetUserByNameLDAP(currentUserId);
+//			
+//			TransferFilesDAO dao = new TransferFilesDAO(dbConnection);
+//			return dao.getArchiveCenterTransferdFiles();
+//			
+//		} catch (Exception e) {
+//			
+//			try {
+//				
+//				dbConnection.rollBack();
+//			} catch (DatabaseException ex) {
+//				throw new Exception("Error rollback DB connection", ex);
+//			}
+//			// }
+//			throw new Exception("Error get Archive Center Transfer Ready Files", e);
+//
+//		} finally {
+//			// close connection
+//			try {
+//				dbConnection.releaseConnection();
+//			} catch (DatabaseException ex) {
+//				throw new Exception("Error releaseConnection DB connection", ex);
+//			}
+//
+//		}
+//	}
+	
+	public List<Map<String, Object>> getArchiveCenterTransferdFiles(String currentUserId) throws Exception {
+	    try {
+	        TransferFilesDAO dao = new TransferFilesDAO(dbConnection);
+	        return dao.getArchiveCenterTransferdFiles();
+	    } catch (Exception e) {
+	        try {
+	            dbConnection.rollBack();
+	        } catch (DatabaseException ex) {
+	            throw new Exception("Error rollback DB connection", ex);
+	        }
+	        throw new Exception("Error get Archive Center Transfer Ready Files", e);
+	    } finally {
+	        try {
+	            dbConnection.releaseConnection();
+	        } catch (DatabaseException ex) {
+	            throw new Exception("Error releasing DB connection", ex);
+	        }
+	    }
 	}
+
 
 
 	public Set<DmsFiles> getNationalCenterTransferReadyFiles(String currentUserId) throws Exception {
@@ -126,36 +149,57 @@ public class TransferFilesManager {
 	
 	
 
-	public Set<DmsFiles> getNationalCenterTransferdFiles(String currentUserId) throws Exception {
-			
-			
-			try {
-	//			UserDAO userDAO = new UserDAO(dbConnection);
-	//			User user = userDAO.fetUserByNameLDAP(currentUserId);
-				
-				TransferFilesDAO filesDAO = new TransferFilesDAO(dbConnection);
-				return filesDAO.getNationalCenterTransferdFiles();
-				
-			} catch (Exception e) {
-				
-				try {
-					
-					dbConnection.rollBack();
-				} catch (DatabaseException ex) {
-					throw new Exception("Error rollback DB connection", ex);
-				}
-				// }
-				throw new Exception("Error getNationalCenterTransferdFiles", e);
+//	public Set<DmsFiles> getNationalCenterTransferdFiles(String currentUserId) throws Exception {
+//			
+//			
+//			try {
+//	//			UserDAO userDAO = new UserDAO(dbConnection);
+//	//			User user = userDAO.fetUserByNameLDAP(currentUserId);
+//				
+//				TransferFilesDAO filesDAO = new TransferFilesDAO(dbConnection);
+//				return filesDAO.getNationalCenterTransferdFiles();
+//				
+//			} catch (Exception e) {
+//				
+//				try {
+//					
+//					dbConnection.rollBack();
+//				} catch (DatabaseException ex) {
+//					throw new Exception("Error rollback DB connection", ex);
+//				}
+//				// }
+//				throw new Exception("Error getNationalCenterTransferdFiles", e);
+//	
+//			} finally {
+//				// close connection
+//				try {
+//					dbConnection.releaseConnection();
+//				} catch (DatabaseException ex) {
+//					throw new Exception("Error releaseConnection DB connection", ex);
+//				}
+//	
+//			}
+//		
+//		}
 	
-			} finally {
-				// close connection
-				try {
-					dbConnection.releaseConnection();
-				} catch (DatabaseException ex) {
-					throw new Exception("Error releaseConnection DB connection", ex);
-				}
-	
-			}
-		
-		}
+	public List<Map<String, Object>> getNationalCenterTransferdFiles(String currentUserId) throws Exception {
+	    try {
+	        TransferFilesDAO filesDAO = new TransferFilesDAO(dbConnection);
+	        return filesDAO.getNationalCenterTransferdFiles();
+	    } catch (Exception e) {
+	        try {
+	            dbConnection.rollBack();
+	        } catch (DatabaseException ex) {
+	            throw new Exception("Error rolling back DB connection", ex);
+	        }
+	        throw new Exception("Error getNationalCenterTransferdFiles", e);
+	    } finally {
+	        try {
+	            dbConnection.releaseConnection();
+	        } catch (DatabaseException ex) {
+	            throw new Exception("Error releasing DB connection", ex);
+	        }
+	    }
+	}
+
 }
