@@ -102,8 +102,10 @@ define({
 	TOTAL_TRANSFARED_DOCUMENT: "Total Transferred Documents",
 	TRANSFAR:"Transfar",
 	DESTROY:"Destroy",
+	DESTRUCTION:"Destruction",
 	ARCHIVE_CENTER_TRANSFARED_FILES:"Archive Center Transferd Files",
-	NATIONAL_CENTER_TRANSFARED_FILES:"National Center Transferd Files"
+	NATIONAL_CENTER_TRANSFARED_FILES:"National Center Transferd Files",
+	DESTROED_FILES:"Destored Files",
 	
 
 

@@ -96,8 +96,10 @@ function(
         getDestructionsTables:function(){
 			this.destructionDashboard.getArchiveCenterTransferdFilesTable();
 			this.destructionDashboard.getNationalCenterTransferdFilesTable();
+			this.destructionDashboard.getDestoredFilesTable();
 
         },
+        
         
         getElectronicAndArchiveDoc: function () {
             var dataResponse = this.documentsDashboard.getElectronicAndArchiveDoc();

@@ -177,10 +177,10 @@
 	<div data-dojo-type="dijit/layout/ContentPane" title="الاتلاف و الترحيل" data-dojo-props="selected:true">
 		<div style="text-align: center; margin-bottom: 40px; display: flex; justify-content: center; gap: 20px;">
 	
-			<button data-dojo-attach-point="filterButtonViewRequests" 
+			<button data-dojo-attach-point="DestructionsBtn" 
 	            data-dojo-attach-event="onClick: getDestructionsTables" 
 	            style="width: 150px; height: 50px; font-size: 18px; background-color: white; color: black; border: 2px solid black;">
-	        ${_lcl.TRANSFAR}
+	        ${_lcl.DESTRUCTION}
 	    	</button>
 	    </div>
 	    
@@ -200,6 +200,16 @@
         		${_lcl.NATIONAL_CENTER_TRANSFARED_FILES}
     		</div>
     		<div data-dojo-attach-point="getNationalCenterTransferdFiles" 
+         		style="width: 90%; height: 500px; margin: 30px auto; box-shadow: 0px 0px 10px rgba(0,0,0,0.5); box-sizing: content-box; display: none;">
+    		</div>
+    	</div>
+    	
+    	<div  data-dojo-attach-point="DestoredFilesContainer" >
+    		<div id="DestoredFilesTitle" data-dojo-attach-point="DestoredFilesTitle" 
+         		style="text-align: center; font-size: 18px; margin-bottom: 20px; display: none;" >
+        		${_lcl.DESTROED_FILES}
+    		</div>
+    		<div data-dojo-attach-point="getDestoredFiles" 
          		style="width: 90%; height: 500px; margin: 30px auto; box-shadow: 0px 0px 10px rgba(0,0,0,0.5); box-sizing: content-box; display: none;">
     		</div>
     	</div>

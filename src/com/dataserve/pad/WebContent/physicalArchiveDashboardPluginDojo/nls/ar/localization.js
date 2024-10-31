@@ -100,8 +100,11 @@ define({
 	 TOTAL_TRANSFARED_DOCUMENT: "عدد الوثائق المحوله",
 	 TRANSFAR:"ترحيل",
 	 DESTROY:"إتلاف",
+	 DESTRUCTION:"ترحيل و إتلاف",
 	 ARCHIVE_CENTER_TRANSFARED_FILES:"الوثائق التي تم ترحيلها لمركز الوثائق",
-	 NATIONAL_CENTER_TRANSFARED_FILES:"الوثائق التي تم ترحيلها للمركز الوطني"
+	 NATIONAL_CENTER_TRANSFARED_FILES:"الوثائق التي تم ترحيلها للمركز الوطني",
+	 DESTROED_FILES:"الوثائق التي تم إتلافها",
+
 
 
 
