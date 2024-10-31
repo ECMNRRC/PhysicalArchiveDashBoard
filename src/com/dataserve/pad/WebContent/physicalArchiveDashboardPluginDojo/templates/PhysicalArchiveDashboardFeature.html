@@ -184,7 +184,17 @@
 	    	</button>
 	    </div>
 	    
-	    <div  data-dojo-attach-point="NationalCenterTransferdFilesContainer" >
+	    <div  data-dojo-attach-point="ArchiveCenterTransferReadyFilesContainer" >
+	    	<div id="ArchiveCenterTransferReadyFilesTitle" data-dojo-attach-point="ArchiveCenterTransferReadyFilesTitle" 
+	         	style="text-align: center; font-size: 18px; margin-bottom: 20px; display: none;" >
+	        	${_lcl.ARCHIVE_CENTER_TRANSFER_READY_FILES}
+	    	</div>
+	    	<div data-dojo-attach-point="getArchiveCenterTransferReadyFiles" 
+	         	style="width: 90%; height: 500px; margin: 30px auto; box-shadow: 0px 0px 10px rgba(0,0,0,0.5); box-sizing: content-box; display: none;">
+	    	</div>
+	   	</div>
+	   	
+	    <div  data-dojo-attach-point="ArchiveCenterTransferdFilesContainer" >
 	    	<div id="ArchiveCenterTransferdFilesTitle" data-dojo-attach-point="ArchiveCenterTransferdFilesTitle" 
 	         	style="text-align: center; font-size: 18px; margin-bottom: 20px; display: none;" >
 	        	${_lcl.ARCHIVE_CENTER_TRANSFARED_FILES}

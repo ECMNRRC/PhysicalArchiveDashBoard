@@ -104,6 +104,8 @@ define({
 	 ARCHIVE_CENTER_TRANSFARED_FILES:"الوثائق التي تم ترحيلها لمركز الوثائق",
 	 NATIONAL_CENTER_TRANSFARED_FILES:"الوثائق التي تم ترحيلها للمركز الوطني",
 	 DESTROED_FILES:"الوثائق التي تم إتلافها",
+	 ARCHIVE_CENTER_TRANSFER_READY_FILES:"وثائق مستحقه للاستقبال فى مركز الوثائق"
+
 
 
 

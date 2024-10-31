@@ -106,6 +106,7 @@ define({
 	ARCHIVE_CENTER_TRANSFARED_FILES:"Archive Center Transferd Files",
 	NATIONAL_CENTER_TRANSFARED_FILES:"National Center Transferd Files",
 	DESTROED_FILES:"Destored Files",
+	ARCHIVE_CENTER_TRANSFER_READY_FILES:"Archive Center Transfer Ready Files"
 	
 
 

@@ -93,14 +93,14 @@ public class DestroyFilesDAO {
 					int modifiedYearHijri = DateUtil.toMuslim(rs.getTimestamp("MODIFIED_DATE").toLocalDateTime()).getYear();
 					if(currentHijriYear >= modifiedYearHijri + tempSavePeriodSum){
 						canDestroyFile = true;				
-//						System.out.println("currentHijriYear: "+currentHijriYear +" modifiedYearHijri: "+modifiedYearHijri +"tempSavePeriodSum: "+tempSavePeriodSum);	
+						System.out.println("currentHijriYear: "+currentHijriYear +" modifiedYearHijri: "+modifiedYearHijri +"tempSavePeriodSum: "+tempSavePeriodSum);	
 					}
 				}else{
 					// get custom property Date from audit property table
 					int customHijrYear = getCustomPopertyDateHijriYear(rs.getInt("FILE_ID") , ConfigManager.getDestructionCustomProperty());
 					if(customHijrYear > 0 && (currentHijriYear >=  customHijrYear + tempSavePeriodSum)){
 						canDestroyFile = true;
-//						System.out.println("currentHijriYear: "+currentHijriYear +" customHijrYear: "+customHijrYear +"  tempSavePeriodSum: "+tempSavePeriodSum);
+						System.out.println("currentHijriYear: "+currentHijriYear +" customHijrYear: "+customHijrYear +"  tempSavePeriodSum: "+tempSavePeriodSum);
 					}				
 				}
 				if(canDestroyFile){

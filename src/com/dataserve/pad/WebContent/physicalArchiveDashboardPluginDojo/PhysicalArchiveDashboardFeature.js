@@ -94,9 +94,11 @@ function(
 
 		
         getDestructionsTables:function(){
+			this.destructionDashboard.getArchiveCenterTransferReadyFilesTable();
 			this.destructionDashboard.getArchiveCenterTransferdFilesTable();
 			this.destructionDashboard.getNationalCenterTransferdFilesTable();
 			this.destructionDashboard.getDestoredFilesTable();
+			console.log(this.destructionDashboard.getArchiveCenterTransferReadyFiles());
 
         },
         
