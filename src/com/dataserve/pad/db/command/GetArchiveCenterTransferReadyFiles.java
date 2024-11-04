@@ -18,8 +18,9 @@ public class GetArchiveCenterTransferReadyFiles extends CommandBase {
     @Override
     public String execute() throws Exception {
         try {
+        	String departmentName = request.getParameter("departmentName"); // Get filter parameter
             TransferFilesManager transferFilesManager = new TransferFilesManager();
-            List<Map<String, Object>> departmentCounts = transferFilesManager.getArchiveCenterTransferReadyFiles(currentUserId);
+            List<Map<String, Object>> departmentCounts = transferFilesManager.getArchiveCenterTransferReadyFiles(currentUserId,departmentName);
 
             JSONArray arr = new JSONArray();
             for (Map<String, Object> deptData : departmentCounts) {

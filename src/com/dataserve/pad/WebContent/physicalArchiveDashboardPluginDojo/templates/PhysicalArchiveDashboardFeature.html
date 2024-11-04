@@ -1,7 +1,7 @@
 <div class="ecmCenterPane">
 
       <div data-dojo-type="dijit/layout/TabContainer"  data-dojo-attach-point="tab1Container">
-        <div data-dojo-type="dijit/layout/ContentPane" title="لوحة المؤشرات التراكمية" data-dojo-props="selected:true">    	
+        <div data-dojo-type="dijit/layout/ContentPane" title="${_lcl.EMPLOYEE_STATS_DASHBOARD}" data-dojo-props="selected:true">    	
 			<div style="text-align:left; left:0px; display: inline-block;" data-dojo-attach-point="filterContainer" id="filterContainer" data-dojo-type="dijit/layout/ContentPane" > 
 			</div>
 			<button data-dojo-attach-point="filterDataButton" data-dojo-attach-event="onClick: filterDataBtn" style="width: 150px; height: 50px; font-size: 18px; margin-left: 20px; margin-right: 20px;">${_lcl.VIEW_RESULTS}</button>
@@ -13,7 +13,7 @@
 		  
 		</div>
 			
-	<div data-dojo-type="dijit/layout/ContentPane" title="لوحة المؤشرات لفترات زمنية محددة" data-dojo-props="selected:true">
+	<div data-dojo-type="dijit/layout/ContentPane" title="${_lcl.DATE_RANGE_FILES_STATS}" data-dojo-props="selected:true">
 	    <div style="text-align: center; margin-bottom: 40px;">
 	        <label for="dateFrom" style="margin-right: 20px;">${_lcl.FROM_DATE}</label>
 	        <input type="date" id="dateFrom" data-dojo-attach-point="dateFrom" style="width: 200px; height: 40px; font-size: 16px; margin-right: 20px;">
@@ -24,7 +24,7 @@
 	    <div data-dojo-attach-point="sixthChartContainer" style="width: 80%; height: 500px; margin: 0 auto; box-shadow: 0px 0px 10px rgba(0,0,0,0.5); box-sizing: content-box;"></div>   
 	</div>
 	
-<div data-dojo-type="dijit/layout/ContentPane" title="لوحة الاحصائيات" data-dojo-props="selected:true">
+<div data-dojo-type="dijit/layout/ContentPane" title="${_lcl.FILE_STATS_DASHBOARD}" data-dojo-props="selected:true">
 
      <!-- Buttons to switch between different datasets -->
   <div style="text-align: center; margin-bottom: 40px; display: flex; justify-content: center; gap: 20px;">
@@ -60,7 +60,7 @@
 </div>
 
  <!-- Chart container for Borrowing Requests -->
-<div data-dojo-type="dijit/layout/ContentPane" title="لوحة الطلبات" data-dojo-props="selected:true">
+<div data-dojo-type="dijit/layout/ContentPane" title="${_lcl.REQUESTS_STATS_DASHBOARD}" data-dojo-props="selected:true">
 <!-- Buttons to switch between different datasets -->
 <div style="text-align: center; margin-bottom: 40px; display: flex; justify-content: center; gap: 20px;">
     <!-- Button to show View Requests Data -->
@@ -174,9 +174,13 @@
     </div>
 </div>
 
-	<div data-dojo-type="dijit/layout/ContentPane" title="الاتلاف و الترحيل" data-dojo-props="selected:true">
+	<div data-dojo-type="dijit/layout/ContentPane" title="${_lcl.DESTRUCTION_TRANSFER_DASHBOARD}" data-dojo-props="selected:true">
 		<div style="text-align: center; margin-bottom: 40px; display: flex; justify-content: center; gap: 20px;">
 	
+	
+			<div style="text-align:left; left:0px; display: inline-block;" data-dojo-attach-point="DestructionsFilterContainer" id="DestructionsFilterContainer" data-dojo-type="dijit/layout/ContentPane" > 
+			</div>  
+			
 			<button data-dojo-attach-point="DestructionsBtn" 
 	            data-dojo-attach-event="onClick: getDestructionsTables" 
 	            style="width: 150px; height: 50px; font-size: 18px; background-color: white; color: black; border: 2px solid black;">
@@ -203,6 +207,17 @@
 	         	style="width: 90%; height: 500px; margin: 30px auto; box-shadow: 0px 0px 10px rgba(0,0,0,0.5); box-sizing: content-box; display: none;">
 	    	</div>
 	   	</div>
+	   	
+	   		<div data-dojo-attach-point="NationalCenterTransferReadyFilesContainer">
+    				<div id="NationalCenterTransferReadyFilesTitle" 
+        				 data-dojo-attach-point="NationalCenterTransferReadyFilesTitle" 
+         				style="text-align: center; font-size: 18px; margin-bottom: 20px; display: none;">
+        				${_lcl.NATIONAL_CENTER_TRANSFER_READY_FILES}
+    				</div>
+    				<div data-dojo-attach-point="getNationalCenterTransferReadyFilesContainer" 
+         				style="width: 90%; height: 500px; margin: 30px auto; box-shadow: 0px 0px 10px rgba(0,0,0,0.5); box-sizing: content-box; display: none;">
+    				</div>
+			</div>
     	
     	<div  data-dojo-attach-point="NationalCenterTransferdFilesContainer" >
     		<div id="NationalCenterTransferdFilesTitle" data-dojo-attach-point="NationalCenterTransferdFilesTitle" 
@@ -214,6 +229,17 @@
     		</div>
     	</div>
     	
+    	
+    <div data-dojo-attach-point="AllReadyDestroyFilesContainer">
+    		<div id="AllReadyDestroyFilesTitle" 
+         			data-dojo-attach-point="AllReadyDestroyFilesTitle" 
+         			style="text-align: center; font-size: 18px; margin-bottom: 20px; display: none;">
+        			${_lcl.ALL_READY_DESTROY_FILES}
+    		</div>
+    		<div data-dojo-attach-point="getAllReadyDestroyFilesContainer" 
+         			style="width: 90%; height: 500px; margin: 30px auto; box-shadow: 0px 0px 10px rgba(0,0,0,0.5); box-sizing: content-box; display: none;">
+    		</div>
+      </div>
     	<div  data-dojo-attach-point="DestoredFilesContainer" >
     		<div id="DestoredFilesTitle" data-dojo-attach-point="DestoredFilesTitle" 
          		style="text-align: center; font-size: 18px; margin-bottom: 20px; display: none;" >

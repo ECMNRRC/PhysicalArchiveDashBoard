@@ -106,8 +106,20 @@ define({
 	ARCHIVE_CENTER_TRANSFARED_FILES:"Archive Center Transferd Files",
 	NATIONAL_CENTER_TRANSFARED_FILES:"National Center Transferd Files",
 	DESTROED_FILES:"Destored Files",
-	ARCHIVE_CENTER_TRANSFER_READY_FILES:"Archive Center Transfer Ready Files"
+	ARCHIVE_CENTER_TRANSFER_READY_FILES:"Archive Center Transfer Ready Files",
 	
+	ALL_READY_DESTROY_FILES: "All Ready-to-Destroy Files",
+	TOTAL_READY_DESTROY_DOCUMENT: "Total Ready-to-Destroy Documents",
+	
+	NATIONAL_CENTER_TRANSFER_READY_FILES: "National Center Transfer Ready Files",
+	TOTAL_READY_TRANSFER_DOCUMENT: "Total Ready-to-Transfer Documents",
+	
+	 EMPLOYEE_STATS_DASHBOARD: "Employee Statistics Dashboard",
+     DATE_RANGE_FILES_STATS: "File Statistics for Specified Date Range",
+     FILE_STATS_DASHBOARD: "File Statistics Dashboard",
+     REQUESTS_STATS_DASHBOARD: "Requests Statistics Dashboard",
+     DESTRUCTION_TRANSFER_DASHBOARD: "Destruction and Transfer Statistics Dashboard",
+    
 
 
 

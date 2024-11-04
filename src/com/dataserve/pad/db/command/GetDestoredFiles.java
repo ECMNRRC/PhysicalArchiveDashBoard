@@ -2,11 +2,8 @@ package com.dataserve.pad.db.command;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-
 import javax.servlet.http.HttpServletRequest;
 
-import com.dataserve.pad.bean.DmsFiles;
 import com.dataserve.pad.manager.DestroyFilesManager;
 import com.dataserve.pad.permissions.ActionType;
 import com.dataserve.pad.permissions.Module;
@@ -24,8 +21,9 @@ public class GetDestoredFiles extends CommandBase{
 	@Override
 	public String execute() throws Exception {
 	    try {
+	    	String departmentName = request.getParameter("departmentName"); // Get filter parameter
 	        DestroyFilesManager destroyFilesManager = new DestroyFilesManager();
-	        List<Map<String, Object>> departmentCounts = destroyFilesManager.getAllDestroedFiles(currentUserId);
+	        List<Map<String, Object>> departmentCounts = destroyFilesManager.getAllDestroedFiles(currentUserId,departmentName);
 
 	        JSONArray arr = new JSONArray();
 	        for (Map<String, Object> deptData : departmentCounts) {

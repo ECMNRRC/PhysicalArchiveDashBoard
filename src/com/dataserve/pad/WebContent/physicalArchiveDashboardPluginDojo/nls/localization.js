@@ -105,7 +105,19 @@ define({
 		ARCHIVE_CENTER_TRANSFARED_FILES:"الوثائق التي تم ترحيلها لمركز الوثائق",
 		NATIONAL_CENTER_TRANSFARED_FILES:"الوثائق التي تم ترحيلها للمركز الوطني",
 		DESTROED_FILES:"الوثائق التي تم إتلافها",
-		ARCHIVE_CENTER_TRANSFER_READY_FILES:"وثائق مستحقه للاستقبال فى مركز الوثائق"
+		ARCHIVE_CENTER_TRANSFER_READY_FILES:"وثائق مستحقه للاستقبال فى مركز الوثائق",
+		
+		ALL_READY_DESTROY_FILES: "جميع الملفات الجاهزة للتدمير",
+		TOTAL_READY_DESTROY_DOCUMENT: "إجمالي الملفات الجاهزة للتدمير",
+		
+		NATIONAL_CENTER_TRANSFER_READY_FILES: "الملفات الجاهزة للترحيل إلى المركز الوطني",
+		TOTAL_READY_TRANSFER_DOCUMENT: "إجمالي الملفات الجاهزة للترحيل",
+		
+		EMPLOYEE_STATS_DASHBOARD: "لوحة احصائيات الموظفين",
+        DATE_RANGE_FILES_STATS: "لوحة احصائيات الملفات لفترة زمنية محددة",
+        FILE_STATS_DASHBOARD: "لوحة احصائيات الملفات",
+        REQUESTS_STATS_DASHBOARD: "لوحة احصائيات الطلبات",
+        DESTRUCTION_TRANSFER_DASHBOARD: "لوحة احصائيات الاتلاف و الترحيل",
 
 
 

@@ -1,38 +1,43 @@
 package com.dataserve.pad.db.command;
 
-import java.util.Set;
-
+import java.util.List;
+import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
-import com.dataserve.pad.bean.DmsFiles;
 import com.dataserve.pad.manager.DestroyFilesManager;
 import com.dataserve.pad.permissions.ActionType;
 import com.dataserve.pad.permissions.Module;
 import com.ibm.json.java.JSONArray;
+import com.ibm.json.java.JSONObject;
 
-public class getAllReadyDestroyFiles extends CommandBase{
+public class GetAllReadyDestroyFiles extends CommandBase{
 
 	
 
-	public getAllReadyDestroyFiles(HttpServletRequest request) {
+	public GetAllReadyDestroyFiles(HttpServletRequest request) {
 		super(request);
 	}
 
 	@Override
-	public String execute() throws Exception {
-		try {
-			DestroyFilesManager destroyFilesManager  = new DestroyFilesManager();
-			Set<DmsFiles> files = destroyFilesManager.getAllReadyDestroyFiles(currentUserId);
-			
-			JSONArray arr = new JSONArray();
-			for (DmsFiles file : files) {
-				arr.add(file.getAsJson(callBacks.getLocale()));
-			}
-			return arr.toString();
-		} catch (Exception e) {
-			throw new Exception("Error returning departments for user with username '" + currentUserId + "'", e);
-		}
-	}
+    public String execute() throws Exception {
+        try {
+            DestroyFilesManager destroyFilesManager = new DestroyFilesManager();
+            List<Map<String, Object>> departmentCounts = destroyFilesManager.getAllReadyDestroyFiles(currentUserId);
+
+            // Converting departmentCounts to JSON array
+            JSONArray arr = new JSONArray();
+            for (Map<String, Object> deptData : departmentCounts) {
+                JSONObject deptJson = new JSONObject();
+                deptJson.put("deptArName", deptData.get("deptArName"));
+                deptJson.put("documentCount", deptData.get("documentCount"));
+                arr.add(deptJson);
+            }
+            return arr.toString();
+
+        } catch (Exception e) {
+            throw new Exception("Error retrieving ready-to-destroy files for user with username '" + currentUserId + "'", e);
+        }
+    }
 	
 	@Override
 	protected Module getModule() {

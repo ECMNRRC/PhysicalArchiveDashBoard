@@ -54,6 +54,7 @@ function(
         _lcl: lcl,
         _chartInstance:null,
         filterClassCharInst:null,
+        filterDepartmentId:null,
 
         // Set to true if widget template contains DOJO widgets.
         widgetsInTemplate: false,
@@ -69,6 +70,7 @@ function(
             this.logEntry("postCreate");
             this.inherited(arguments);
 			this.addDepSelect()
+//			this.addDepartmentFilter(); // Initialize department filter
             
             this.firstChartRendered = false;
             this.secondChartRendered = false;
@@ -94,13 +96,23 @@ function(
 
 		
         getDestructionsTables:function(){
-			this.destructionDashboard.getArchiveCenterTransferReadyFilesTable();
-			this.destructionDashboard.getArchiveCenterTransferdFilesTable();
-			this.destructionDashboard.getNationalCenterTransferdFilesTable();
-			this.destructionDashboard.getDestoredFilesTable();
-			console.log(this.destructionDashboard.getArchiveCenterTransferReadyFiles());
+
+			this.destructionDashboard.getArchiveCenterTransferReadyFilesTable(this.filterDepartmentId);
+     
+			this.destructionDashboard.getArchiveCenterTransferdFilesTable(this.filterDepartmentId);
+		
+			this.destructionDashboard.getNationalCenterTransferReadyFilesTable(this.filterDepartmentId);
+			
+			this.destructionDashboard.getNationalCenterTransferdFilesTable(this.filterDepartmentId);
+			
+			this.destructionDashboard.getDestoredFilesTable(this.filterDepartmentId);
+			
+			this.destructionDashboard.getAllReadyDestroyFilesTable(this.filterDepartmentId);
 
         },
+        
+
+
         
         
         getElectronicAndArchiveDoc: function () {

@@ -1,14 +1,14 @@
 package com.dataserve.pad.db.command;
 
-import java.util.Set;
-
+import java.util.List;
+import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
-import com.dataserve.pad.bean.DmsFiles;
 import com.dataserve.pad.manager.TransferFilesManager;
 import com.dataserve.pad.permissions.ActionType;
 import com.dataserve.pad.permissions.Module;
 import com.ibm.json.java.JSONArray;
+import com.ibm.json.java.JSONObject;
 
 public class GetNationalCenterTransferReadyFiles extends CommandBase{
 
@@ -19,20 +19,25 @@ public class GetNationalCenterTransferReadyFiles extends CommandBase{
 	}
 
 	@Override
-	public String execute() throws Exception {
-		try {
-			TransferFilesManager transferFilesManager  = new TransferFilesManager();
-			Set<DmsFiles> files = transferFilesManager.getNationalCenterTransferReadyFiles(currentUserId);
-			
-			JSONArray arr = new JSONArray();
-			for (DmsFiles file : files) {
-				arr.add(file.getAsJson(callBacks.getLocale()));
-			}
-			return arr.toString();
-		} catch (Exception e) {
-			throw new Exception("Error GetNationalCenterTransferReadyFiles for user with username '" + currentUserId + "'", e);
-		}
-	}
+    public String execute() throws Exception {
+        try {
+        	String departmentName = request.getParameter("departmentName"); 
+            TransferFilesManager transferFilesManager = new TransferFilesManager();
+            List<Map<String, Object>> departmentCounts = transferFilesManager.getNationalCenterTransferReadyFiles(currentUserId, departmentName); // Pass departmentName filter
+
+            JSONArray arr = new JSONArray();
+            for (Map<String, Object> deptData : departmentCounts) {
+                JSONObject deptJson = new JSONObject();
+                deptJson.put("deptArName", deptData.get("deptArName"));
+                deptJson.put("documentCount", deptData.get("documentCount"));
+                arr.add(deptJson);
+            }
+            return arr.toString();
+
+        } catch (Exception e) {
+            throw new Exception("Error retrieving National Center Transfer Ready Files for user with username '" + currentUserId + "'", e);
+        }
+    }
 	
 	@Override
 	protected Module getModule() {
