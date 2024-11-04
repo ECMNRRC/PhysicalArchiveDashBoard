@@ -17,6 +17,7 @@ public class GetAllReadyDestroyFiles extends CommandBase{
 	public GetAllReadyDestroyFiles(HttpServletRequest request) {
 		super(request);
 	}
+	
 
 	@Override
     public String execute() throws Exception {

@@ -103,15 +103,8 @@ define({
 	TRANSFAR:"Transfar",
 	DESTROY:"Destroy",
 	DESTRUCTION:"Destruction",
-	ARCHIVE_CENTER_TRANSFARED_FILES:"Archive Center Transferd Files",
-	NATIONAL_CENTER_TRANSFARED_FILES:"National Center Transferd Files",
-	DESTROED_FILES:"Destored Files",
-	ARCHIVE_CENTER_TRANSFER_READY_FILES:"Archive Center Transfer Ready Files",
-	
-	ALL_READY_DESTROY_FILES: "All Ready-to-Destroy Files",
 	TOTAL_READY_DESTROY_DOCUMENT: "Total Ready-to-Destroy Documents",
 	
-	NATIONAL_CENTER_TRANSFER_READY_FILES: "National Center Transfer Ready Files",
 	TOTAL_READY_TRANSFER_DOCUMENT: "Total Ready-to-Transfer Documents",
 	
 	 EMPLOYEE_STATS_DASHBOARD: "Employee Statistics Dashboard",
@@ -119,6 +112,14 @@ define({
      FILE_STATS_DASHBOARD: "File Statistics Dashboard",
      REQUESTS_STATS_DASHBOARD: "Requests Statistics Dashboard",
      DESTRUCTION_TRANSFER_DASHBOARD: "Destruction and Transfer Statistics Dashboard",
+     
+     ARCHIVE_CENTER_TRANSFER_READY_FILES: "Total Documents Ready for Receipt in the Archive Center",
+     ARCHIVE_CENTER_TRANSFARED_FILES: "Total Documents Received and Transferred from Departments in the Archive Center",
+     NATIONAL_CENTER_TRANSFER_READY_FILES: "Total Documents Ready for Transfer to the National Center for Archives",
+     NATIONAL_CENTER_TRANSFARED_FILES: "Total Documents Transferred to the National Center for Archives",
+     ALL_READY_DESTROY_FILES: "Total Documents Ready for Destruction",
+     DESTROED_FILES: "Total Documents Destroyed",
+
     
 
 
