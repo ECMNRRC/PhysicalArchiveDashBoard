@@ -106,6 +106,7 @@ public abstract class CommandBase implements Command {
             return false;
         }
         List<String> items = Arrays.asList(input.split(";"));
-        return items.contains(value);
+        return items.stream()
+        		.anyMatch(s -> s.equalsIgnoreCase(value));
     }
 }
