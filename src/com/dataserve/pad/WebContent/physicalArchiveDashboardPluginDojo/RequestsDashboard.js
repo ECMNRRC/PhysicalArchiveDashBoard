@@ -10,6 +10,7 @@ define([
 
     return declare("physicalArchiveDashboardPluginDojo.RequestsDashboard", null, {
         _chartInstance: null,
+        _chartBorrowingInstance: null,
         _lcl: lcl,
         _parent: null,
 
@@ -39,12 +40,12 @@ define([
         // Show the view requests chart and hide other sections
         getViewRequestsData: function () {
             // Hide other sections 
-            if (this._parent.borrowingRequestsContainer) {
-                this._parent.borrowingRequestsContainer.style.display = 'none';
-            }
-            if (this._parent.borrowingRequestsChartContainer) {
-                this._parent.borrowingRequestsChartContainer.style.display = 'none';
-            }
+            // if (this._parent.borrowingRequestsContainer) {
+            //     this._parent.borrowingRequestsContainer.style.display = 'none';
+            // }
+            // if (this._parent.borrowingRequestsChartContainer) {
+            //     this._parent.borrowingRequestsChartContainer.style.display = 'none';
+            // }
 
             // Show view requests section
             if (this._parent.totalRequestsContainer) {
@@ -207,18 +208,18 @@ define([
         // Show the borrowing requests chart and hide other sections
         getBorrowingRequestsData: function () {
             // Hide other sections
-            if (this._parent.firstChartContainerElectronicAndArchiveDoc) {
-                this._parent.firstChartContainerElectronicAndArchiveDoc.style.display = 'none';
-            }
-            if (this._parent.totalCountContainer) {
-                this._parent.totalCountContainer.style.display = 'none';
-            }
-            if (this._parent.totalRequestsContainer) {
-                this._parent.totalRequestsContainer.style.display = 'none';
-            }
-            if (this._parent.viewRequestsChartContainer) {
-                this._parent.viewRequestsChartContainer.style.display = 'none';
-            }
+            // if (this._parent.firstChartContainerElectronicAndArchiveDoc) {
+            //     this._parent.firstChartContainerElectronicAndArchiveDoc.style.display = 'none';
+            // }
+            // if (this._parent.totalCountContainer) {
+            //     this._parent.totalCountContainer.style.display = 'none';
+            // }
+            // if (this._parent.totalRequestsContainer) {
+            //     this._parent.totalRequestsContainer.style.display = 'none';
+            // }
+            // if (this._parent.viewRequestsChartContainer) {
+            //     this._parent.viewRequestsChartContainer.style.display = 'none';
+            // }
 
             // Show borrowing requests section
             if (this._parent.borrowingRequestsContainer) {
@@ -229,6 +230,11 @@ define([
             if (this._parent.borrowingRequestsChartContainer) {
                 this._parent.borrowingRequestsChartContainer.style.display = 'block';
             }
+    // Update the total document count in the totalCountContainer div
+    document.getElementById('totalRequestsLabel').innerHTML = this._lcl.TOTAL_VIEW_REQUESTS ;
+
+    // Update the total document count in the totalCountContainer div
+   document.getElementById('totalBorrowingLabel').innerHTML = this._lcl.TOTAL_BORROWING_REQUESTS;
 
             // Call the method to render the borrowing requests chart
             this.renderBorrowingRequestsChart();
@@ -236,8 +242,8 @@ define([
 
         // Render the chart for borrowing requests
         renderBorrowingRequestsChart: function () {
-            if (this._chartInstance) {
-                this._chartInstance.destroy();
+            if (this._chartBorrowingInstance) {
+                this._chartBorrowingInstance.destroy();
             }
 
             var dataResponse = this.GetBorrowingRequestsData();
@@ -322,8 +328,8 @@ define([
   		        }
   		    };
 
-            this._chartInstance = new ApexCharts(this._parent.borrowingRequestsChartContainer, chartOptions);
-            this._chartInstance.render();
+            this._chartBorrowingInstance = new ApexCharts(this._parent.borrowingRequestsChartContainer, chartOptions);
+            this._chartBorrowingInstance.render();
 
             // Update borrowing request counts and percentages in the DOM
             this._updateBorrowingRequestCounts(totalRequests, acceptedRequestsCount, rejectedRequestsCount, completedRequestsCount, acceptedPercentage, rejectedPercentage, completedPercentage);

@@ -117,20 +117,17 @@ function(
         
         getElectronicAndArchiveDoc: function () {
             var dataResponse = this.documentsDashboard.getElectronicAndArchiveDoc();
-        },
-        
-        getKeywordDocData: function () {
             var dataResponse = this.documentsDashboard.renderChartsKeywordDoc();
         },
         
+      
+        
 		 getViewRequestsData: function () {
             var dataResponse = this.requestsDashboard.getViewRequestsData();
-        },
-
-        getBorrowingRequestsData: function () {
             var dataResponse = this.requestsDashboard.getBorrowingRequestsData();
         },
 
+    
 		renderSecondChart: function(dataRes) {
 		    const dataResponse = dataRes;
 		    let operationsByDepartment = {};

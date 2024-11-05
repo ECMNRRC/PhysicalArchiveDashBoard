@@ -481,7 +481,7 @@ define([
             const totalPercentage = ((totalReadyDestroyDocs / TOTAL_DOCS) * 100).toFixed(2);
             const summaryRow = domConstruct.create("tr", { style: "font-weight: bold; background-color: #f2f2f2;" }, tbody);
 
-            domConstruct.create("td", { innerHTML: this._lcl.TOTAL_READY_DESTROY_DOCUMENT, style: "border: 1px solid #ddd; padding: 8px;" }, summaryRow);
+            domConstruct.create("td", { innerHTML: this._lcl.TOTAL_TRANSFARED_DOCUMENT, style: "border: 1px solid #ddd; padding: 8px;" }, summaryRow);
             domConstruct.create("td", { innerHTML: totalReadyDestroyDocs, style: "border: 1px solid #ddd; padding: 8px;" }, summaryRow);
             domConstruct.create("td", { innerHTML: `${totalPercentage}%`, style: "border: 1px solid #ddd; padding: 8px;" }, summaryRow);
         },
@@ -565,7 +565,7 @@ define([
             const totalPercentage = ((totalReadyDocs / TOTAL_DOCS) * 100).toFixed(2);
             const summaryRow = domConstruct.create("tr", { style: "font-weight: bold; background-color: #f2f2f2;" }, tbody);
 
-            domConstruct.create("td", { innerHTML: this._lcl.TOTAL_READY_TRANSFER_DOCUMENT, style: "border: 1px solid #ddd; padding: 8px;" }, summaryRow);
+            domConstruct.create("td", { innerHTML: this._lcl.TOTAL_TRANSFARED_DOCUMENT, style: "border: 1px solid #ddd; padding: 8px;" }, summaryRow);
             domConstruct.create("td", { innerHTML: totalReadyDocs, style: "border: 1px solid #ddd; padding: 8px;" }, summaryRow);
             domConstruct.create("td", { innerHTML: `${totalPercentage}%`, style: "border: 1px solid #ddd; padding: 8px;" }, summaryRow);
         },

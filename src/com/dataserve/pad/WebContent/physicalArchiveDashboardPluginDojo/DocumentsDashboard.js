@@ -22,12 +22,12 @@ define([
         // Get data for electronic and archive documents
         getElectronicAndArchiveDoc: function () {
             // Hide other sections (View Requests and Borrowing Requests)
-            if (this._parent.secondChartContainerKeywordDoc) {
-                this._parent.secondChartContainerKeywordDoc.style.display = 'none';
-            }
-            if (this._parent.totalKeywordDoc) {
-            	this._parent.totalKeywordDoc.style.display = 'none';
-            }
+            // if (this._parent.secondChartContainerKeywordDoc) {
+            //     this._parent.secondChartContainerKeywordDoc.style.display = 'none';
+            // }
+            // if (this._parent.totalKeywordDoc) {
+            // 	this._parent.totalKeywordDoc.style.display = 'none';
+            // }
 
             // Show the electronic/archive document section
             if (this._parent.firstChartContainerElectronicAndArchiveDoc) {
@@ -68,6 +68,11 @@ define([
             // Update the total document count in the totalCountContainer div
             document.getElementById('totalCountContainer').innerHTML = this._lcl.TOTAL_DOCS + ': ' + totalCount;
 
+            // Update the total document count in the totalCountContainer div
+           document.getElementById('totalCountContainerr').innerHTML = this._lcl.TOTAL_DOCS + ': ' + totalCount;
+
+
+         
             // Chart options for displaying the archived and electronic document counts
             var chartOptions = {
                 series: [archivedCount, electronicCount], // The data for the pie chart
@@ -89,6 +94,9 @@ define([
                             return value;
                         }
                     }
+                },
+                legend: {
+                    fontSize: '20px',  // Increase the font size of legend labels
                 }
             };
 
@@ -101,12 +109,12 @@ define([
         renderChartsKeywordDoc: function () {
 
         	  // Hide other sections (View Requests and Borrowing Requests)
-        	 if (this._parent.firstChartContainerElectronicAndArchiveDoc) {
-                 this._parent.firstChartContainerElectronicAndArchiveDoc.style.display = 'none';
-             }
-             if (this._parent.totalCountContainer) {
-                 this._parent.totalCountContainer.style.display = 'none';
-             }
+        	//  if (this._parent.firstChartContainerElectronicAndArchiveDoc) {
+            //      this._parent.firstChartContainerElectronicAndArchiveDoc.style.display = 'none';
+            //  }
+            //  if (this._parent.totalCountContainer) {
+            //      this._parent.totalCountContainer.style.display = 'none';
+            //  }
            
 
             // Show the electronic/archive document section
@@ -118,8 +126,8 @@ define([
                  this._parent.totalKeywordDoc.style.display = 'block';
              }
              
-       	  if (this._chartInstance) {
-              this._chartInstance.destroy();
+       	  if (this._keywordChartInstance) {
+              this._keywordChartInstance.destroy();
           }
            
             const secondChartContainer = this._parent.secondChartContainerKeywordDoc;
@@ -143,8 +151,8 @@ define([
                 series: [keywordDocCount, nonKeywordDocCount],
                 labels: [
                     this._lcl.KEYWORD_DOCS + ': ' + this._lcl.DOCUMENT_COUNT_LABEL + ' (' + keywordDocCount + ')' + ' ' + this._lcl.PERCENTAGE_LABEL + ' (' + keywordDocPercentage + '%)',
-                    this._lcl.NON_KEYWORD_DOCS + ': ' + this._lcl.DOCUMENT_COUNT_LABEL + ' (' + nonKeywordDocCount + ')' + ' ' + this._lcl.PERCENTAGE_LABEL + ' (' + nonKeywordDocPercentage + '%)',
-                    this._lcl.TOTAL_DOCS + ': ' + this._lcl.DOCUMENT_COUNT_LABEL + ' (' + totalCount + ')'
+                    this._lcl.NON_KEYWORD_DOCS + ': ' + this._lcl.DOCUMENT_COUNT_LABEL + ' (' + nonKeywordDocCount + ')' + ' ' + this._lcl.PERCENTAGE_LABEL + ' (' + nonKeywordDocPercentage + '%)'
+                    // this._lcl.TOTAL_DOCS + ': ' + this._lcl.DOCUMENT_COUNT_LABEL + ' (' + totalCount + ')'
                 ],
                 chart: {
                     type: 'pie',
@@ -160,12 +168,15 @@ define([
                             return value;
                         }.bind(this)
                     }
+                },
+                legend: {
+                    fontSize: '20px',  // Increase the font size of legend labels
                 }
             };
 
             // Render the chart in the secondChartContainerKeywordDoc div
-            this._chartInstance = new ApexCharts(secondChartContainer, chartOptions);
-            this._chartInstance.render();
+            this._keywordChartInstance = new ApexCharts(secondChartContainer, chartOptions);
+            this._keywordChartInstance.render();
         },
 
         // Get data from the backend for keyword documents

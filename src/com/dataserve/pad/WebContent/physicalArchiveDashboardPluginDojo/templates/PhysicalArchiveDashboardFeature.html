@@ -32,14 +32,9 @@
     <button data-dojo-attach-point="filterButtonElectronicAndArchiveDoc" 
                 data-dojo-attach-event="onClick: getElectronicAndArchiveDoc" 
             style="width: 150px; height: 50px; font-size: 18px;">
-        ${_lcl.VIEW_DOCUMENTS}
+        ${_lcl.VIEW_RESULTS}
     </button>
-  <!-- Button to show Borrowing Requests Data -->
-    <button data-dojo-attach-point="KeywordDocBtn" 
-            data-dojo-attach-event="onClick: getKeywordDocData" 
-            style="width: 150px; height: 50px; font-size: 18px;">
-        ${_lcl.VIEW_KEYWORD_DOCS}
-    </button>
+
 </div>
 
     <!-- Total document count container (for Electronic and Archive Documents) -->
@@ -47,14 +42,20 @@
          style="text-align: center; font-size: 18px; margin-bottom: 20px;">
         <!-- Total document count will be injected here -->
     </div>
-    <div id="totalKeywordDoc" data-dojo-attach-point="totalKeywordDoc" 
-         style="text-align: center; font-size: 18px; margin-bottom: 20px;">
-        <!-- Total document count will be injected here -->
-    </div>
+ 
 
     <!-- Chart container for Electronic and Archive Documents -->
     <div data-dojo-attach-point="firstChartContainerElectronicAndArchiveDoc" 
          style="width: 80%; height: 500px;display: none; margin: 0 auto; box-shadow: 0px 0px 10px rgba(0,0,0,0.5); box-sizing: content-box;">
+    </div>
+    
+    <div id="totalCountContainerr" data-dojo-attach-point="totalCountContainerr" 
+         style="text-align: center; font-size: 18px; margin-bottom: 20px;">
+        <!-- Total document count will be injected here -->
+    </div>
+      <div id="totalKeywordDoc" data-dojo-attach-point="totalKeywordDoc" 
+         style="text-align: center; font-size: 18px; margin-bottom: 20px;">
+        <!-- Total document count will be injected here -->
     </div>
     <div data-dojo-attach-point="secondChartContainerKeywordDoc" style="width: 80%; height: 500px; margin: 35px auto; box-shadow: 0px 0px 10px rgba(0,0,0,0.5); box-sizing: content-box;display: none;"></div>
 </div>
@@ -67,18 +68,16 @@
     <button data-dojo-attach-point="filterButtonViewRequests" 
             data-dojo-attach-event="onClick: getViewRequestsData" 
             style="width: 150px; height: 50px; font-size: 18px; background-color: white; color: black; border: 2px solid black;">
-        ${_lcl.VIEW_REQUESTS}
+        ${_lcl.VIEW_RESULTS}
     </button>
 
-    <!-- Button to show Borrowing Requests Data -->
-    <button data-dojo-attach-point="filterButtonBorrowingRequests" 
-            data-dojo-attach-event="onClick: getBorrowingRequestsData" 
-            style="width: 150px; height: 50px; font-size: 18px; background-color: white; color: black; border: 2px solid black;">
-        ${_lcl.VIEW_BORROWING_REQUESTS}
-    </button>
+   
 </div>
 
-
+ <div id="totalRequestsLabel" data-dojo-attach-point="totalRequestsLabel" 
+         style="text-align: center; font-size: 18px; margin-bottom: 20px;">
+        <!-- Total document count will be injected here -->
+    </div>
     <!-- Total counts and statistics for View Requests (as a table) -->
     <div id="totalRequestsContainer" data-dojo-attach-point="totalRequestsContainer" 
          style="text-align: center; font-size: 18px; margin-bottom: 20px; display: none;">
@@ -92,7 +91,7 @@
             </thead>
             <tbody>
                 <tr>
-                    <td style="padding: 10px; border: 1px solid #ddd;">${_lcl.TOTAL_REQUESTS}</td>
+                    <td style="padding: 10px; border: 1px solid #ddd;">${_lcl.TOTAL_VIEW_REQUESTS}</td>
                     <td id="totalRequestsCount" style="padding: 10px; border: 1px solid #ddd;"></td>
                     <td></td> <!-- No percentage for total requests -->
                 </tr>
@@ -128,6 +127,10 @@
     <!-- Chart container for View Requests -->
     <div data-dojo-attach-point="viewRequestsChartContainer" 
          style="width: 80%; height: 500px; margin: 0 auto; box-shadow: 0px 0px 10px rgba(0,0,0,0.5); box-sizing: content-box; display: none;">
+    </div>
+ <div id="totalBorrowingLabel" data-dojo-attach-point="totalBorrowingLabel" 
+         style="text-align: center; font-size: 18px; margin-bottom: 20px;">
+        <!-- Total document count will be injected here -->
     </div>
 
  <!-- Total counts and statistics for Borrowing Requests (as a table) -->
@@ -184,7 +187,7 @@
 			<button data-dojo-attach-point="DestructionsBtn" 
 	            data-dojo-attach-event="onClick: getDestructionsTables" 
 	            style="width: 150px; height: 50px; font-size: 18px; background-color: white; color: black; border: 2px solid black;">
-	        ${_lcl.DESTRUCTION}
+	        ${_lcl.VIEW_RESULTS}
 	    	</button>
 	    </div>
 	    
