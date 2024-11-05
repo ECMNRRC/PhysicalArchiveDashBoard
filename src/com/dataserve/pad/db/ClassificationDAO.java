@@ -286,7 +286,6 @@ public class ClassificationDAO extends AbstractDAO{
 
 	public Set<ClassificationBean> fetchAllClassifications() throws DatabaseException {
 	    try {
-	        System.out.println("enter fetchAllClassifications method ");
 	        stmt = con.prepareStatement("SELECT CLASSIFICATION_ID, CLASS_AR_NAME, CLASS_EN_NAME, SYMPOLIC_NAME FROM CLASSIFICTIONS");		
 	        rs = stmt.executeQuery();
 	        Set<ClassificationBean> beans = new LinkedHashSet<ClassificationBean>();			
@@ -306,7 +305,6 @@ public class ClassificationDAO extends AbstractDAO{
 	            bean.setChildrenIds(getChildrenIds(bean.getId()));
 	            beans.add(bean);
 	        }
-	        System.out.println("beans size >> "+ beans.size());
 	        return beans;
 	    } catch (SQLException e) {
 	        throw new DatabaseException("Error fetching record from table CLASSIFICTIONS", e);

@@ -78,7 +78,6 @@ public class PhysicalArchiveDashBoardService extends PluginService {
 	 */
 	public void execute(PluginServiceCallbacks callbacks, HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
-		System.out.println("inside service 1111");
 		final PluginLogger log = callbacks.getLogger();
 		String result = null;
 
@@ -86,8 +85,6 @@ public class PhysicalArchiveDashBoardService extends PluginService {
 		if (method == null || method.trim().equals("")) {
 			throw new Exception("The \"method\"  name parameter is missing or misspelled");
 		}
-		System.out.println("inside service");
-		System.out.println("method>>> ");
 		String currentUserId = getUserId(callbacks, request);
 
 		request.setCharacterEncoding("UTF-8");

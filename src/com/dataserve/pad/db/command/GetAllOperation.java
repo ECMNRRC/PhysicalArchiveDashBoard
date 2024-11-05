@@ -25,7 +25,7 @@ public class GetAllOperation extends CommandBase{
 		try{
 			
 			Set<OperationModel> docs = OperationModel.getAllOperations();
-			System.out.println("getLink groups: "+ docs);
+//			System.out.println("getLink groups: "+ docs);
 			JSONArray arr = new JSONArray();
 			for (OperationModel lm : docs) {
 				arr.add(lm.getAsJson());

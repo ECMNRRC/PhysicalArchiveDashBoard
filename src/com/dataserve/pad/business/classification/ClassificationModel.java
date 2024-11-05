@@ -94,7 +94,6 @@ private Set<ClassificationModel> children = new LinkedHashSet<ClassificationMode
 					ClassificationModel ClassificationModel = new ClassificationModel(b);
 					models.add(	ClassificationModel);
 				}
-				System.out.println("models size" + models.size());
 				return models;
 			} catch (DatabaseException e) {
 				throw new ClassificationException("Error getting Classificafion", e);
