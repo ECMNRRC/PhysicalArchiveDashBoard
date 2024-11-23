@@ -275,7 +275,49 @@ public class TransferFilesDAO {
 	        }
 	    }
 	}
+	public List<Map<String, Object>> fetchMigratedDocumentsStatistics() throws DatabaseException {
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
 
+        try {
+            String SQL = 
+                "SELECT " +
+                "   ISL.INTEGRATION_SYS_AR AS integrationSysAr, " +
+                "   ISL.INTEGRATION_SYS_EN AS integrationSysEn, " +
+                "   COUNT(DF.DOCUMENT_ID) AS totalDocuments " +
+                "FROM " +
+                "   dbo.DMS_FILES DF " +
+                "INNER JOIN " +
+                "   dbo.INTGRATION_SYSTEMS_LK ISL ON ISL.INTEGRATION_SYS_ID = DF.INTEGRATION_SYS_ID " +
+                "GROUP BY " +
+                "   ISL.INTEGRATION_SYS_AR, ISL.INTEGRATION_SYS_EN " +
+                "ORDER BY " +
+                "   totalDocuments DESC";
+
+            stmt = dbConnection.getCon().prepareStatement(SQL);
+            rs = stmt.executeQuery();
+
+            List<Map<String, Object>> statistics = new ArrayList<>();
+            while (rs.next()) {
+                Map<String, Object> stat = new HashMap<>();
+                stat.put("integrationSysAr", rs.getString("integrationSysAr"));
+                stat.put("integrationSysEn", rs.getString("integrationSysEn"));
+                stat.put("totalDocuments", rs.getInt("totalDocuments"));
+                statistics.add(stat);
+            }
+            return statistics;
+
+        } catch (SQLException e) {
+            throw new DatabaseException("Error fetching migrated documents statistics", e);
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (stmt != null) stmt.close();
+            } catch (SQLException ex) {
+                throw new DatabaseException("Error closing database resources", ex);
+            }
+        }
+    }
 	
 //	public Set<DmsFiles> getArchiveCenterTransferReadyFiles() throws DatabaseException {
 //	    PreparedStatement stmt = null;
@@ -601,6 +643,57 @@ public class TransferFilesDAO {
 		}
 	}
 	
+	
+
+	public List<Map<String, Object>> getArchiveDocDepartment(String departmentName) throws DatabaseException {
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		try {
+			StringBuilder SQL = new StringBuilder(
+				"SELECT DEPARTMENTS.DEPT_AR_NAME AS deptArName, " +
+				"COUNT(DMS_FILES.DOCUMENT_ID) AS documentCount " +
+				"FROM dbo.DMS_FILES " +
+				"INNER JOIN dbo.DEPARTMENTS ON DEPARTMENTS.DEPT_ID = DMS_FILES.DEPT_ID "
+			);
+	
+			// Add filtering clause if departmentName is provided
+			if (departmentName != null && !departmentName.trim().isEmpty()) {
+				SQL.append("AND DEPARTMENTS.DEPT_ID = ? ");
+			}
+	
+			SQL.append("GROUP BY DEPARTMENTS.DEPT_AR_NAME ORDER BY DEPARTMENTS.DEPT_AR_NAME");
+			
+			stmt = dbConnection.getCon().prepareStatement(SQL.toString());
+			
+			// Set departmentName parameter if it's used
+			if (departmentName != null && !departmentName.trim().isEmpty()) {
+				stmt.setString(1, departmentName);
+			}
+			
+			rs = stmt.executeQuery();
+			List<Map<String, Object>> departmentCounts = new ArrayList<>();
+			
+			while (rs.next()) {
+				Map<String, Object> departmentData = new HashMap<>();
+				departmentData.put("deptArName", rs.getString("deptArName"));
+				departmentData.put("documentCount", rs.getInt("documentCount"));
+				departmentCounts.add(departmentData);
+			}
+			
+			return departmentCounts;
+		} catch (SQLException e) {
+			throw new DatabaseException("Error getArchiveCenterTransferdFiles", e);
+		} finally {
+			try {
+				if (rs != null) rs.close();
+				if (stmt != null) stmt.close();
+			} catch (SQLException unexpected) {
+				throw new DatabaseException("Error closing resources", unexpected);
+			}
+		}
+	}
+	
+
 
 //	public Set<DmsFiles> getNationalCenterTransferReadyFiles() throws DatabaseException{
 //		

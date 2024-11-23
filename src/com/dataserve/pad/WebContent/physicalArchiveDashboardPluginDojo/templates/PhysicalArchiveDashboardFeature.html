@@ -58,6 +58,28 @@
         <!-- Total document count will be injected here -->
     </div>
     <div data-dojo-attach-point="secondChartContainerKeywordDoc" style="width: 80%; height: 500px; margin: 35px auto; box-shadow: 0px 0px 10px rgba(0,0,0,0.5); box-sizing: content-box;display: none;"></div>
+
+
+           <div  data-dojo-attach-point="CalculateMigratedDocumentsStatsContainer" >
+	    	<div id="CalculateMigratedDocumentsStatsTitle" data-dojo-attach-point="CalculateMigratedDocumentsStatsTitle" 
+	         	style="text-align: center; font-size: 18px; margin-bottom: 20px; display: none;" >
+	        	${_lcl.CALCULATE_MIGRATED_DOCUMENTS_STATS}
+	    	</div>
+	    	<div data-dojo-attach-point="getCalculatedMigratedDocumentsStats" 
+	         	style="width: 90%; height: 500px; margin: 30px auto; box-shadow: 0px 0px 10px rgba(0,0,0,0.5); box-sizing: content-box; display: none;">
+	    	</div>
+	   	</div>
+
+           <div  data-dojo-attach-point="ArchiveDocDepartmentContainer" >
+	    	<div id="ArchiveDocDepartmentTitle" data-dojo-attach-point="ArchiveDocDepartmentTitle" 
+	         	style="text-align: center; font-size: 18px; margin-bottom: 20px; display: none;" >
+	        	${_lcl.ARCHIVE_DOC_DEPARTMENT}
+	    	</div>
+	    	<div data-dojo-attach-point="getArchiveDocDepartment" 
+	         	style="width: 90%; height: 500px; margin: 30px auto; box-shadow: 0px 0px 10px rgba(0,0,0,0.5); box-sizing: content-box; display: none;">
+	    	</div>
+	   	</div>
+
 </div>
 
  <!-- Chart container for Borrowing Requests -->
@@ -210,6 +232,7 @@
 	         	style="width: 90%; height: 500px; margin: 30px auto; box-shadow: 0px 0px 10px rgba(0,0,0,0.5); box-sizing: content-box; display: none;">
 	    	</div>
 	   	</div>
+
 	   	
 	   		<div data-dojo-attach-point="NationalCenterTransferReadyFilesContainer">
     				<div id="NationalCenterTransferReadyFilesTitle" 

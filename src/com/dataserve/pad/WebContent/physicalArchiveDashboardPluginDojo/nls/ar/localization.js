@@ -98,6 +98,7 @@ define({
 	 KEYWORD_DOCS_TITLE:"توزيع الوثائق ذات كلمه مفتاحيه ",
 	 TOTAL_KEYWORD_DOCS: "عدد الوثائق ذات كلمه مفتاحيه",
 	 DEPARTMENT_NAME: "أسم الإداره",
+	 SYSTEM_NAME: "أسم النظام",
 	 TOTAL_TRANSFARED_DOCUMENT: "إجمالي عدد الوثائق",
 	 TRANSFAR:"ترحيل",
 	 DESTROY:"إتلاف",
@@ -117,6 +118,8 @@ define({
      
      ARCHIVE_CENTER_TRANSFER_READY_FILES:" إجمالي الوثائق المستحقه للاستقبال فى مركز الوثائق ",
      ARCHIVE_CENTER_TRANSFARED_FILES:" إجمالي الوثائق التي تم استلامها فى مركز الوثائق وترحيلها من الادارات ",
+	 CALCULATE_MIGRATED_DOCUMENTS_STATS: "إجمالي الوثائق المرحلة من كل نظام داخلي ونسبة الوثائق المرحلة من كل نظام",
+	 ARCHIVE_DOC_DEPARTMENT:"إجمالي الوثائق المؤرشفة في كل إدارة",
 	 NATIONAL_CENTER_TRANSFER_READY_FILES: "إجمالي الوثائق المستحقه للترحيل الى المركز الوطنى للوثائق والمحفوظات",
      NATIONAL_CENTER_TRANSFARED_FILES:"اجمالي الوثائق التي تم الترحيل الى المركز الوطنى للوثائق والمحفوظات",
      ALL_READY_DESTROY_FILES: "اجمالي الوثائق المستحقه للاتلاف",

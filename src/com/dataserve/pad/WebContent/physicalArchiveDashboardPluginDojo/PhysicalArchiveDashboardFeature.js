@@ -118,6 +118,8 @@ function(
         getElectronicAndArchiveDoc: function () {
             var dataResponse = this.documentsDashboard.getElectronicAndArchiveDoc();
             var dataResponse = this.documentsDashboard.renderChartsKeywordDoc();
+			this.documentsDashboard.getCalculatedMigratedDocumentsStatsTable(this.filterDepartmentId);
+			this.documentsDashboard.getArchiveDocDepartmentable(this.filterDepartmentId);
         },
         
       

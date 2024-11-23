@@ -70,13 +70,61 @@ public class TransferFilesManager {
             }
         }
     }
+    
+    
 
+    
+    
+    public List<Map<String, Object>> getMigratedDocumentsStatistics() throws Exception {
+        try {
+            TransferFilesDAO dao = new TransferFilesDAO(dbConnection);
+            return dao.fetchMigratedDocumentsStatistics();
+
+        } catch (Exception e) {
+            try {
+                dbConnection.rollBack();
+            } catch (DatabaseException ex) {
+                throw new Exception("Error rolling back DB connection", ex);
+            }
+            throw new Exception("Error retrieving Archive Center Transfer Ready Files", e);
+
+        } finally {
+            // Close connection
+            try {
+                dbConnection.releaseConnection();
+            } catch (DatabaseException ex) {
+                throw new Exception("Error releasing DB connection", ex);
+            }
+        }
+    }
+    
+    
 
 
 	public List<Map<String, Object>> getArchiveCenterTransferdFiles(String currentUserId, String departmentName) throws Exception {
 		try {
 			TransferFilesDAO dao = new TransferFilesDAO(dbConnection);
 			return dao.getArchiveCenterTransferdFiles(departmentName);
+		} catch (Exception e) {
+			try {
+				dbConnection.rollBack();
+			} catch (DatabaseException ex) {
+				throw new Exception("Error rollback DB connection", ex);
+			}
+			throw new Exception("Error get Archive Center Transfer Ready Files", e);
+		} finally {
+			try {
+				dbConnection.releaseConnection();
+			} catch (DatabaseException ex) {
+				throw new Exception("Error releasing DB connection", ex);
+			}
+		}
+	}
+	
+	public List<Map<String, Object>> getArchiveDocDepartment(String currentUserId, String departmentName) throws Exception {
+		try {
+			TransferFilesDAO dao = new TransferFilesDAO(dbConnection);
+			return dao.getArchiveDocDepartment(departmentName);
 		} catch (Exception e) {
 			try {
 				dbConnection.rollBack();

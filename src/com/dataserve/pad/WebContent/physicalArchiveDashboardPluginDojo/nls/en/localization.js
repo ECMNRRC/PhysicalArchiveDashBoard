@@ -100,6 +100,7 @@ define({
     KEYWORD_DOCS_TITLE:"Distribution of documents with keyword",
     TOTAL_KEYWORD_DOCS: "Total Documents With Keyword",
 	DEPARTMENT_NAME: "Department Name",
+	SYSTEM_NAME: "System Name",
 	TOTAL_TRANSFARED_DOCUMENT: "Total number Documents",
 	TRANSFAR:"Transfar",
 	DESTROY:"Destroy",
@@ -116,6 +117,8 @@ define({
      
      ARCHIVE_CENTER_TRANSFER_READY_FILES: "Total Documents Ready for Receipt in the Archive Center",
      ARCHIVE_CENTER_TRANSFARED_FILES: "Total Documents Received and Transferred from Departments in the Archive Center",
+	 CALCULATE_MIGRATED_DOCUMENTS_STATS: "Total documents migrated from each internal system and the percentage of documents migrated from each system.",
+	 ARCHIVE_DOC_DEPARTMENT:"Total Archived Documents in Each Department",
      NATIONAL_CENTER_TRANSFER_READY_FILES: "Total Documents Ready for Transfer to the National Center for Archives",
      NATIONAL_CENTER_TRANSFARED_FILES: "Total Documents Transferred to the National Center for Archives",
      ALL_READY_DESTROY_FILES: "Total Documents Ready for Destruction",
