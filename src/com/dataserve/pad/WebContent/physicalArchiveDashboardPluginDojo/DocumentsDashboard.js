@@ -409,6 +409,96 @@ define([
             domConstruct.create("td", { innerHTML: `${totalPercentage}%`, style: "border: 1px solid #ddd; padding: 8px;" }, summaryRow);
         },
 
+
+
+      
+        
+        getConfidentialDocClassificationTable: function (departmentName) {
+            const data = this.getConfidentialDocClassification(departmentName); // Pass departmentName to filter results
+            const totalDocsInsys = this.GetTotalDocsInSystem();
+        
+            if (!totalDocsInsys) {
+                console.error('No data received for electronic and archived documents.');
+                return;
+            }
+        
+            const TOTAL_DOCS = totalDocsInsys.TotalCount;
+            const totalConfidentialDocs = data.reduce((sum, dept) => sum + dept.documentCount, 0);
+        
+            const locale = ecm.model.desktop.valueFormatter.locale;
+            const isRTL = locale === 'ar';
+        
+            const container = this._parent.getConfidentialDocClassification;
+            if (container) {
+                container.style.display = 'block';
+            }
+            if(this._parent.ConfidentialDocClassificationTitle){
+                this._parent.ConfidentialDocClassificationTitle.style.display = 'block';
+            }
+        
+            domConstruct.empty(container); 
+        
+            const table = domConstruct.create("table", { 
+                class: "document-table", 
+                style: `width:100%; border-collapse: collapse; direction: ${isRTL ? 'rtl' : 'ltr'};` 
+            }, container);
+        
+            const thead = domConstruct.create("thead", {}, table);
+            const headerRow = domConstruct.create("tr", {}, thead);
+        
+            [this._lcl.CLASSIFICATION_NAME, this._lcl.DOCUMENT_COUNT_LABEL, this._lcl.PERCENTAGE_LABEL].forEach((title) => {
+                domConstruct.create("th", { 
+                    innerHTML: title, 
+                    style: "border: 1px solid #ddd; padding: 8px; background-color: #f2f2f2;" 
+                }, headerRow);
+            });
+        
+            const tbody = domConstruct.create("tbody", {}, table);
+        
+            data.forEach((dept) => {
+                const percentage = ((dept.documentCount / TOTAL_DOCS) * 100).toFixed(2);
+                const row = domConstruct.create("tr", {}, tbody);
+        debugger
+                domConstruct.create("td", { innerHTML: dept.propertyValue, style: "border: 1px solid #ddd; padding: 8px;" }, row);
+                domConstruct.create("td", { innerHTML: dept.documentCount, style: "border: 1px solid #ddd; padding: 8px;" }, row);
+                domConstruct.create("td", { innerHTML: `${percentage}%`, style: "border: 1px solid #ddd; padding: 8px;" }, row);
+            });
+        
+            const totalPercentage = ((totalConfidentialDocs / TOTAL_DOCS) * 100).toFixed(2);
+            const summaryRow = domConstruct.create("tr", { style: "font-weight: bold; background-color: #f2f2f2;" }, tbody);
+        
+            domConstruct.create("td", { innerHTML: this._lcl.TOTAL_TRANSFARED_DOCUMENT, style: "border: 1px solid #ddd; padding: 8px;" }, summaryRow);
+            domConstruct.create("td", { innerHTML: totalConfidentialDocs, style: "border: 1px solid #ddd; padding: 8px;" }, summaryRow);
+            domConstruct.create("td", { innerHTML: `${totalPercentage}%`, style: "border: 1px solid #ddd; padding: 8px;" }, summaryRow);
+        },
+
+        getConfidentialDocClassification: function(departmentName) {
+            const toaster = new Toaster();
+            const params = {
+                method: "GetConfidentialDocClassification",
+            };
+        
+            
+            
+            const response = ecm.model.Request.invokeSynchronousPluginService("PhysicalArchiveDashboardPlugin", "PhysicalArchiveDashBoardService", params);
+            const resultSet = new ResultSet(response);
+        
+            let results = [];
+            if (!resultSet.result.startsWith("ERROR")) {
+                results = json.parse(resultSet.result, true);
+            } else {
+                if (resultSet.result.includes("(ACCESS DENIED)")) {
+                    toaster.redToaster(lcl.ACCESS_DENIED);
+                } else {
+                    toaster.redToaster(lcl.FAILED_TO_FETCH_DATA);
+                }
+                console.log("Failed to load data!");
+                console.log(resultSet);
+            }
+            return results;
+        },
+        
+
         GetTotalDocsInSystem: function () {
             var toaster = new Toaster();
             var params = {

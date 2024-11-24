@@ -120,6 +120,7 @@ function(
             var dataResponse = this.documentsDashboard.renderChartsKeywordDoc();
 			this.documentsDashboard.getCalculatedMigratedDocumentsStatsTable(this.filterDepartmentId);
 			this.documentsDashboard.getArchiveDocDepartmentable(this.filterDepartmentId);
+			this.documentsDashboard.getConfidentialDocClassificationTable(this.filterDepartmentId);
         },
         
       

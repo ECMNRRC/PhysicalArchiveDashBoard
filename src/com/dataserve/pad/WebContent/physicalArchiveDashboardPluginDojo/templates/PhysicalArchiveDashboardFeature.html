@@ -66,18 +66,29 @@
 	        	${_lcl.CALCULATE_MIGRATED_DOCUMENTS_STATS}
 	    	</div>
 	    	<div data-dojo-attach-point="getCalculatedMigratedDocumentsStats" 
-	         	style="width: 90%; height: 500px; margin: 30px auto; box-shadow: 0px 0px 10px rgba(0,0,0,0.5); box-sizing: content-box; display: none;">
-	    	</div>
+            style="width: 90%; height: 500px; margin: 30px auto; box-shadow: 0px 0px 10px rgba(0,0,0,0.5); box-sizing: content-box; display: none; overflow-y: auto;">
+        </div>
 	   	</div>
 
-           <div  data-dojo-attach-point="ArchiveDocDepartmentContainer" >
-	    	<div id="ArchiveDocDepartmentTitle" data-dojo-attach-point="ArchiveDocDepartmentTitle" 
+           <div data-dojo-attach-point="ArchiveDocDepartmentContainer">
+            <div id="ArchiveDocDepartmentTitle" data-dojo-attach-point="ArchiveDocDepartmentTitle"
+                 style="text-align: center; font-size: 18px; margin-bottom: 20px; display: none;">
+                ${_lcl.ARCHIVE_DOC_DEPARTMENT}
+            </div>
+            <div data-dojo-attach-point="getArchiveDocDepartment"
+                 style="width: 90%; height: 500px; margin: 30px auto; box-shadow: 0px 0px 10px rgba(0,0,0,0.5); box-sizing: content-box; display: none; overflow-y: auto;">
+            </div>
+        </div>
+        
+
+           <div  data-dojo-attach-point="ConfidentialDocClassificationContainer" >
+	    	<div id="ArchiveDocDepartmentTitle" data-dojo-attach-point="ConfidentialDocClassificationTitle" 
 	         	style="text-align: center; font-size: 18px; margin-bottom: 20px; display: none;" >
-	        	${_lcl.ARCHIVE_DOC_DEPARTMENT}
+	        	${_lcl.CONFIDENTIAL_DOC_CLASSIFICATION}
 	    	</div>
-	    	<div data-dojo-attach-point="getArchiveDocDepartment" 
-	         	style="width: 90%; height: 500px; margin: 30px auto; box-shadow: 0px 0px 10px rgba(0,0,0,0.5); box-sizing: content-box; display: none;">
-	    	</div>
+	    	<div data-dojo-attach-point="getConfidentialDocClassification" 
+            style="width: 90%; height: 500px; margin: 30px auto; box-shadow: 0px 0px 10px rgba(0,0,0,0.5); box-sizing: content-box; display: none; overflow-y: auto;">
+        </div>
 	   	</div>
 
 </div>

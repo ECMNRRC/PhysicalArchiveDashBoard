@@ -693,6 +693,55 @@ public class TransferFilesDAO {
 		}
 	}
 	
+	public List<Map<String, Object>> fetchConfidentialDocClassification() throws DatabaseException {
+	    PreparedStatement stmt = null;
+	    ResultSet rs = null;
+
+	    try {
+	        StringBuilder SQL = new StringBuilder(
+	            "SELECT " +
+	            "DMS_PROPERTIES_AUDIT.PROPERTY_VALUE AS propertyValue, " +
+	            "COUNT(DISTINCT DMS_FILES.DOCUMENT_ID) AS documentCount " +
+	            "FROM dbo.DMS_FILES " +
+	            "INNER JOIN dbo.DMS_AUDIT ON DMS_FILES.FILE_ID = DMS_AUDIT.FILE_ID " +
+	            "INNER JOIN dbo.DMS_PROPERTIES_AUDIT ON DMS_AUDIT.DMS_AUDIT_ID = DMS_PROPERTIES_AUDIT.DMS_AUDIT_ID " +
+	            "WHERE DMS_PROPERTIES_AUDIT.PROPERTY_NAME = 'DegreeSecrecy' " +
+	            "AND DMS_AUDIT.DMS_AUDIT_ID IN ( " +
+	            "    SELECT MAX(DMS_AUDIT_INNER.DMS_AUDIT_ID) " +
+	            "    FROM dbo.DMS_AUDIT DMS_AUDIT_INNER " +
+	            "    INNER JOIN dbo.DMS_PROPERTIES_AUDIT DMS_PROPERTIES_AUDIT_INNER " +
+	            "    ON DMS_AUDIT_INNER.DMS_AUDIT_ID = DMS_PROPERTIES_AUDIT_INNER.DMS_AUDIT_ID " +
+	            "    WHERE DMS_PROPERTIES_AUDIT_INNER.PROPERTY_NAME = 'DegreeSecrecy' " +
+	            "    GROUP BY DMS_AUDIT_INNER.FILE_ID " +
+	            ") " +
+	            "GROUP BY DMS_PROPERTIES_AUDIT.PROPERTY_VALUE " +
+	            "ORDER BY documentCount DESC"
+	        );
+
+	        stmt = dbConnection.getCon().prepareStatement(SQL.toString());
+	        rs = stmt.executeQuery();
+
+	        List<Map<String, Object>> classificationCounts = new ArrayList<>();
+	        while (rs.next()) {
+	            Map<String, Object> classificationData = new HashMap<>();
+	            classificationData.put("propertyValue", rs.getString("propertyValue"));
+	            classificationData.put("documentCount", rs.getInt("documentCount"));
+	            classificationCounts.add(classificationData);
+	        }
+	        return classificationCounts;
+
+	    } catch (SQLException e) {
+	        throw new DatabaseException("Error fetching confidential document classification", e);
+	    } finally {
+	        try {
+	            if (rs != null) rs.close();
+	            if (stmt != null) stmt.close();
+	        } catch (SQLException ex) {
+	            throw new DatabaseException("Error closing database resources", ex);
+	        }
+	    }
+	}
+
 
 
 //	public Set<DmsFiles> getNationalCenterTransferReadyFiles() throws DatabaseException{
