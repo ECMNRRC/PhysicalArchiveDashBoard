@@ -140,6 +140,27 @@ public class TransferFilesManager {
 			}
 		}
 	}
+
+	public List<Map<String, Object>> getArchiveDocClassification(String currentUserId, String departmentName) throws Exception {
+		try {
+			TransferFilesDAO dao = new TransferFilesDAO(dbConnection);
+			return dao.getArchiveDocClassification(departmentName);
+		} catch (Exception e) {
+			try {
+				dbConnection.rollBack();
+			} catch (DatabaseException ex) {
+				throw new Exception("Error rollback DB connection", ex);
+			}
+			throw new Exception("Error get Archive Doc Classification", e);
+		} finally {
+			try {
+				dbConnection.releaseConnection();
+			} catch (DatabaseException ex) {
+				throw new Exception("Error releasing DB connection", ex);
+			}
+		}
+	}
+	
 	
 	      public List<Map<String, Object>> getConfidentialDocClassification(String currentUserId) throws Exception {
 	        		try {

@@ -101,6 +101,7 @@ define({
 	 CLASSIFICATION_NAME: "أسم التصنيف",
 	 SYSTEM_NAME: "أسم النظام",
 	 TOTAL_TRANSFARED_DOCUMENT: "إجمالي عدد الوثائق",
+	 UNCLASSIFIED: "غير مصنف",
 	 TRANSFAR:"ترحيل",
 	 DESTROY:"إتلاف",
 	 DESTRUCTION:"ترحيل و إتلاف",
@@ -121,6 +122,8 @@ define({
      ARCHIVE_CENTER_TRANSFARED_FILES:" إجمالي الوثائق التي تم استلامها فى مركز الوثائق وترحيلها من الادارات ",
 	 CALCULATE_MIGRATED_DOCUMENTS_STATS: "إجمالي الوثائق المرحلة من كل نظام داخلي ونسبة الوثائق المرحلة من كل نظام",
 	 ARCHIVE_DOC_DEPARTMENT:"إجمالي الوثائق المؤرشفة في كل إدارة",
+	 ARCHIVE_DOC_CLASSIFICATION:"إجمالي الوثائق المؤرشفة في كل تصنيف",
+
 	 CONFIDENTIAL_DOC_CLASSIFICATION: "إجمالي الوثائق السرية لكل تصنيف من تصنيفات السرية ونسبة كل تصنيف من اجمالى النظام",
 	 NATIONAL_CENTER_TRANSFER_READY_FILES: "إجمالي الوثائق المستحقه للترحيل الى المركز الوطنى للوثائق والمحفوظات",
      NATIONAL_CENTER_TRANSFARED_FILES:"اجمالي الوثائق التي تم الترحيل الى المركز الوطنى للوثائق والمحفوظات",

@@ -527,6 +527,100 @@ define([
 
             return results;
         },
+
+
+        
+
+        
+        getArchiveDocClassificationtable: function (departmentName) {
+            const data = this.getArchiveDocClassification(departmentName); // Pass departmentName to filter results
+            const totalDocsInsys = this.GetTotalDocsInSystem();
+        
+            if (!totalDocsInsys) {
+                console.error('No data received for electronic and archived documents.');
+                return;
+            }
+        
+            const TOTAL_DOCS = totalDocsInsys.TotalCount;
+            const totalTransferredDocs = data.reduce((sum, classification) => sum + classification.documentCount, 0);
+        
+            const locale = ecm.model.desktop.valueFormatter.locale;
+            const isRTL = locale === 'ar';
+        
+            const container = this._parent.getArchiveDocClassification;
+            if (container) {
+                container.style.display = 'block';
+            }
+            if(this._parent.ArchiveDocClassificationTitle){
+                this._parent.ArchiveDocClassificationTitle.style.display = 'block';
+            }
+        
+            domConstruct.empty(container); 
+        
+            const table = domConstruct.create("table", { 
+                class: "document-table", 
+                style: `width:100%; border-collapse: collapse; direction: ${isRTL ? 'rtl' : 'ltr'};` 
+            }, container);
+        
+            const thead = domConstruct.create("thead", {}, table);
+            const headerRow = domConstruct.create("tr", {}, thead);
+        
+            [this._lcl.CLASSIFICATION_NAME, this._lcl.DOCUMENT_COUNT_LABEL, this._lcl.PERCENTAGE_LABEL].forEach((title) => {
+                domConstruct.create("th", { 
+                    innerHTML: title, 
+                    style: "border: 1px solid #ddd; padding: 8px; background-color: #f2f2f2;" 
+                }, headerRow);
+            });
+        
+            const tbody = domConstruct.create("tbody", {}, table);
+        
+            debugger
+            data.forEach((classification) => {
+                const percentage = ((classification.documentCount / TOTAL_DOCS) * 100).toFixed(2);
+                const row = domConstruct.create("tr", {}, tbody);
+            // Check if classArName is null, undefined, or an empty string (after trimming)
+    if (!classification.classArName || classification.classArName.trim() === "") {
+            classification.classArName =this._lcl.UNCLASSIFIED
+        }
+                domConstruct.create("td", { innerHTML: classification.classArName, style: "border: 1px solid #ddd; padding: 8px;" }, row);
+                domConstruct.create("td", { innerHTML: classification.documentCount, style: "border: 1px solid #ddd; padding: 8px;" }, row);
+                domConstruct.create("td", { innerHTML: `${percentage}%`, style: "border: 1px solid #ddd; padding: 8px;" }, row);
+            });
+        
+            const totalPercentage = ((totalTransferredDocs / TOTAL_DOCS) * 100).toFixed(2);
+            const summaryRow = domConstruct.create("tr", { style: "font-weight: bold; background-color: #f2f2f2;" }, tbody);
+        
+            domConstruct.create("td", { innerHTML: this._lcl.TOTAL_TRANSFARED_DOCUMENT, style: "border: 1px solid #ddd; padding: 8px;" }, summaryRow);
+            domConstruct.create("td", { innerHTML: totalTransferredDocs, style: "border: 1px solid #ddd; padding: 8px;" }, summaryRow);
+            domConstruct.create("td", { innerHTML: `${totalPercentage}%`, style: "border: 1px solid #ddd; padding: 8px;" }, summaryRow);
+        },
+
+        getArchiveDocClassification: function(departmentName) {
+            const toaster = new Toaster();
+            const params = {
+                method: "GetArchiveDocClassification",
+            };
+        
+            
+            
+            const response = ecm.model.Request.invokeSynchronousPluginService("PhysicalArchiveDashboardPlugin", "PhysicalArchiveDashBoardService", params);
+            const resultSet = new ResultSet(response);
+        
+            let results = [];
+            if (!resultSet.result.startsWith("ERROR")) {
+                results = json.parse(resultSet.result, true);
+            } else {
+                if (resultSet.result.includes("(ACCESS DENIED)")) {
+                    toaster.redToaster(lcl.ACCESS_DENIED);
+                } else {
+                    toaster.redToaster(lcl.FAILED_TO_FETCH_DATA);
+                }
+                console.log("Failed to load data!");
+                console.log(resultSet);
+            }
+            return results;
+        },
+        
         
         
     });

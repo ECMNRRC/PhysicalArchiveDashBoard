@@ -692,6 +692,49 @@ public class TransferFilesDAO {
 			}
 		}
 	}
+
+	public List<Map<String, Object>> getArchiveDocClassification(String departmentName) throws DatabaseException {
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		try {
+			
+			StringBuilder queryBuilder = new StringBuilder();
+			queryBuilder.append("SELECT ")
+				.append("[dbo].[CLASSIFICTIONS].[CLASS_AR_NAME] AS classArName , ")
+				.append("COUNT([dbo].[DMS_FILES].[FILE_ID]) AS documentCount ")
+				.append("FROM [dbo].[DMS_FILES] ")
+				.append("LEFT JOIN [dbo].[CLASSIFICTIONS] ON [dbo].[DMS_FILES].[DOCUMENT_CLASS] = [dbo].[CLASSIFICTIONS].[SYMPOLIC_NAME] ")
+				.append("WHERE 1 = 1 "); // Always true condition for easier appending
+	
+		
+			queryBuilder.append("GROUP BY [dbo].[CLASSIFICTIONS].[CLASS_AR_NAME]");
+			
+			stmt = dbConnection.getCon().prepareStatement(queryBuilder.toString());
+			
+			
+			rs = stmt.executeQuery();
+			List<Map<String, Object>> departmentCounts = new ArrayList<>();
+			
+			while (rs.next()) {
+				Map<String, Object> departmentData = new HashMap<>();
+				departmentData.put("classArName", rs.getString("classArName"));
+				departmentData.put("documentCount", rs.getInt("documentCount"));
+				departmentCounts.add(departmentData);
+			}
+			
+			return departmentCounts;
+		} catch (SQLException e) {
+			throw new DatabaseException("Error getArchiveDocClassification", e);
+		} finally {
+			try {
+				if (rs != null) rs.close();
+				if (stmt != null) stmt.close();
+			} catch (SQLException unexpected) {
+				throw new DatabaseException("Error closing resources", unexpected);
+			}
+		}
+	}
+	
 	
 	public List<Map<String, Object>> fetchConfidentialDocClassification() throws DatabaseException {
 	    PreparedStatement stmt = null;

@@ -121,6 +121,7 @@ function(
 			this.documentsDashboard.getCalculatedMigratedDocumentsStatsTable(this.filterDepartmentId);
 			this.documentsDashboard.getArchiveDocDepartmentable(this.filterDepartmentId);
 			this.documentsDashboard.getConfidentialDocClassificationTable(this.filterDepartmentId);
+			this.documentsDashboard.getArchiveDocClassificationtable(this.filterDepartmentId);
         },
         
       
